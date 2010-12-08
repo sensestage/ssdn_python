@@ -123,20 +123,98 @@ class DNOSCServer( ServerThread ):
     self.dnosc.data_for_slot( args[0], args[1], args[2] )
     print "Slot numerical data:", args
 
+# start hive and minibee management
+
+  @make_method('/registered/hive', 'isii')
+  def registered_hive( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.set_registered_hive( True, args[2], args[3] )
+    print "Registered as hive client:", args
+
+  @make_method('/unregistered/hive', 'is')
+  def unregistered_hive( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.set_registered_hive( False )
+    print "Unregistered as hive client:", args
+
+  @make_method('/map/minibee/output', 'ii')
+  def map_minibee( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.map_minibee( args[0], args[1] )
+    print "Map minibee:", args
+
+  @make_method('/unmap/minibee/output', 'ii')
+  def unmap_minibee( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.unmap_minibee( args[0], args[1] )
+    print "Unmap Minibee:", args
+
+  @make_method('/map/minibee/custom', 'ii')
+  def map_minibee_custom( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.map_minibee_custom( args[0], args[1] )
+    print "Map minibee custom:", args
+
+  @make_method('/unmap/minibee/custom', 'ii')
+  def unmap_minibee_custom( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.unmap_minibee_custom( args[0], args[1] )
+    print "Unmap Minibee custom:", args
+
+  @make_method('/mapped/minibee/output', 'ii')
+  def mapped_minibee( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.mapped_minibee( args[0], args[1] )
+    print "Mapped minibee:", args
+
+  @make_method('/unmapped/minibee/output', 'ii')
+  def unmapped_minibee( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.unmapped_minibee( args[0], args[1] )
+    print "Unmapped Minibee:", args
+
+  @make_method('/mapped/minibee/custom', 'ii')
+  def mapped_minibee_custom( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.mapped_minibee_custom( args[0], args[1] )
+    print "Mapped minibee custom:", args
+
+  @make_method('/unmapped/minibee/custom', 'ii')
+  def unmapped_minibee_custom( self, path, args, types ):
+    # could add a check if this is really me
+    self.dnosc.unmapped_minibee_custom( args[0], args[1] )
+    print "Unmapped Minibee custom:", args
+
+  @make_method('/info/minibee', None )
+  def info_minibee( self, path, args, types ):
+    self.dnosc.info_minibee( args[0], args[1], args[2] )
+    print "Info minibee:", args
+
+  @make_method('/info/hive', None )
+  def info_hive( self, path, args, types ):
+    #self.dnosc.info_minibee( args[0] )
+    print "Info hive:", args
+
+# end minibee management
+
   @make_method(None, None)  
   def fallback(self, path, args, types, src):
     print "got unknown message '%s' from '%s'" % (path, src.get_url())
     for a, t in zip(args, types):
       print "argument of type '%s': %s" % (t, a)
 
+
 # begin class DataNetworkOSC
 class DataNetworkOSC(object):
-  def __init__(self, hostip, myport, myname, network ):
+  def __init__(self, hostip, myport, myname, network, cltype=0, nonodes=0 ):
     self.registered = False
     self.network = network
-    self.createOSC( hostip, myport, myname )
+    self.createOSC( hostip, myport, myname, cltype, nonodes )
     
-  def createOSC( self, hostip, myport, myname ):
+  def add_hive( self, hive ):
+    self.hive = hive
+    
+  def createOSC( self, hostip, myport, myname, cltype, nonodes ):
     self.name = myname
     self.hostIP = hostip
     self.port = myport
@@ -144,7 +222,11 @@ class DataNetworkOSC(object):
     print "Found host at", self.hostIP, self.hostPort
     self.resetHost()
     self.createClient()
-    self.register()
+    if cltype == 0:
+      self.register()
+    if cltype == 1:
+      self.registerHive(nonodes)
+    
     
   def createClient(self):
     try:
@@ -153,14 +235,6 @@ class DataNetworkOSC(object):
     except ServerError, err:
       print str(err)
       sys.exit()
-
-    #try:
-      #self.server = liblo.Server( self.port )
-      #self.addMethods()
-    #except liblo.ServerError, err:
-      #print str(err)
-      #sys.exit()
-      
     
   def resetHost(self):
     try:
@@ -223,7 +297,7 @@ class DataNetworkOSC(object):
     
   def unregister( self ):
     self.sendSimpleMessage( "/unregister" )
-  
+
   def set_registered( self, state ):
     self.registered = state;
     if self.registered:
@@ -323,6 +397,86 @@ class DataNetworkOSC(object):
     self.sendMessage( msg )
     del msg
 
+## minibees and hives
+
+  def registerHive( self, number ):
+    #self.sendSimpleMessage( "/register/hive" )
+    msg = liblo.Message( "/register/hive", self.port, self.name, number )
+    self.sendMessage( msg )
+    del msg
+    
+  def unregisterHive( self ):
+    self.sendSimpleMessage( "/unregister/hive" )
+    
+  def set_registered_hive( self, state, minid, maxid ):
+    self.registered = state
+    if self.registered:
+      self.queryAll()
+      #self.hive.setNodeRange( minid, maxid )
+
+  def queryHives( self ):
+    self.sendSimpleMessage( "/query/hives" )
+
+  # sending info about a minibee created
+  def infoMinibee( self, mid, nin, nout ):
+    #self.sendSimpleMessage( "/register/hive" )
+    msg = liblo.Message( "/info/minibee", self.port, self.name, mid, nin, nout )
+    self.sendMessage( msg )
+    del msg
+
+  # receiving confirmation of mapped minibee
+  def mapped_minibee( self, nodeid, mid ):
+    print "mapped minibee output", nodeid, mid
+
+  # receiving confirmation of mapped minibee
+  def unmapped_minibee( self, nodeid, mid ):
+    print "unmapped minibee output", nodeid, mid
+
+  # receiving confirmation of mapped minibee
+  def mapped_minibee_custom( self, nodeid, mid ):
+    print "mapped minibee custom", nodeid, mid
+
+  # receiving confirmation of mapped minibee
+  def unmapped_minibee_custom( self, nodeid, mid ):
+    print "unmapped minibee custom", nodeid, mid
+
+  # receiving minibee information
+  def info_minibee( self, mid, nin, nout ):
+    print "minibee info:", mid, nin, nout
+
+  # receiving map request output
+  def map_minibee( self, nodeid, mid ):
+    self.subscribeNode( nodeid )
+    # map data from subscribed node to minibee's data output
+    msg = liblo.Message( "/mapped/minibee/output", self.port, self.name, nodeid, mid )
+    self.sendMessage( msg )
+    del msg
+
+  # receiving map request custom
+  def map_minibee_custom( self, nodeid, mid ):
+    self.subscribeNode( nodeid )
+    # map data from subscribed node to minibee's custom output
+    msg = liblo.Message( "/mapped/minibee/custom", self.port, self.name, nodeid, mid )
+    self.sendMessage( msg )
+    del msg
+
+  # receiving unmap request output
+  def unmap_minibee( self, nodeid, mid ):
+    self.unsubscribeNode( nodeid )
+    # unmap data from subscribed node to minibee's data output
+    msg = liblo.Message( "/unmapped/minibee/output", self.port, self.name, nodeid, mid )
+    self.sendMessage( msg )
+    del msg
+
+  # receiving map request custom
+  def unmap_minibee_custom( self, nodeid, mid ):
+    self.unsubscribeNode( nodeid )
+    # unmap data from subscribed node to minibee's custom output
+    msg = liblo.Message( "/unmapped/minibee/custom", self.port, self.name, nodeid, mid )
+    self.sendMessage( msg )
+    del msg
+
+
 ## message sending
   def sendMessage( self, msg ):
     try:
@@ -344,10 +498,10 @@ class DataNode(object):
   def __init__(self, network, nid, size, label, dtype ):
     self.network = network
     self.nodeid = nid
-    self.data = []
     self.size = size
     self.label = label
     self.dtype = dtype
+    self.data = []
     self.slotlabels = []
 
   def setSize( self, size ):
@@ -360,7 +514,8 @@ class DataNode(object):
     self.label = label
 
   def setLabelSlot( self, slotid, label ):
-    self.label = label
+    if slotid < size:
+      self.slotlabels[slotid] = label
 
   def setDataSlot( self, slotid, data ):
     if slotid < size:
@@ -382,8 +537,8 @@ class DataNode(object):
 
 # begin class DataNetwork
 class DataNetwork(object):
-  def __init__(self, hostip, myport, myname ):
-    self.osc = DataNetworkOSC( hostip, myport, myname, self )
+  def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0 ):
+    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes )
     self.nodes = {} # contains the nodes we are subscribed to
     self.expectednodes = [] # contains node ids that are expected and could be subscribed to
     
@@ -402,8 +557,6 @@ class DataNetwork(object):
   def infoSlot( self, nodeid, slotid, label, dntype ):
     try:
       self.nodes[ nodeid ].setLabelSlot( slotid, label )
-      #self.nodes[ nodeid ].setSize( size )
-      #self.nodes[ nodeid ].setType( dntype )
     except:
       print "InfoSlot: nodeid ", nodeid, "not in nodes", self.nodes
 
@@ -427,7 +580,8 @@ class DataNetwork(object):
 
 # end class DataNetwork
 
-datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon" )
+datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon", 1, 20 )
   
 raw_input("press enter to quit...\n")
+
 datanetwork.osc.unregister()
