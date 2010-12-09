@@ -580,8 +580,10 @@ class DataNetwork(object):
 
 # end class DataNetwork
 
-datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon", 1, 20 )
-  
-raw_input("press enter to quit...\n")
 
-datanetwork.osc.unregister()
+if __name__ == "__main__":
+  datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon", 1, 20 )
+  
+  raw_input("press enter to quit...\n")
+
+  datanetwork.osc.unregister()
