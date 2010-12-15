@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import time as myTime
+
+#print myTime
+
 import sys
-#import time
 import pycurl
 import liblo
 from liblo import *
@@ -65,13 +69,14 @@ class DNOSCServer( ServerThread ):
 
   @make_method('/info/node', 'isii' )
   def node_info( self, path, args, types ):
+    #print "Present node:", args
     self.dnosc.info_node( args[0], args[1], args[2], args[3] )
     print "Present node:", args
 
   @make_method('/info/slot', 'iisi' )
   def slot_info( self, path, args, types ):
     self.dnosc.info_slot( args[0], args[1], args[2], args[3] )
-    print "Present slot:", args
+    #print "Present slot:", args
 
   @make_method('/info/client', 'sis' )
   def client_info( self, path, args, types ):
@@ -86,42 +91,72 @@ class DNOSCServer( ServerThread ):
   @make_method('/subscribed/node', 'isi' )
   def node_subscribed( self, path, args, types ):
     # could add a check if this is really me
+    if 'subscribe' in self.dnosc.callbacks:
+      #print self.dnosc.callbacks['subscribe']
+      if args[2] in self.dnosc.callbacks['subscribe']:
+	#print self.dnosc.callbacks['subscribe'][ args[2] ] 
+	self.dnosc.callbacks['subscribe'][ args[2] ]( args[2] )
+	return
     print "Subscribed to node:", args
 
   @make_method('/unsubscribed/node', 'isi' )
   def node_unsubscribed( self, path, args, types ):
     # could add a check if this is really me
+    if 'unsubscribe' in self.dnosc.callbacks:
+      #print self.dnosc.callbacks['subscribe']
+      if args[2] in self.dnosc.callbacks['unsubscribe']:
+	#print self.dnosc.callbacks['subscribe'][ args[2] ] 
+	self.dnosc.callbacks['unsubscribe'][ args[2] ]( args[2] )
+	return
     print "Unsubscribed from node:", args
 
   @make_method('/subscribed/slot', 'isii' )
   def slot_subscribed( self, path, args, types ):
     # could add a check if this is really me
+    if 'subscribeSlot' in self.dnosc.callbacks:
+      #print self.dnosc.callbacks['subscribe']
+      if args[2] in self.dnosc.callbacks['subscribeSlot']:
+	#print self.dnosc.callbacks['subscribe'][ args[2] ] 
+	self.dnosc.callbacks['subscribeSlot'][ args[2] ]( args[2] )
+	return
     print "Subscribed to slot:", args
 
   @make_method('/unsubscribed/slot', 'isii' )
   def slot_unsubscribed( self, path, args, types ):
     # could add a check if this is really me
+    if 'unsubscribeSlot' in self.dnosc.callbacks:
+      #print self.dnosc.callbacks['subscribe']
+      if args[2] in self.dnosc.callbacks['unsubscribeSlot']:
+	#print self.dnosc.callbacks['subscribe'][ args[2] ] 
+	self.dnosc.callbacks['unsubscribeSlot'][ args[2] ]( args[2] )
+	return
     print "Unsubscribed from slot:", args
 
   @make_method('/removed/node', 'i' )
   def node_removed( self, path, args, types ):
     # could add a check if this is really me
+    if 'remove' in self.dnosc.callbacks:
+      #print self.dnosc.callbacks['subscribe']
+      if args[2] in self.dnosc.callbacks['remove']:
+	#print self.dnosc.callbacks['subscribe'][ args[2] ] 
+	self.dnosc.callbacks['remove'][ args[2] ]( args[2] )
+	return
     print "Node removed:", args
 
   @make_method('/data/node', None )
   def node_data( self, path, args, types ):
     self.dnosc.data_for_node( args[0], args[1:] )
-    print "Node data:", args
+    #print "Node data:", args
 
   @make_method('/data/slot', 'iis' )
   def slot_datas( self, path, args, types ):
     self.dnosc.data_for_slot( args[0], args[1], args[2] )
-    print "Slot string data:", args
+    #print "Slot string data:", args
 
   @make_method('/data/slot', 'iif' )
   def slot_dataf( self, path, args, types ):
     self.dnosc.data_for_slot( args[0], args[1], args[2] )
-    print "Slot numerical data:", args
+    #print "Slot numerical data:", args
 
 # start hive and minibee management
 
@@ -197,7 +232,7 @@ class DNOSCServer( ServerThread ):
 
 # end minibee management
 
-  @make_method(None, None)  
+  @make_method(None, None)
   def fallback(self, path, args, types, src):
     print "got unknown message '%s' from '%s'" % (path, src.get_url())
     for a, t in zip(args, types):
@@ -210,6 +245,7 @@ class DataNetworkOSC(object):
     self.registered = False
     self.network = network
     self.createOSC( hostip, myport, myname, cltype, nonodes )
+    self.callbacks = {}
     
   def add_hive( self, hive ):
     self.hive = hive
@@ -270,35 +306,45 @@ class DataNetworkOSC(object):
     
 ## data!
   def data_for_node( self, nodeid, data ):
-    network.setNodeData( nodeid, data )
+    self.network.setNodeData( nodeid, data )
 
   def data_for_slot( self, nodeid, slotid, data ):
-    network.setSlotData( nodeid, slotid, data )
+    self.network.setSlotData( nodeid, slotid, data )
 
   def expected_node( self, nodeid ):
-    network.addExpectedNode( nodeid )
+    self.network.addExpectedNode( nodeid )
 
   def info_node( self, nodeid, label, size, dntype ):
-    network.infoNode( nodeid, label, size, dntype )
+    print "info_node", nodeid, label, size, dntype
+    self.network.infoNode( nodeid, label, size, dntype )
 
   def info_slot( self, nodeid, slotid, label, dntype ):
-    network.infoSlot( nodeid, slotid, label, dntype )
+    self.network.infoSlot( nodeid, slotid, label, dntype )
 
   def expected_node( self, nodeid ):
-    network.addExpectedNode( nodeid )
+    self.network.addExpectedNode( nodeid )
 
 ## registering
 
-  def register( self ):
+  def register( self, mycallback = None ):
     self.sendSimpleMessage( "/register" )
-    #msg = liblo.Message( "/register", self.port, self.name )
-    #self.sendMessage( msg )
-    #del msg
+    if mycallback != None:
+      #if 'register' not in self.callbacks:
+      self.callbacks[ 'register' ] = mycallback
     
-  def unregister( self ):
+  def unregister( self, mycallback = None ):
+    if mycallback != None:
+      #if 'register' not in self.callbacks:
+      self.callbacks[ 'unregister' ] = mycallback
     self.sendSimpleMessage( "/unregister" )
 
   def set_registered( self, state ):
+    if state:
+      if 'register' in self.dnosc.callbacks:
+	self.callbacks['register']( state )
+    else:
+      if 'unregister' in self.dnosc.callbacks:
+	self.callbacks['unregister']( state )
     self.registered = state;
     if self.registered:
       self.queryAll()
@@ -338,7 +384,12 @@ class DataNetworkOSC(object):
   def removeAll( self ):
     self.sendSimpleMessage( "/remove/all" )
 
-  def subscribeNode( self, nodeid ):
+  def subscribeNode( self, nodeid, mycallback = None ):
+    #print mycallback
+    if mycallback != None:
+      if 'subscribe' not in self.callbacks:
+	self.callbacks[ 'subscribe' ] = {}
+      self.callbacks[ 'subscribe' ][ nodeid ] = mycallback
     msg = liblo.Message( "/subscribe/node", self.port, self.name, nodeid )
     self.sendMessage( msg )
     del msg
@@ -495,14 +546,22 @@ class DataNetworkOSC(object):
 
 # begin class DataNode
 class DataNode(object):
-  def __init__(self, network, nid, size, label, dtype ):
+  def __init__(self, network, nid, insize, label, dtype ):
+    #print "new datanode", network, nid, insize, label, dtype
     self.network = network
     self.nodeid = nid
-    self.size = size
+    self.size = insize
     self.label = label
     self.dtype = dtype
-    self.data = []
-    self.slotlabels = []
+    self.action = None
+    #print insize
+    self.data = list( 0 for i in range( 1, insize+1 ) )    
+    self.slotlabels = list( "slot_{0!s}_{1!s}".format( nid, i ) for i in range(1,insize+1) )
+    #print "DataNode creation", self.data, self.slotlabels
+
+    
+  def setAction( self, action ):
+    self.action = action
 
   def setSize( self, size ):
     self.size = size
@@ -514,17 +573,18 @@ class DataNode(object):
     self.label = label
 
   def setLabelSlot( self, slotid, label ):
-    if slotid < size:
+    if slotid < self.size:
       self.slotlabels[slotid] = label
 
   def setDataSlot( self, slotid, data ):
-    if slotid < size:
+    if slotid < self.size:
       self.data[slotid] = data
  
   def setData( self, data ):
     if len( data ) == self.size :
       self.data = data
-    
+      if self.action != None:
+	self.action( self.data )
 
   def sendData( self ):
     self.network.sendData( self.nodeid, self.data )
@@ -543,33 +603,41 @@ class DataNetwork(object):
     self.expectednodes = [] # contains node ids that are expected and could be subscribed to
     
   def addExpectedNode( self, nodeid ):
-    self.expectednodes.add( nodeid )
+    self.expectednodes.append( nodeid )
     print "Expected nodes:", self.expectednodes
 
   def infoNode( self, nodeid, label, size, dntype ):
-    try:
+    #print "Info Node", nodeid, self.nodes, label, size, dntype
+    if nodeid not in self.nodes:
+      self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
+      #print self.nodes[ nodeid ]
+      #print self.nodes
+    else:
+      #print self.nodes[ nodeid ]
+      #try:
       self.nodes[ nodeid ].setLabel( label )
       self.nodes[ nodeid ].setSize( size )
       self.nodes[ nodeid ].setType( dntype )
-    except:
+      #except:
+    if nodeid not in self.nodes:
       print "InfoNode: nodeid ", nodeid, "not in nodes", self.nodes
 
   def infoSlot( self, nodeid, slotid, label, dntype ):
-    try:
+    if nodeid in self.nodes:
       self.nodes[ nodeid ].setLabelSlot( slotid, label )
-    except:
+    else:
       print "InfoSlot: nodeid ", nodeid, "not in nodes", self.nodes
 
   def setNodeData( self, nodeid, data ):
-    try:
+    if nodeid in self.nodes:
       self.nodes[ nodeid ].setData( data )
-    except:
+    else:
       print "DataNode: nodeid ", nodeid, "not in nodes", self.nodes
 
   def setSlotData( self, nodeid, slotid, data ):
-    try:
+    if nodeid in self.nodes:
       self.nodes[ nodeid ].setDataSlot( slotid, data )
-    except:
+    else:
       print "SlotData: nodeid ", nodeid, "not in nodes", self.nodes
 
   def sendData( self, nodeid, data ):
@@ -580,9 +648,30 @@ class DataNetwork(object):
 
 # end class DataNetwork
 
+def dataAction( data ):
+  print "dataAction", data
+
+def setDataAction( nodeid ):
+  global datanetwork
+  datanetwork.nodes[ nodeid ].setAction( dataAction )
+
+#def wait( tim ):
+  #time.sleep( tim )
 
 if __name__ == "__main__":
-  datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon", 1, 20 )
+  datanetwork = DataNetwork( "127.0.0.1", 57000, "pydon", 0, 20 )
+  
+  #wait( 2.0 )
+  #time.sleep( 1.0 )
+  
+  #print datanetwork.nodes
+  
+  while not datanetwork.osc.registered:
+    print "waiting to be registered"
+    #print time
+    myTime.sleep( 1.0 )
+  
+  datanetwork.osc.subscribeNode( 1, setDataAction )
   
   raw_input("press enter to quit...\n")
 
