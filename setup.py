@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup, findpackages
+from setuptools import setup, find_packages
 
 setup(name='Pydon',
       version='0.6',
