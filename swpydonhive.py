@@ -5,9 +5,10 @@ import optparse
 # from Python v2.7 on should become argparse
 import sys
 
-import pydon
-import pydonhive
 import time
+
+from pydon.pydon import pydon
+from pydon import pydonhive
 
 class SWPydonHive( object ):
   def __init__(self, hostip, myport, myname, swarmSize, serialPort, serialRate, config, idrange, verbose ):
