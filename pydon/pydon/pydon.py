@@ -295,6 +295,11 @@ class DataNetworkOSC(object):
 
 #### minibee configuration stuff ###
 
+  #@make_method('/info/hive', None )
+  def handler_info_config( self, path, types, args, source ):
+    #self.dnosc.info_minibee( args[0] )
+    print( "Info config:", args )
+
   def handler_config_query( self, path, types, args, source ):    
     self.queryConfiguration( args[0] )
     if self.verbose:
@@ -975,6 +980,23 @@ class DataNetwork(object):
   #time.sleep( tim )
 
 if __name__ == "__main__":
+  
+  parser = optparse.OptionParser(description='Create a datanetwork client to communicate with the SenseWorld DataNetwork.')
+  parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
+		  help='the port on which the client will listen [default:%i]'% 57600 )
+  parser.add_option('-n','--name', action='store', type="string", dest="name",default="pydonhive",
+		  help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
+  parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
+		  help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
+  parser.add_option('-v','--verbose', action='store',dest="verbose",default=False,
+		  help='verbose printing [default:%i]'% False)
+
+  (options,args) = parser.parse_args()
+  #print args.accumulate(args.integers)
+  #print options
+  #print args
+  #print( options.host )
+
   def dataAction( data ):
     print( "dataAction", data )
     
@@ -982,8 +1004,9 @@ if __name__ == "__main__":
     global datanetwork
     datanetwork.nodes[ nodeid ].setAction( dataAction )
 
-  datanetwork = DataNetwork( '127.0.0.1', 57000, "pydon", 0, 20 )
-  datanetwork.setVerbose( True )
+#  datanetwork = DataNetwork( '172.31.15.144', 6000, "pydond", 0, 20 )
+  datanetwork = DataNetwork( options.host, options.port, options.name, 0, 10 )
+  datanetwork.setVerbose( options.verbose )
   
   #wait( 2.0 )
   #time.sleep( 1.0 )

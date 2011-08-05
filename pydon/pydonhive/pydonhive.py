@@ -6,7 +6,7 @@ import os
 
 #print time
 
-import minibeexml
+from pydon.minibeexml import minibeexml
 
 ### convenience function
 def find_key(dic, val):
@@ -1017,14 +1017,25 @@ class MiniBee(object):
 
 
 if __name__ == "__main__":
+  parser = optparse.OptionParser(description='Create a pydonhive to get data from the minibee network.')
+  parser.add_option('-c','--config', action='store', type="string", dest="config",default="pydon/configs/hiveconfig.xml",
+		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
+  parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=20,
+		  help='the number of minibees in the network [default:%i]'% 20)
+  parser.add_option('-v','--verbose', action='store',dest="verbose",default=False,
+		  help='verbose printing [default:%i]'% False)
+  parser.add_option('-s','--serial', action='store',type="string",dest="serial",default="/dev/ttyUSB0",
+		  help='the serial port [default:%s]'% '/dev/ttyUSB0')
+
+  (options,args) = parser.parse_args()
 
   def printDataAction( data, nodeid ):
     print( nodeid, data )
 
-  hive = MiniHive( "/dev/ttyUSB0", 57600 )
-  hive.set_id_range( 1, 11 )
+  hive = MiniHive( options.serial, 57600 )
+  hive.set_id_range( 1, options.minibees )
   
-  hive.load_from_file( "hiveconfig.xml" )
+  hive.load_from_file( options.config )
   hive.bees[ 1 ].set_action( printDataAction )
   hive.bees[ 2 ].set_action( printDataAction )
   hive.bees[ 3 ].set_action( printDataAction )

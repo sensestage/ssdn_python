@@ -8,7 +8,7 @@ import sys
 import time
 
 from pydon.pydon import pydon
-from pydon import pydonhive
+from pydon.pydonhive import pydonhive
 
 class SWPydonHive( object ):
   def __init__(self, hostip, myport, myname, swarmSize, serialPort, serialRate, config, idrange, verbose ):
@@ -20,7 +20,7 @@ class SWPydonHive( object ):
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
     
-    self.datanetwork.setHive( hive )
+    self.datanetwork.setHive( self.hive )
 
     # self.datanetwork.setterCallback(
       
@@ -108,10 +108,10 @@ if __name__ == "__main__":
 		  help='the port on which the client will listen [default:%i]'% 57600 )
   parser.add_option('-n','--name', action='store', type="string", dest="name",default="pydonhive",
 		  help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
-  parser.add_option('-c','--config', action='store', type="string", dest="config",default="hiveconfig.xml",
-		  help='the name of the configuration file for the minibees [default:%s]'% 'hiveconfig.xml')
-  parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=10,
-		  help='the number of minibees in the network [default:%i]'% 10)
+  parser.add_option('-c','--config', action='store', type="string", dest="config",default="pydon/configs/hiveconfig.xml",
+		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
+  parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=20,
+		  help='the number of minibees in the network [default:%i]'% 20)
   parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
 		  help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
   parser.add_option('-v','--verbose', action='store',dest="verbose",default=False,
