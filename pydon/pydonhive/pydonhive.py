@@ -419,7 +419,7 @@ class MiniHive(object):
     config.setTwiLabel( twicfg[0], twicfg[2] )
     return True
 
-  def delete_configuration( self, cid, twicfg ):
+  def delete_configuration( self, cid ):
     if not cid in self.configs:
       print( "There is no configuration with ID %i"%(cid) )
       return False
@@ -702,9 +702,9 @@ class MiniBeeConfig(object):
       configInfo.append( pincf )
       
     for twid, twidev in self.twis.items():
-      configInfo.append( twid )
+      configInfo.append( "TWI%s"%twid )
       configInfo.append( twidev )
-    return configMessage
+    return configInfo
 
   def getConfigMessage( self ):
     #print "-----MAKING CONFIG MESSAGE------"

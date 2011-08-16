@@ -1,6 +1,23 @@
+pydonhive <-> SWDataNetworkOSC
+
+SWDataNetworkOSC:
+to implement:
+  - queryConfigurations
+
+/query/configurations
+-> /info/configuration
+
+--> how to keep track of whether client already received all known configurations?
+
+
+
+
+
+
+
+
+
 SPI - pins?
-
-
 
 
 minihiveosc:
@@ -11,7 +28,7 @@ pydonhive:
   
   graceful exit when serial port not opened
   
-  if TWI is defined, then use pins A4 and A5 for that, no need to configure it
+  if TWI is defined, then use pins A4 and A5 for that, no need to configure it!
 
 pydon:
   - create datanode if none present (in reply to subscribed)

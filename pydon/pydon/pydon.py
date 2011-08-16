@@ -363,21 +363,22 @@ class DataNetworkOSC(object):
 
 # begin class DataNetworkOSC
 #class DataNetworkOSC(object):
-  def __init__(self, hostip, myport, myname, network, cltype=0, nonodes=0 ):
+  def __init__(self, hostip, myport, myname, network, cltype=0, nonodes=0, myhost='0.0.0.0' ):
     self.registered = False
     self.auto_register = True
     self.network = network
     self.callbacks = {}
     self.verbose = False
-    self.createOSC( hostip, myport, myname, cltype, nonodes )
+    self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
     
   def add_hive( self, hive ):
     self.hive = hive
     
-  def createOSC( self, hostip, myport, myname, cltype, nonodes ):
+  def createOSC( self, hostip, myport, myname, cltype, nonodes, myhost ):
     self.name = myname
     self.hostIP = hostip
     self.port = myport
+    self.myIP = myhost
     self.findHost( hostip )
     print( "Found host at", self.hostIP, self.hostPort )
     self.resetHost()
@@ -395,7 +396,8 @@ class DataNetworkOSC(object):
     
   def createClient(self):
     #try:
-    receive_address = ( '127.0.0.1', self.port )
+    receive_address = ( self.myIP, self.port )
+    #receive_address = ( '127.0.0.1', self.port )
     self.osc = OSC.OSCServer( receive_address )
     self.add_handlers()
     self.thread = threading.Thread( target = self.osc.serve_forever )
@@ -626,6 +628,7 @@ class DataNetworkOSC(object):
 ## minibees and hives
 
   def registerHive( self, number ):
+    print( "register hive" )
     self.sendMessage( "/register/hive", [ number ] )
     #self.sendSimpleMessage( "/register/hive" )
     #msg = liblo.Message( "/register/hive", self.port, self.name, number )
@@ -751,7 +754,8 @@ class DataNetworkOSC(object):
 	# set minibee with serial number to given id
 	if not self.network.hive.map_serial_to_bee( config[2], config[0] ):
 	  # send error message
-	  self.sendMessage( "/configured/minibee/error", config )
+	  config.insert( 0, "/configure/minibee" )
+	  self.sendMessage( "/minihive/error", config )
 	  return
       # continue with setting the configuration
       self.network.hive.set_minibee_config( config[0], config[1] )
@@ -768,29 +772,30 @@ class DataNetworkOSC(object):
   def deleteConfiguration( self, cid ):
     if not self.network.hive == None:
       if not self.network.hive.delete_configuration( cid ):
-	self.sendMessage( "/minihive/configuration/deleted/error", cid )
+	self.sendMessage( "/minihive/error", ["/minihive/configuration/delete", cid] )
       else:
-	self.sendMessage( "/minihive/configuration/deleted", cid )
+	self.sendMessage( "/minihive/configuration/deleted", [cid] )
 
   def setConfiguration( self, cid, config ):
     if not self.network.hive == None:
       allconfig = [ cid ]
       allconfig.extend( config )
       if not self.network.hive.set_configuration( cid, config ):
-	self.sendMessage( "/minihive/configuration/create/error", allconfig )
+	allconfig.insert( 0, "/minihive/configuration/create" )
+	self.sendMessage( "/minihive/error",  allconfig )
       else:
 	self.sendMessage( "/minihive/configuration/created", allconfig )
 
   def loadConfiguration( self, filename ):
     if not self.network.hive == None:
       self.network.hive.load_from_file( filename )
-      self.sendMessage( "/minihive/configuration/loaded", filename )      
+      self.sendMessage( "/minihive/configuration/loaded", [filename] )      
       print( "loaded configuration from: ", filename )
 
   def saveConfiguration( self, filename ):
     if not self.network.hive == None:
       self.network.hive.write_to_file( filename )
-      self.sendMessage( "/minihive/configuration/saved", filename )
+      self.sendMessage( "/minihive/configuration/saved", [filename] )
       print( "saved configuration to: ", filename )
 
 ## message sending
@@ -888,8 +893,8 @@ class DataNode(object):
 
 # begin class DataNetwork
 class DataNetwork(object):
-  def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0 ):
-    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes )
+  def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0' ):
+    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
     self.nodes = {} # contains the nodes we are subscribed to
     self.expectednodes = set([]) # contains node ids that are expected and could be subscribed to
     self.setters = set([]) # contains the nodes we are the setters of
