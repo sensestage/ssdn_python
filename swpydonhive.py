@@ -27,6 +27,8 @@ class SWPydonHive( object ):
     self.hive.set_newBeeAction( self.hookBeeToDatanetwork )
     self.datanetwork.set_mapAction( self.mapMiniBee )
     self.datanetwork.set_mapCustomAction( self.mapMiniBeeCustom )
+    self.datanetwork.set_unmapAction( self.unmapMiniBee )
+    self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
     
     self.labelbase = "minibee"
     

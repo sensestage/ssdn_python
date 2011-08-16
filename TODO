@@ -11,6 +11,9 @@ to implement:
 
 
 
+-- if minibee config changes, remove old node and create a new one
+-- if reconnecting to datanetwork, recreated existing minibees on network
+
 
 
 
