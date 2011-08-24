@@ -605,7 +605,7 @@ class MiniHive(object):
 class MiniBeeConfig(object):
 
   analogPins = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7']
-  digitalPins = [ 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13' ]
+  digitalPins = [ 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13' ]
   #pinNames =  
   miniBeePinConfig = { 'NotUsed': 0, 'DigitalIn': 1, 'DigitalOut': 2, 'AnalogIn': 3, 'AnalogOut': 4, 'AnalogIn10bit': 5, 'SHTClock': 6, 'SHTData': 7, 'TWIClock': 8, 'TWIData': 9, 'Ping': 10, 'Custom': 100, 'Me': 150, 'UnConfigured': 200 };
 
