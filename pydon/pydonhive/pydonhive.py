@@ -527,7 +527,7 @@ class MiniHive(object):
       if configid == self.bees[ beeid ].cid:
 	self.serial.send_me( self.bees[ beeid ].serial, 1 )
 	configuration = self.configs[ configid ]
-	configMsg = configuration.getConfigMessage()
+	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].status = 'waiting'
 	self.bees[ beeid ].waiting = 0
 	if self.verbose:
@@ -706,14 +706,19 @@ class MiniBeeConfig(object):
       configInfo.append( twidev )
     return configInfo
 
-  def getConfigMessage( self ):
+  def getConfigMessage( self, revision ):
     #print "-----MAKING CONFIG MESSAGE------"
     configMessage = []
     configMessage.append( self.configid )
     configMessage.append( self.messageInterval / 256 )
     configMessage.append( self.messageInterval % 256 )
     configMessage.append( self.samplesPerMessage )
-    for pinname in MiniBeeConfig.digitalPins:
+    if revision == 'Z':
+      digpins = MiniBeeConfig.digitalPins
+    else :
+      digpins = MiniBeeConfig.digitalPins[1:]
+    print( digpins )
+    for pinname in digpins:
       if pinname in self.pins:
 	configMessage.append( MiniBeeConfig.miniBeePinConfig[ self.pins[ pinname ] ] )
       else:
