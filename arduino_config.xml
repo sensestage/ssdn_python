@@ -1,7 +1,7 @@
 <xml><hive name="myprojectname">
 
 <minibee caps="7" id="1" libversion="3" revision="Z" serial="00000000000000">
-<config id="1" name="" /></minibee>
+<config id="3" /></minibee>
 
 <configuration id="1" message_interval="50" name="basicanalog" samples_per_message="1">
   <pin config="AnalogIn10bit" id="A0" />
@@ -12,7 +12,7 @@
   <pin config="AnalogIn10bit" id="A5" />
 </configuration>
 
-<configuration id="4" message_interval="50" name="basic" samples_per_message="1">
+<configuration id="2" message_interval="50" name="basic" samples_per_message="1">
   <pin config="AnalogIn10bit" id="A0" />
   <pin config="AnalogIn10bit" id="A1" />
   <pin config="AnalogIn10bit" id="A2" />
