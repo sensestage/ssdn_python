@@ -301,7 +301,7 @@ class SWMiniHiveOSC( object ):
   def start( self ):
     try :
       self.hive.run()
-    except (SystemExit, RuntimeError,KeyboardInterrupt) :
+    except (SystemExit, RuntimeError,KeyboardInterrupt, IOError ) :
       self.osc.osc.close()
       print( "Waiting for Server-thread to finish" )
       self.osc.thread.join() ##!!!
