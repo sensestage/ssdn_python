@@ -80,7 +80,9 @@ class MiniHiveOSC(object):
     #print( path, path.split( "/" ) )
     splitpath = path.split( "/" );
     #print( int( splitpath[2] ) )
-    # for now assuming that we are just sending data to the first device... junXion should be more sophisticated to map this!
+    # for now assuming that we are just sending data to the first device...
+    # junXion should be more sophisticated to map this!
+    # or build in some configuration in the xml file to map this
     self.setOutputChan( 1, int( splitpath[2] ), args[0] )
     if self.verbose:
       print( "Junxion Output:", path, args )
@@ -190,8 +192,9 @@ class MiniHiveOSC(object):
 
   def setOutputChan( self, mid, chanid, data ):
     #print( self.hive, mid, data )
-    self.alldata[ chanid ] = data
-    self.hive.oscToMiniBee( mid, self.alldata )
+    if chanid < len( self.alldata ):
+      self.alldata[ chanid ] = data
+      self.hive.oscToMiniBee( mid, self.alldata )
 
   def setCustom( self, mid, data ):
     self.hive.oscToMiniBee( mid, data )
@@ -364,7 +367,7 @@ if __name__ == "__main__":
   #print args
   #print( options.host )
   
-  print( "MiniHiveOSC - communicating via OSC with the MiniBee network" )
+  print( "MiniHive-JunXion - communicating via OSC with Junxion and the MiniBee network" )
   swhive = SWMiniHiveOSC( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, 57600, options.config, [1,options.minibees], options.verbose )
   print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(options.ip, options.port, options.host, options.hport, options.serial ) )
   swhive.start()
