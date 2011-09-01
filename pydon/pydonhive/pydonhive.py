@@ -131,20 +131,25 @@ class HiveSerial(object):
     #print msg
     self.serial.write( msg )
 
-  def send_data( self, mid, data ):
-    self.incMsgID()
-    #self.hiveMsgId = self.hiveMsgId + 1
-    msg = bytearray(b" O")
-    msg[0] = chr( 92 )
-    msg = self.appendToMsg( msg, mid )
-    msg = self.appendToMsg( msg, self.hiveMsgId )
-    #msg += chr(configid)
-    for dat in data:
-      msg = self.appendToMsg( msg, dat )
-    msg += b"\n"
+  #def send_data( self, mid, data ):
+    #self.incMsgID()
+    ##self.hiveMsgId = self.hiveMsgId + 1
+    #msg = bytearray(b" O")
+    #msg[0] = chr( 92 )
+    #msg = self.appendToMsg( msg, mid )
+    #msg = self.appendToMsg( msg, self.hiveMsgId )
+    ##msg += chr(configid)
+    #for dat in data:
+      #msg = self.appendToMsg( msg, dat )
+    #msg += b"\n"
+    #self.serial.write( msg )
+    #if self.verbose:
+      #print( "sending data to minibee", mid, data, msg )
+
+  def send_msg( self, msg ):
     self.serial.write( msg )
     if self.verbose:
-      print( "sending data to minibee", mid, data, msg )
+      print( "sending message", msg )
 
   def send_custom( self, mid, data ):
     self.incMsgID()
@@ -466,7 +471,7 @@ class MiniHive(object):
     
   def query_configurations( self, network ):
     for cid, config in self.configs.items():
-      print( cid, config )
+      #print( cid, config )
       network.infoConfig( config.getConfigInfo() )
 
   def set_configuration( self, cid, config ):
@@ -478,7 +483,7 @@ class MiniHive(object):
     self.configs[ cid ] = newconfig
     numberPins = config[3]
     numberTWIs = config[4]
-    print( len( config ), numberPins, numberTWIs )
+    #print( len( config ), numberPins, numberTWIs )
     if numberTWIs > 0:
       newconfig.setPinConfig( 'A5', 'TWIClock' )
       newconfig.setPinConfig( 'A4', 'TWIData' )
@@ -858,7 +863,7 @@ class MiniBeeConfig(object):
 	      self.dataOffsets.extend( [0,0,0] )
 	      self.logDataFormat.append( 3 )
 	      self.logDataLabels.extend( MiniBeeConfig.miniBeeTwiDataLabels['LIS302DL'] )
-	      print( self.dataInSizes )
+	      #print( self.dataInSizes )
 	    elif rev == 'B':
 	      self.dataInSizes.extend( [2,2,2] )
 	      #self.dataScales.extend( [1,1,1] )
@@ -866,7 +871,7 @@ class MiniBeeConfig(object):
 	      self.dataOffsets.extend( [0,0,0] )
 	      self.logDataFormat.append( 3 )
 	      self.logDataLabels.extend( MiniBeeConfig.miniBeeTwiDataLabels['ADXL345'] )
-	      print( self.dataInSizes )
+	      #print( self.dataInSizes )
 	  elif libv > 2:
 	    #print "libv 3, checking twis"
 	    for twiid, twidev in self.twis.items():
@@ -915,6 +920,11 @@ class MiniBeeConfig(object):
 class MiniBee(object):
   def __init__(self, mid, serial ):
     self.init_with_serial( mid, serial )
+    self.msgID = 0;
+  
+  def incMsgID( self ):
+    self.msgId = self.msgId + 1
+    self.msgId = self.msgId%255
   
   def set_lib_revision( self, libv, revision, caps ):
     self.libversion = libv
@@ -936,8 +946,11 @@ class MiniBee(object):
     #self.configid = -1
     self.waiting = 0
     self.count = 0
+
     self.outrepeated = 0
-    self.outdata = None
+    self.outMessage = None
+    self.customrepeated = 0
+    self.customMessage = None
     
   def set_nodeid( self, mid ):
     self.nodeid = mid
@@ -976,22 +989,47 @@ class MiniBee(object):
 
   def set_first_action( self, action ):
     self.firstDataAction = action
-    
+
+  def create_msg( self, data ):
+    self.incMsgID()
+    msg = bytearray(b" O")
+    msg[0] = chr( 92 )
+    msg = self.appendToMsg( msg, self.nodeid )
+    msg = self.appendToMsg( msg, self.msgID )
+    for dat in data:
+      msg = self.appendToMsg( msg, dat )
+    msg += b"\n"
+    return msg
+
   def repeat_output( self, serPort, redundancy ):
-    if self.outdata != None:
+    if self.outMessage != None:
       if self.outrepeated < redundancy :
 	self.outrepeated = self.outrepeated + 1
-	serPort.send_data( self.nodeid, self.outdata )
+	serPort.send_msg( self.outMessage )
+	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
     if len( data ) == sum( self.config.dataOutSizes ) :
       self.outdata = data
       self.outrepeated = 0
-      serPort.send_data( self.nodeid, data )
+      self.outMessage = self.create_msg( self.outdata )
+      serPort.send_msg( self.outMessage )
+      #serPort.send_data_inclid( self.nodeid, self.msgID, data )
+
+  def repeat_custom( self, serPort, redundancy ):
+    if self.customMessage != None:
+      if self.customrepeated < redundancy :
+	self.customrepeated = self.customrepeated + 1
+	serPort.send_msg( self.customMessage )
+	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
+    self.customdata = data
+    self.customrepeated = 0
+    self.customMessage = self.create_msg( self.customdata )
+    serPort.send_msg( self.customMessage )
     #if len( data ) == sum( self.config.customOutSizes ) :
-    serPort.send_custom( self.nodeid, data )
+    #serPort.send_custom( self.nodeid, data )
 
   def set_run( self, serPort, status ):
     serPort.send_run( self.nodeid, status )
@@ -1000,9 +1038,10 @@ class MiniBee(object):
     serPort.send_loop( self.nodeid, status )
     
   def set_status( self, status, msgid = 0, verbose = False ):
-    self.status = status
     if self.statusAction != None :
-      self.statusAction( self.nodeid, self.status )
+      if self.status != status:
+	self.statusAction( self.nodeid, status )
+    self.status = status
     if verbose:
       print( "minibee status changed: ", self.nodeid, self.status ) 
 
