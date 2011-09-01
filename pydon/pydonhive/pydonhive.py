@@ -411,6 +411,7 @@ class MiniHive(object):
 	    self.serial.send_me( bee.serial, 1 )
 	else:
 	  bee.repeat_output( self.serial, self.redundancy )
+	  bee.repeat_custom( self.serial, self.redundancy )
 	  if bee.status == 'receiving':
 	    bee.count = bee.count + 1
 	    if bee.count > 5000:
