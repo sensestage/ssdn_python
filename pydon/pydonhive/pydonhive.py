@@ -775,7 +775,7 @@ class MiniBeeConfig(object):
     else :
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
-    print( digpins, anapins )
+    #print( digpins, anapins )
     for pinname in digpins:
       if pinname in self.pins:
 	configMessage.append( MiniBeeConfig.miniBeePinConfig[ self.pins[ pinname ] ] )
@@ -812,7 +812,7 @@ class MiniBeeConfig(object):
     else :
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
-    print( digpins, anapins )
+    #print( digpins, anapins )
 
     for pinname in anapins: # iterate over analog pins
       if pinname in self.pins:
