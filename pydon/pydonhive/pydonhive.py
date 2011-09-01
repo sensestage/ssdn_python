@@ -404,6 +404,9 @@ class MiniHive(object):
       self.serial.read_data()
       for beeid, bee in self.bees.items():
 	#print beeid, bee
+	bee.countsincestatus = bee.countsincestatus + 1
+	if bee.countsincestatus > 12000:
+	  bee.set_status( 'off' )
 	if bee.status == 'waiting':
 	  bee.waiting = bee.waiting + 1
 	  if bee.waiting > 1000:
@@ -417,7 +420,7 @@ class MiniHive(object):
 	    if bee.count > 5000:
 	      bee.count = 0
 	      self.serial.send_me( bee.serial, 0 )
-      time.sleep(0.02)
+      time.sleep(0.005)
 
   def exit( self ):
     self.serial.quit()
@@ -947,6 +950,8 @@ class MiniBee(object):
     #self.configid = -1
     self.waiting = 0
     self.count = 0
+    
+    self.countsincestatus = 0
 
     self.outrepeated = 0
     self.outMessage = None
@@ -1043,6 +1048,7 @@ class MiniBee(object):
       if self.status != status:
 	self.statusAction( self.nodeid, status )
     self.status = status
+    self.countsincestatus = 0
     if verbose:
       print( "minibee status changed: ", self.nodeid, self.status ) 
 
