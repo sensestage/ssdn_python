@@ -545,7 +545,7 @@ class MiniHive(object):
       minibee.set_status( 'waiting' )
       minibee.waiting = 0
     else: # this could be different behaviour! e.g. wait for a new configuration to come in
-      print( "no configuration defined for minibee", serial, minibee.nodeid )
+      print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
       self.write_to_file( "newconfig.xml" )
       print( "newconfig.xml saved, please adapt and save to a new name and restart the swpydonhive with that configuration file" )
       print( "or send a message with a new configuration (via osc, or via the datanetwork)" )
@@ -634,6 +634,7 @@ class MiniHive(object):
       self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
       self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
       self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
+      self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
       #print self.configs[ int( cid ) ]
     for ser, bee in hiveconf[ 'bees' ].items():
       #print bee
@@ -686,6 +687,7 @@ class MiniBeeConfig(object):
     self.twis = {}
     self.pinlabels = {}
     self.twilabels = {}
+    self.twislotlabels = {}
     self.configid = cfgid
     self.samplesPerMessage = cfgspm
     self.messageInterval = cfgmint
@@ -734,6 +736,13 @@ class MiniBeeConfig(object):
     for pinname, pinfunc in filepins.items():
       #print pinname, pinfunc
       self.setTwiLabel( pinname, pinfunc ) 
+
+  def setTwiSlotLabels( self, filepins ):
+    #print filepins
+    for pinname, pinfunc in filepins.items():
+      #print pinname, pinfunc
+      #for twislot, twislotlabel in pinfunc.items():
+      self.twislotlabels[ pinname ] = pinfunc
 
   def setPinLabel( self, pinname, pinconfig ):
     self.pinlabels[ pinname ] = pinconfig
@@ -925,6 +934,7 @@ class MiniBee(object):
   def __init__(self, mid, serial ):
     self.init_with_serial( mid, serial )
     self.msgID = 0;
+    self.name = "";
   
   def incMsgID( self ):
     self.msgId = self.msgId + 1
