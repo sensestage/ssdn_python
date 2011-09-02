@@ -5,6 +5,16 @@
 
 import xml.etree.ElementTree as ET
 
+from xml.dom import minidom
+
+def prettify(elem):
+    """Return a pretty-printed XML string for the Element.
+    """
+    rough_string = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    return reparsed.toprettyxml(indent="  ")
+
+
 class HiveConfigFile():
   
   #def set_hive( self, hive ):
@@ -25,6 +35,7 @@ class HiveConfigFile():
       el_bee.set( "revision", str(bee.revision) )
       el_bee.set( "libversion", str(bee.libversion) )
       el_bee.set( "caps", str(bee.caps) )
+      el_bee.set( "name", str(bee.name) )
       if bee.cid > 0:
 	el_beeConfig = ET.SubElement( el_bee, "config" )
 	el_beeConfig.set( "id", str(bee.config.configid) )
@@ -32,7 +43,7 @@ class HiveConfigFile():
       else:
 	el_beeConfig = ET.SubElement( el_bee, "config" )
 	el_beeConfig.set( "id", str(bee.cid) )
-	el_beeConfig.set( "name", "" )
+	#el_beeConfig.set( "name", "" )
       #ET.dump( el_bee )
       #el_beeCustom = ET.SubElement( el_bee, "custom" )
       #for pin in bee.custompins:
@@ -56,16 +67,25 @@ class HiveConfigFile():
 	el_pin = ET.SubElement( el_cfg, "pin" )
 	el_pin.set( "id", pinkey )
 	el_pin.set( "config", pincfg )
+	el_pin.set( "name", str( cfg.pinlabels[ pinkey ] ) )
       for did, dev in cfg.twis.items():
 	el_twi = ET.SubElement( el_cfg, "twi" )
 	el_twi.set( "id", did )
 	el_twi.set( "device", dev )
-
+	el_twi.set( "name", str( cfg.twilabels[ did ] ) )
+	for sid, sname in cfg.twislotlabels[ did ].items():
+	  el_twisl = ET.SubElement( el_twi, "twislot" )
+	  el_twisl.set( "id", sid )
+	  el_twisl.set( "name", str( sname ) )
     # wrap it in an ElementTree instance, and save as XML
-    tree = ET.ElementTree(root)
+    #tree = ET.ElementTree( root )
     #tree.indent()
     #print root
-    tree.write( filename )
+    #tree.write( filename )
+    xmlfile = open(filename,"w")
+    xmlfile.write( prettify( root ) )
+    xmlfile.close()
+
     
   def read_file( self, filename ):
     tree = ET.parse( filename )
@@ -84,6 +104,7 @@ class HiveConfigFile():
 	hiveconfig['bees'][ bee.get( "serial" ) ][ "caps" ] = int( bee.get( "caps" ) )
 	hiveconfig['bees'][ bee.get( "serial" ) ][ "serial" ] = bee.get( "serial" )
 	hiveconfig['bees'][ bee.get( "serial" ) ][ "mid" ] = int( bee.get( "id" ) )
+	hiveconfig['bees'][ bee.get( "serial" ) ][ "name" ] = bee.get( "name" )
 	for conf in bee.getiterator("config"):
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configid" ] = int( conf.get( "id" ) )
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configname" ] = conf.get( "name" )
@@ -103,12 +124,18 @@ class HiveConfigFile():
 	  hiveconfig['configs'][ configs.get( "id" ) ]["pinlabels"][ pin.get("id") ] = pin.get( "name" )
 	hiveconfig['configs'][ configs.get( "id" ) ]["twis"] = {}
 	hiveconfig['configs'][ configs.get( "id" ) ]["twilabels"] = {}
+	hiveconfig['configs'][ configs.get( "id" ) ]["twislots"] = {}
 	for twi in configs.getiterator("twi"):
 	  #print twi
 	  hiveconfig['configs'][ configs.get( "id" ) ]["twis"][ twi.get("id") ] = twi.get( "device" )
 	  hiveconfig['configs'][ configs.get( "id" ) ]["twilabels"][ twi.get("id") ] = twi.get( "name" )
+	  hiveconfig['configs'][ configs.get( "id" ) ]["twislots"][ twi.get("id") ] = {}
+	  for twislot in configs.getiterator("twislot"):
+	    hiveconfig['configs'][ configs.get( "id" ) ]["twislots"][ twi.get("id") ][ twislot.get("id") ] = twislot.get( "name" )
       #print hiveconfig
       return hiveconfig
+
+#<twislot id="0" label="x">
 
 # main program
 
