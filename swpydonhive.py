@@ -78,7 +78,6 @@ class SWPydonHive( object ):
 
 # bee to datanode
   def hookBeeToDatanetwork( self, minibee ):
-    #print( minibee,  minibee.getInputSize(),  minibee.getOutputSize() )
     self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_first_action( self.addAndSubscribe )
     minibee.set_action( self.minibeeDataToDataNode )
@@ -88,10 +87,29 @@ class SWPydonHive( object ):
     self.datanetwork.osc.statusMinibee( nid, status )
 
   def addAndSubscribe( self, nid, data ):
-    name = (self.labelbase + str(nid) )
     mybee = self.hive.bees[ nid ]
-    self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), name ] )
+    if mybee.name == "":
+      mybee.name = (self.labelbase + str(nid) )
+    self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
     self.datanetwork.osc.subscribeNode( nid )
+    self.sendBeeLabels( mybee )
+    
+  def sendBeeLabels( self, mybee ):
+    if mybee.cid > 0:
+      count = 0
+      for pinname, pinlabel in mybee.config.pinlabels.items():
+	print( "sending label", pinname, pinlabel, mybee.name )
+	if pinlabel == None:
+	  pinlabel = count
+	self.datanetwork.osc.labelSlot( mybee.nodeid, count, mybee.name + "_" + str( pinlabel ) )
+	count = count + 1
+      for twi, twiname in mybee.config.twislotlabels.items():
+	for twislot, twislotlabel in twiname.items():
+	  if twislotlabel == None:
+	    twislotlabel = count
+	  print( "sending label", mybee.name, twi, mybee.config.twilabels[ twi ], twislot, twislotlabel )
+	  self.datanetwork.osc.labelSlot( mybee.nodeid, count, mybee.name + "_" + mybee.config.twilabels[ twi ] + "_" + str( twislotlabel ) )
+	  count = count + 1
 
   def minibeeDataToDataNode( self, data, nid ):
     self.datanetwork.sendData( nid, data )
