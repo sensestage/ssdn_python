@@ -642,8 +642,9 @@ class MiniHive(object):
       self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
       self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
       #print bee[ 'configid' ]
-      thisconf = self.configs[ bee[ 'configid' ] ]
+      #thisconf = self.configs[ bee[ 'configid' ] ]
       self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
+      self.bees[ bee[ 'mid' ] ].set_custom( bee[ 'customdata' ] )
 
   def write_to_file( self, filename ):
     cfgfile = minibeexml.HiveConfigFile()
@@ -815,6 +816,7 @@ class MiniBeeConfig(object):
     #print "-----END MAKING CONFIG MESSAGE------"
     return configMessage
 
+#MiniBeeConfig
   def check_config( self, libv, rev ):
     #print "-----CHECKING CONFIG------"
     self.dataInSizes = []
@@ -935,6 +937,14 @@ class MiniBee(object):
     self.init_with_serial( mid, serial )
     self.msgID = 0;
     self.name = "";
+    self.customDataInSizes = []
+    self.dataOffsets = []
+    self.dataScales = []
+    self.hasCustom = False
+    self.customLabels = []
+    self.customDataScales = []
+    self.customDataOffsets = []
+    
   
   def incMsgID( self ):
     self.msgId = self.msgId + 1
@@ -993,6 +1003,32 @@ class MiniBee(object):
     self.cid = cid
     self.config = configuration
     self.config.check_config( self.libversion, self.revision )
+    self.dataScales = self.customDataScales
+    self.dataOffsets = self.customDataOffsets
+    self.dataScales.extend( self.config.dataScales )
+    self.dataOffsets.extend( self.config.dataOffsets )
+
+  def set_custom(self, customconf ):
+    self.customLabels = []
+    self.customDataScales = []
+    self.customDataOffsets = []
+    sortedConf = [ (k,customconf[k]) for k in sorted(customconf.keys())]
+    #print sortedConf
+    for cid, cdat in sortedConf:
+      #print cid, cdat
+      self.hasCustom = True
+      self.customLabels.append( cdat[ "name" ] )
+      self.customDataScales.append( cdat[ "scale" ] )
+      self.customDataOffsets.append( cdat[ "offset" ] )
+      self.customDataInSizes.append( cdat[ "size" ] )
+    self.dataScales = self.customDataScales
+    self.dataScales.extend( self.config.dataScales )
+    self.dataOffsets = self.customDataOffsets
+    self.dataOffsets.extend( self.config.dataOffsets )
+    #print( self.customLabels, self.dataScales, self.dataOffsets, self.customDataInSizes )
+    #if len(self.dataScales) == 0:
+      #self.dataScales = self.config.dataScales
+      #self.dataOffsets = self.config.dataOffsets
 
   def set_log_action( self, action ):
     self.logAction = action
@@ -1067,31 +1103,34 @@ class MiniBee(object):
     idx = 0
     parsedData = []
     scaledData = []
+    for sz in self.customDataInSizes:
+      parsedData.append( data[ idx : idx + sz ] )
+      idx += sz
     for sz in self.config.dataInSizes:
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
     for index, dat in enumerate( parsedData ):
       if len( dat ) == 3 :
-	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.config.dataOffsets[ index ] ) / float( self.config.dataScales[ index ] ) )
+	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 2 :
-	scaledData.append(  float( dat[0]*256 + dat[1] - self.config.dataOffsets[ index ] ) / float( self.config.dataScales[ index ] ) )
+	scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 1 :
-	scaledData.append( float( dat[0] - self.config.dataOffsets[ index ] ) / float( self.config.dataScales[ index ] ) )
+	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
     self.data = scaledData
     if self.status != 'receiving':
       if self.firstDataAction != None:
 	self.firstDataAction( self.nodeid, self.data )
     self.set_status( 'receiving' )
-    if len(self.data) == len( self.config.dataInSizes ):
+    if len(self.data) == ( len( self.config.dataInSizes ) + len( self.customDataInSizes ) ):
       if self.dataAction != None :
 	self.dataAction( self.data, self.nodeid )
       if self.logAction != None :
 	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
       if verbose:
-	print( "data length ok", len(self.data), len( self.config.dataInSizes ) )
+	print( "data length ok", len(self.data), len( self.config.dataInSizes ), len( self.customDataInSizes ) )
     #print self.nodeid, data, parsedData, scaledData
     else:
-      print( "data length not ok", len(self.data), len( self.config.dataInSizes ) )
+      print( "data length not ok", len(self.data), len( self.config.dataInSizes ), len( self.customDataInSizes ) )
     if verbose:
       print( "data parsed and scaled", self.nodeid, self.data ) 
   
@@ -1124,6 +1163,45 @@ class MiniBee(object):
     if configid == self.cid:
       self.config.check_config( self.libversion, self.revision )
       #print confirmconfig
+    #print( "CONFIG INFO", configid, confirmconfig, verbose, len( confirmconfig ) )
+      self.dataScales = []
+      self.dataOffsets = []
+      if len( confirmconfig ) > 4:
+	customIns = confirmconfig[5]
+	customDataSize = confirmconfig[6]
+	customPinCfgs = confirmconfig[7:]
+	customPinSizes = 0
+
+	self.customPins = {}
+
+	if len( self.customDataInSizes ) > 0:
+	  # there is custom config info in the configuration file, so we take the data from there
+	  myindex = 0
+	  customError = False
+	  for c in self.customDataInSizes:
+	    #print c,myindex
+	    #if ( self.customDataInSizes 
+	    myindex = myindex + 1
+	  #print( self.customDataInSizes )
+	else:
+	  # we create our own set based on the info sent by the minibee
+	  self.customDataInSizes = [ 0 for x in range( customIns ) ]
+	  for i in range( len( customPinCfgs ) / 2 ):
+	    #print ( i, customPinCfgs[i*2], customPinCfgs[i*2 + 1] )
+	    self.customPins[ customPinCfgs[i*2] ] = customPinCfgs[i*2 + 1]
+	    customPinSizes = customPinSizes + customPinCfgs[i*2 + 1]
+	    if customPinCfgs[i*2 + 1]>0:
+	      self.customDataInSizes.append( customPinCfgs[i*2 + 1] )
+	  for i in range( customIns ):
+	    self.customDataInSizes[i] = (customDataSize - customPinSizes) / customIns
+
+	  for size in self.customDataInSizes:
+	    self.dataOffsets.append( 0 )
+	    self.dataScales.append( 1 )
+
+      self.dataScales.extend( self.config.dataScales )
+      self.dataOffsets.extend( self.config.dataOffsets )
+      #print( self.dataScales, self.dataOffsets )
       if confirmconfig[0] == self.config.samplesPerMessage:
 	if verbose:
 	  print( "samples per message correct", confirmconfig[0], self.config.samplesPerMessage )
@@ -1136,12 +1214,12 @@ class MiniBee(object):
       else:
 	configres = False
 	print( "ERROR: message interval NOT correct", confirmconfig[1:2], self.config.messageInterval )
-      if confirmconfig[3] == sum( self.config.dataInSizes ):
+      if confirmconfig[3] == (sum( self.config.dataInSizes ) + sum( self.customDataInSizes )):
 	if verbose:
-	  print( "data input size correct", confirmconfig[3], self.config.dataInSizes )
+	  print( "data input size correct", confirmconfig[3], self.config.dataInSizes, self.customDataInSizes )
       else:
 	configres = False
-	print( "ERROR: data input size NOT correct", confirmconfig[3], self.config.dataInSizes )
+	print( "ERROR: data input size NOT correct", confirmconfig[3], self.config.dataInSizes, self.customDataInSizes )
       if confirmconfig[4] == sum( self.config.dataOutSizes ):
 	if verbose:
 	  print( "data output size correct", confirmconfig[4], self.config.dataOutSizes )

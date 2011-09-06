@@ -43,7 +43,18 @@ class HiveConfigFile():
       else:
 	el_beeConfig = ET.SubElement( el_bee, "config" )
 	el_beeConfig.set( "id", str(bee.cid) )
-	#el_beeConfig.set( "name", "" )
+
+      if bee.hasCustom:
+	el_beeCustom = ET.SubElement( el_bee, "custom" )
+	for cusD in bee.customData.items():
+	  el_customData = ET.SubElement( el_beeCustom, "data" )
+	  el_customData.set( "id", str(cusD.cid) )
+	  el_customData.set( "size", str(cusD.size) )
+	  el_customData.set( "offset", str(cusD.offset) )
+	  el_customData.set( "scale", str(cusD.scale) )
+	  el_customData.set( "name", str(cusD.name) )
+
+      #el_beeConfig.set( "name", "" )
       #ET.dump( el_bee )
       #el_beeCustom = ET.SubElement( el_bee, "custom" )
       #for pin in bee.custompins:
@@ -108,6 +119,16 @@ class HiveConfigFile():
 	for conf in bee.getiterator("config"):
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configid" ] = int( conf.get( "id" ) )
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configname" ] = conf.get( "name" )
+	for custom in bee.getiterator("custom"):
+	  hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ] = {}
+	  for data in custom.getiterator("data"):
+	    hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ][ int( data.get( "id" ) ) ] = {}
+	    hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "size" ] = int( data.get( "size" ) )
+	    hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "offset" ] = int( data.get( "offset" ) )
+	    hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "scale" ] = int( data.get( "scale" ) )
+	    hiveconfig['bees'][ bee.get( "serial" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "name" ] = data.get( "name" )
+	print hiveconfig['bees'][ bee.get( "serial" ) ]
+
       hiveconfig['configs'] = {}
       for configs in node.getiterator("configuration"):
 	hiveconfig['configs'][ configs.get( "id" ) ] = {}
