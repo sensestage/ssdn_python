@@ -80,6 +80,9 @@
     <pin config="TWIData" id="A4" />
     <pin config="TWIClock" id="A5" />
     <twi id="1" device="ADXL345" name="accelero" />
+      <twislot id="0" name="x" />
+      <twislot id="1" name="y" />
+      <twislot id="2" name="z" />
   </configuration>
   
   <configuration id="2" name="acc_pir_th_light" message_interval="50" samples_per_message="1">
@@ -102,7 +105,13 @@
     <pin config="TWIClock" id="A5" />
     <pin config="Me" id="D4" />
     <twi id="1" device="ADXL345" name="accelero" />
+      <twislot id="0" name="x" />
+      <twislot id="1" name="y" />
+      <twislot id="2" name="z" />
     <twi id="2" device="HMC58X3" name="magneto" />
+      <twislot id="0" name="x" />
+      <twislot id="1" name="y" />
+      <twislot id="2" name="z" />
   </configuration>
 
   <configuration id="4" name="acc_pir_light" message_interval="50" samples_per_message="1">
