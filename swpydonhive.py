@@ -139,7 +139,12 @@ if __name__ == "__main__":
   #print args.accumulate(args.integers)
   #print options
   #print args
+  print( "--------------------------------------------------------------------------------------" )
+  print( "SWPydonHive - a SenseWorld DataNetwork client to communicate with the minibee network." )
+  print( " --- to find out more about the startup options start with \'swpydonhive.py -h\'" )
+  print( " --- The client has been started with these options:" )
   print( options )
+  print( "--------------------------------------------------------------------------------------" )
   
   swhive = SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose )
   
