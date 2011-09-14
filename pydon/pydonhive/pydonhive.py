@@ -42,6 +42,7 @@ class HiveSerial(object):
     except:
       self.serialOpened = False
       print( "could not open serial port", serial_port )
+      print( "Please make sure your coordinator node is connected to the computer and pass in the right serial port location upon startup, e.g. \'python swpydonhive.py -s /dev/ttyUSB1\'" )
       os._exit(1)
       #raise SystemExit
       #sys.exit()
@@ -549,7 +550,7 @@ class MiniHive(object):
       print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
       filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M", time.localtime()) + ".xml"
       self.write_to_file( filename )
-      print( filename + "saved. Please adapt (at least define a config id other than -1 or the node), save to a new name," )
+      print( "configuration saved to" + filename + ". Please adapt (at least define a config id other than -1 or the node), save to a new name," )
       print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
       print( "Check documentation for details." )
       #sys.exit()
