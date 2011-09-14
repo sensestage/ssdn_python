@@ -32,16 +32,24 @@ class HiveConfigFile():
       el_bee = ET.SubElement(el_hive, "minibee")
       el_bee.set( "serial", str(bee.serial) )
       el_bee.set( "id", str(bee.nodeid) )
+      comment = ET.Comment('the id given inside the minibee tag is the unique id or number of the minibee')
+      el_bee.append(comment)
       el_bee.set( "revision", str(bee.revision) )
       el_bee.set( "libversion", str(bee.libversion) )
       el_bee.set( "caps", str(bee.caps) )
       el_bee.set( "name", str(bee.name) )
       if bee.cid > 0:
-	el_beeConfig = ET.SubElement( el_bee, "config" )
+	el_beeConfig = ET.SubElement( el_bee, "configuration" )
+	comment = ET.Comment('the id given inside the configuration tag is the unique id of the configuration that is used')
+	el_beeConfig.append(comment)
 	el_beeConfig.set( "id", str(bee.config.configid) )
 	el_beeConfig.set( "name", str(bee.config.name) )
       else:
-	el_beeConfig = ET.SubElement( el_bee, "config" )
+	comment = ET.Comment('This minibee has no configuration yet!')
+	el_bee.append(comment)
+	el_beeConfig = ET.SubElement( el_bee, "configuration" )
+	comment = ET.Comment('the id given inside the configuration tag is the unique id of the configuration that is used; change it to one of the configurations in this file')
+	el_beeConfig.append(comment)
 	el_beeConfig.set( "id", str(bee.cid) )
 
       if bee.hasCustom:
@@ -117,6 +125,9 @@ class HiveConfigFile():
 	hiveconfig['bees'][ bee.get( "serial" ) ][ "mid" ] = int( bee.get( "id" ) )
 	hiveconfig['bees'][ bee.get( "serial" ) ][ "name" ] = bee.get( "name" )
 	for conf in bee.getiterator("config"):
+	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configid" ] = int( conf.get( "id" ) )
+	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configname" ] = conf.get( "name" )
+	for conf in bee.getiterator("configuration"):
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configid" ] = int( conf.get( "id" ) )
 	  hiveconfig['bees'][ bee.get( "serial" ) ][ "configname" ] = conf.get( "name" )
 	for custom in bee.getiterator("custom"):
