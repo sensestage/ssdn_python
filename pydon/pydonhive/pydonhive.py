@@ -643,8 +643,10 @@ class MiniHive(object):
       self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
       #print bee[ 'configid' ]
       #thisconf = self.configs[ bee[ 'configid' ] ]
-      self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
-      self.bees[ bee[ 'mid' ] ].set_custom( bee[ 'customdata' ] )
+      if bee[ 'configid' ] > 0:
+	self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
+      #if bee[ 'customdata' ]:
+	#self.bees[ bee[ 'mid' ] ].set_custom( bee[ 'customdata' ] )
 
   def write_to_file( self, filename ):
     cfgfile = minibeexml.HiveConfigFile()
@@ -680,7 +682,7 @@ class MiniBeeConfig(object):
   miniBeeTwiDataSize = { 'ADXL345': [2,2,2], 'LIS302DL': [2,2,2], 'BMP085': [2,3,3], 'TMP102': [2], 'HMC58X3': [2,2,2] };
   miniBeeTwiDataScale = { 'ADXL345': [8191,8191,8191], 'LIS302DL': [255,255,255], 'BMP085': [100,100,100], 'TMP102': [16], 'HMC58X3': [2047,2047,2047] }; # 
   miniBeeTwiDataOffset = { 'ADXL345': [0,0,0], 'LIS302DL': [0,0,0], 'BMP085': [27300,0,10000], 'TMP102': [2048], 'HMC58X3': [2048,2048,2048] };
-  miniBeeTwiDataLabels = { 'ADXL345': ['acceleration'], 'LIS302DL': ['acceleration'], 'BMP085': ['temperature','altitude','barometric_pressure'], 'TMP102': ['temperature'], 'HMC58X3': ['magnetometer'] };
+  miniBeeTwiDataLabels = { 'ADXL345': ['accel_x','accel_y','accel_z'], 'LIS302DL': ['accel_x','accel_y','accel_z'], 'BMP085': ['temperature','altitude','barometric_pressure'], 'TMP102': ['temperature'], 'HMC58X3': ['magn_x','magn_y','magn_z'] };
 
   def __init__(self, cfgid, cfgname, cfgspm, cfgmint ):
     self.name = cfgname
@@ -889,12 +891,21 @@ class MiniBeeConfig(object):
 	      #print( self.dataInSizes )
 	  elif libv > 2:
 	    #print "libv 3, checking twis"
-	    for twiid, twidev in self.twis.items():
+	    sortedTwis = [ (k,self.twis[k]) for k in sorted(self.twis.keys())]
+	    #print sortedTwis
+	    for twiid, twidev in sortedTwis:
+	      #print twiid, twidev
 	      self.dataInSizes.extend( MiniBeeConfig.miniBeeTwiDataSize[ twidev ] )
 	      self.dataScales.extend( MiniBeeConfig.miniBeeTwiDataScale[ twidev ] )
 	      self.dataOffsets.extend( MiniBeeConfig.miniBeeTwiDataOffset[ twidev ] )
 	      self.logDataFormat.append( len( MiniBeeConfig.miniBeeTwiDataOffset[ twidev ] ) / len( MiniBeeConfig.miniBeeTwiDataLabels[ twidev ] ) )
-	      self.logDataLabels.extend( MiniBeeConfig.miniBeeTwiDataLabels[ twidev ] )
+	      sortedSlotLabels = [ (k,self.twislotlabels[twiid][k]) for k in sorted(self.twislotlabels[ twiid ].keys())]
+	      for index, twislotlabel in sortedSlotLabels:
+		#print ( "before", index, twislotlabel )
+		if twislotlabel == None: # use the default
+		  twislotlabel = MiniBeeConfig.miniBeeTwiDataLabels[ twidev ][ index ]
+		self.logDataLabels.append( twislotlabel )
+		#print ("after", index, twislotlabel )
 	      #print self.dataInSizes
 
     for pinname in digpins + anapins: # iterate over all pins
@@ -1133,9 +1144,11 @@ class MiniBee(object):
       print( "data length not ok", len(self.data), len( self.config.dataInSizes ), len( self.customDataInSizes ) )
     if verbose:
       print( "data parsed and scaled", self.nodeid, self.data ) 
-  
+    
   def getLabels( self ):
-    labels = self.config.logDataLabels
+    labels = self.customLabels
+    labels.extend( self.config.logDataLabels )
+    print( labels )
     #labels = self.config.pinlabels
     #labels.extend( self.config.twilabels )
     return labels

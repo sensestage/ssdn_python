@@ -97,19 +97,8 @@ class SWPydonHive( object ):
   def sendBeeLabels( self, mybee ):
     if mybee.cid > 0:
       count = 0
-      for pinname, pinlabel in mybee.config.pinlabels.items():
-	print( "sending label", pinname, pinlabel, mybee.name )
-	if pinlabel == None:
-	  pinlabel = count
-	self.datanetwork.osc.labelSlot( mybee.nodeid, count, mybee.name + "_" + str( pinlabel ) )
-	count = count + 1
-      for twi, twiname in mybee.config.twislotlabels.items():
-	for twislot, twislotlabel in twiname.items():
-	  if twislotlabel == None:
-	    twislotlabel = count
-	  print( "sending label", mybee.name, twi, mybee.config.twilabels[ twi ], twislot, twislotlabel )
-	  self.datanetwork.osc.labelSlot( mybee.nodeid, count, mybee.name + "_" + mybee.config.twilabels[ twi ] + "_" + str( twislotlabel ) )
-	  count = count + 1
+      mylabels = mybee.getLabels()
+      [ self.datanetwork.osc.labelSlot( mybee.nodeid, index, mybee.name + "_" + str( item )) for index, item in enumerate(mylabels)]
 
   def minibeeDataToDataNode( self, data, nid ):
     self.datanetwork.sendData( nid, data )
