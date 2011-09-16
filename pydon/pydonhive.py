@@ -7,7 +7,8 @@ import datetime
 
 #print time
 
-from pydon.minibeexml import minibeexml
+#from pydon 
+import minibeexml
 
 from collections import deque
 
@@ -503,6 +504,7 @@ class MiniHive(object):
     for tw in range(numberTWIs):
       newconfig.setTwiConfig( config[ pinid ], config[ pinid+1 ] )
       newconfig.setTwiLabel( config[ pinid ], config[ pinid+2 ] )
+      #TODO: how to make labels for this?
       pinid = pinid + 3
     # update any minibees which should have this config (only if their config number was updated recently
     for beeid, bee in self.bees.items():
@@ -548,9 +550,9 @@ class MiniHive(object):
       minibee.waiting = 0
     else: # this could be different behaviour! e.g. wait for a new configuration to come in
       print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
-      filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M", time.localtime()) + ".xml"
+      filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
       self.write_to_file( filename )
-      print( "configuration saved to" + filename + ". Please adapt (at least define a config id other than -1 or the node), save to a new name," )
+      print( "configuration saved to" + filename + ". Please adapt (at least define a config id other than -1 for the node), save to a new name," )
       print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
       print( "Check documentation for details." )
       #sys.exit()
@@ -626,30 +628,31 @@ class MiniHive(object):
   def load_from_file( self, filename ):
     cfgfile = minibeexml.HiveConfigFile()
     hiveconf = cfgfile.read_file( filename )
-    #print hiveconf
-    #print hiveconf[ 'configs' ]
-    self.name = hiveconf[ 'name' ]
-    for cid, config in hiveconf[ 'configs' ].items():
-      #print cid, config
-      self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
-      #print config[ 'pins' ]
-      self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
-      self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
-      self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
-      self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
-      self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
-      #print self.configs[ int( cid ) ]
-    for ser, bee in hiveconf[ 'bees' ].items():
-      #print bee
-      self.mapBeeToSerial[ ser ] = bee[ 'mid' ]
-      self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
-      self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
-      #print bee[ 'configid' ]
-      #thisconf = self.configs[ bee[ 'configid' ] ]
-      if bee[ 'configid' ] > 0:
-	self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
-      #if bee[ 'customdata' ]:
-	#self.bees[ bee[ 'mid' ] ].set_custom( bee[ 'customdata' ] )
+    if hiveconf != None :
+      #print hiveconf
+      #print hiveconf[ 'configs' ]
+      self.name = hiveconf[ 'name' ]
+      for cid, config in hiveconf[ 'configs' ].items():
+	#print cid, config
+	self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
+	#print config[ 'pins' ]
+	self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
+	self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
+	self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
+	self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
+	self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
+	#print self.configs[ int( cid ) ]
+      for ser, bee in hiveconf[ 'bees' ].items():
+	#print bee
+	self.mapBeeToSerial[ ser ] = bee[ 'mid' ]
+	self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
+	self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
+	#print bee[ 'configid' ]
+	#thisconf = self.configs[ bee[ 'configid' ] ]
+	if bee[ 'configid' ] > 0:
+	  self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
+	if 'customdata' in bee:
+	  self.bees[ bee[ 'mid' ] ].set_custom( bee[ 'customdata' ] )
 
   def write_to_file( self, filename ):
     cfgfile = minibeexml.HiveConfigFile()
@@ -902,13 +905,16 @@ class MiniBeeConfig(object):
 	      self.dataScales.extend( MiniBeeConfig.miniBeeTwiDataScale[ twidev ] )
 	      self.dataOffsets.extend( MiniBeeConfig.miniBeeTwiDataOffset[ twidev ] )
 	      self.logDataFormat.append( len( MiniBeeConfig.miniBeeTwiDataOffset[ twidev ] ) / len( MiniBeeConfig.miniBeeTwiDataLabels[ twidev ] ) )
-	      sortedSlotLabels = [ (k,self.twislotlabels[twiid][k]) for k in sorted(self.twislotlabels[ twiid ].keys())]
-	      for index, twislotlabel in sortedSlotLabels:
-		#print ( "before", index, twislotlabel )
-		if twislotlabel == None: # use the default
-		  twislotlabel = MiniBeeConfig.miniBeeTwiDataLabels[ twidev ][ index ]
-		self.logDataLabels.append( twislotlabel )
+	      if twiid in self.twislotlabels:
+		sortedSlotLabels = [ (k,self.twislotlabels[twiid][k]) for k in sorted(self.twislotlabels[ twiid ].keys())]
+		for index, twislotlabel in sortedSlotLabels:
+		  #print ( "before", index, twislotlabel )
+		  if twislotlabel == None: # use the default
+		    twislotlabel = MiniBeeConfig.miniBeeTwiDataLabels[ twidev ][ index ]
+		  self.logDataLabels.append( twislotlabel )
 		#print ("after", index, twislotlabel )
+	      else:
+		self.logDataLabels.extend( MiniBeeConfig.miniBeeTwiDataLabels[ twidev ] )
 	      #print self.dataInSizes
 
     for pinname in digpins + anapins: # iterate over all pins
