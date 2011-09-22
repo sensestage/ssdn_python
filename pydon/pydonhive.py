@@ -967,8 +967,8 @@ class MiniBee(object):
     
   
   def incMsgID( self ):
-    self.msgId = self.msgId + 1
-    self.msgId = self.msgId%255
+    self.msgID = self.msgID + 1
+    self.msgID = self.msgID%255
   
   def set_lib_revision( self, libv, revision, caps ):
     self.libversion = libv
@@ -1062,14 +1062,14 @@ class MiniBee(object):
   def set_first_action( self, action ):
     self.firstDataAction = action
 
-  def create_msg( self, data ):
+  def create_msg( self, data, serPort ):
     self.incMsgID()
     msg = bytearray(b" O")
     msg[0] = chr( 92 )
-    msg = self.appendToMsg( msg, self.nodeid )
-    msg = self.appendToMsg( msg, self.msgID )
+    msg = serPort.appendToMsg( msg, self.nodeid )
+    msg = serPort.appendToMsg( msg, self.msgID )
     for dat in data:
-      msg = self.appendToMsg( msg, dat )
+      msg = serPort.appendToMsg( msg, dat )
     msg += b"\n"
     return msg
 
@@ -1084,7 +1084,7 @@ class MiniBee(object):
     if len( data ) == sum( self.config.dataOutSizes ) :
       self.outdata = data
       self.outrepeated = 0
-      self.outMessage = self.create_msg( self.outdata )
+      self.outMessage = self.create_msg( self.outdata, serPort )
       serPort.send_msg( self.outMessage )
       #serPort.send_data_inclid( self.nodeid, self.msgID, data )
 
@@ -1098,7 +1098,7 @@ class MiniBee(object):
   def send_custom( self, serPort, data ):
     self.customdata = data
     self.customrepeated = 0
-    self.customMessage = self.create_msg( self.customdata )
+    self.customMessage = self.create_msg( self.customdata, serPort )
     serPort.send_msg( self.customMessage )
     #if len( data ) == sum( self.config.customOutSizes ) :
     #serPort.send_custom( self.nodeid, data )
