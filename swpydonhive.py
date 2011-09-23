@@ -126,6 +126,8 @@ if __name__ == "__main__":
 		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
   parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=20,
 		  help='the number of minibees in the network [default:%i]'% 20)
+  parser.add_option('-o','--minibee_offset', type=int, action='store',dest="mboffset",default=1,
+		  help='the offset of the number range for the minibees in the network [default:%i]'% 1)
   parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
 		  help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
   parser.add_option('-v','--verbose', action='store',dest="verbose",default=False,
@@ -146,6 +148,6 @@ if __name__ == "__main__":
   print( options )
   print( "--------------------------------------------------------------------------------------" )
   
-  swhive = SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose )
+  swhive = SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose )
   
   swhive.start()
