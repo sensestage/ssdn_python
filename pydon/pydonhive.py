@@ -559,7 +559,7 @@ class MiniHive(object):
       print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
       print( "Check documentation for details." )
       #sys.exit()
-    if self.newBeeAction and firsttimenewbee:
+    if self.newBeeAction: # and firsttimenewbee:
       self.newBeeAction( minibee )
     
   def set_newBeeAction( self, action ):
