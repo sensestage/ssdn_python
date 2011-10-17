@@ -101,6 +101,7 @@ class SWPydonHive( object ):
       [ self.datanetwork.osc.labelSlot( mybee.nodeid, index, mybee.name + "_" + str( item )) for index, item in enumerate(mylabels)]
 
   def minibeeDataToDataNode( self, data, nid ):
+    #print( "sending data to network", nid, data )
     self.datanetwork.sendData( nid, data )
 
 # data node to minibee
