@@ -1,0 +1,22 @@
+<xml><hive name="polytope_audio">
+   <minibee id="2" revision="D" serial="0013A200406A69AB" libversion="3" caps="7" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <configuration id="1" name="no" message_interval="50" samples_per_message="1">
+   </configuration>
+
+   <configuration id="2" name="accelero" message_interval="50" samples_per_message="1">
+    <pin config="TWIData" id="A4" />
+    <pin config="TWIClock" id="A5" />
+    <twi id="1" device="ADXL345" name="accelero">
+      <twislot id="0" name="x" />
+      <twislot id="1" name="y" />
+      <twislot id="2" name="z" />
+    </twi>
+  </configuration>
+
+</hive></xml>
