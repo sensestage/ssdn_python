@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import serial
-#import time
+import time
 #import sys
 import os
 #import datetime
@@ -73,7 +73,7 @@ class HiveSerialAPI(object):
   def __init__(self, serial_port, baudrate = 19200 ):
     #self.init_with_serial( mid, serial, libv, revision, caps)
     try:
-      self.serial = serial.Serial( serial_port, baudrate, timeout=0, rtscts=1)  # open first serial port
+      self.serial = serial.Serial( serial_port, baudrate )  # open first serial port
       self.serialOpened = True
     except:
       self.serialOpened = False
@@ -111,10 +111,17 @@ class HiveSerialAPI(object):
 
   def rfdata_handler(self, name, packet):
     print "RFData Received: ", packet
-    if packet['rf_data'][0] == 's':
-      self.parse_serial( packet[ 'rf_data' ][2:10] ) # optional more arguments
-    elif packet['rf_data'][0] == 'd' : # minibee sending data
+    if packet['rf_data'][0] == 'd' : # minibee sending data
       self.recv_data( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )
+    elif packet['rf_data'][0] == 's':
+      self.parse_serial( packet[ 'rf_data' ][2:10], packet[ 'rf_data' ][10], packet[ 'rf_data' ][11], packet[ 'rf_data' ][12] ) # optional more arguments
+      #self.send_id( packet[ 'rf_data' ][2:10], 2, 1 )
+    elif packet['rf_data'][0] == 'w':
+      print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
+      self.hive.wait_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3]) )
+      #self.parse_serial( packet[ 'rf_data' ][2:10] ) # optional more arguments
+    elif packet['rf_data'][0] == 'c': # configuration confirmation
+      self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][2] ), [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
     self.log_data( packet )
     
   def set_verbose( self, onoff ):
@@ -150,14 +157,45 @@ class HiveSerialAPI(object):
     if self.verbose:
       print( "sending bee id", ser, nodeid, configid )
     self.assign_remote_my( ser, nodeid )
+    time.sleep(.02)
+
+    datalist = []
+    datalist.append( HexToByte( ser ) )
+    #datalist.append( ser )
+    datalist.append( chr( nodeid ) )
+    datalist.append( chr( configid ) )
+    self.send_msg_inc( nodeid, 'I', datalist )
+    
+    #datalist = [ 'I' ]
+    ##counter = counter + 1;
+    #self.incMsgID()
+    #datalist.append( chr( self.hiveMsgId ) )
+    #datalist.append( ser )
+    #datalist.append( chr( nodeid ) )
+    #datalist.append( chr(configid) )
+    #data = ''.join( datalist )
+    #hrm = struct.pack('>H', nodeid)
+    #print( len(ser), datalist, data, hex(nodeid), hrm )
+    #self.xbee.send('tx', 
+          ##frame_id='B',
+          #dest_addr=hrm,
+          ###dest_addr=destaddr,
+          ####dest_addr='\x00\x01',
+          #options='\x02',
+          ####command='MY',
+          #data=data
+          #)
+
 
   def send_config( self, nodeid, configuration ):
     if self.verbose:
       print( "sending configuration", configuration )
-    self.send_msg_inc( nodeid, 'C', configuration )
+    config = [ chr(x) for x in configuration ]
+    self.send_msg_inc( nodeid, 'C', config )
 
   def assign_remote_my( self, serial, rmmy ):
     rfser = HexToByte( serial )
+    #rfser = serial
     destaddr = ''.join( rfser )
     hrm = struct.pack('>H', rmmy)
     self.xbee.send('remote_at', 
@@ -191,22 +229,24 @@ class HiveSerialAPI(object):
           data=data
           )
     if self.verbose:
-      print( "sending message to minibee", rmmy, data )
+      print( "sending message to minibee", rmmy, hrm, data )
     
   def send_msg_inc( self, rmmy, msgtype, datalistin ):
     self.incMsgID()
     datalist = [ msgtype ]
-    datalist.append( chr( self.hiveMsgId) )
+    datalist.append( chr( self.hiveMsgId ) )
     datalist.extend( datalistin )
+    print datalist, datalistin
     data = ''.join( datalist )
     hrm = struct.pack('>H', rmmy)
     #print( hrm, datalist, data )
     self.xbee.send('tx',
           dest_addr=hrm,
+          options='\x02',
           data=data
           )
     if self.verbose:
-      print( "sending message to minibee", rmmy, data )
+      print( "sending message to minibee", rmmy, hrm, data )
 
   def send_msg64( self, ser, msgtype, datalistin ):
     self.incMsgID()
@@ -235,16 +275,12 @@ class HiveSerialAPI(object):
       print( "sending bee loop", mid, loop )
     self.send_msg_inc( mid, 'L', [ chr(loop) ] )
 
-  def parse_serial( self, rfser ): # later also libv, rev, caps
+  def parse_serial( self, rfser, libv, rev, caps ): # later also libv, rev, caps
     sser = ByteToHex( rfser )
-    libv = 4
-    rev = 'D'
-    caps = 0
-    #print hser
-    print sser
     if self.verbose:
-      print( sser )
-    self.hive.new_bee_no_config( sser )
+      print( sser, libv, rev, caps )
+    #self.hive.new_bee_no_config( sser )
+    self.hive.new_bee( sser, libv, rev, caps )
 
   #def wait_config( self ):
     #if self.verbose:

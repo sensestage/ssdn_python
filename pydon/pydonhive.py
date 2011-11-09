@@ -98,7 +98,7 @@ class MiniHive(object):
 	  bee.waiting = bee.waiting + 1
 	  if bee.waiting > 1000:
 	    self.wait_config( beeid, bee.cid )
-	    self.serial.send_me( bee.serial, 1 )
+	    #self.serial.send_me( bee.serial, 1 )
 	else:
 	  bee.repeat_output( self.serial, self.redundancy )
 	  bee.repeat_custom( self.serial, self.redundancy )
@@ -106,7 +106,7 @@ class MiniHive(object):
 	    bee.count = bee.count + 1
 	    if bee.count > 5000:
 	      bee.count = 0
-	      self.serial.send_me( bee.serial, 0 )
+	      #self.serial.send_me( bee.serial, 0 )
       time.sleep(0.005)
 
   def exit( self ):
@@ -252,7 +252,7 @@ class MiniHive(object):
     #print minibee
     if minibee.cid > 0:
       self.serial.send_id( serial, minibee.nodeid, minibee.cid )
-      minibee.set_status( 'waiting' )
+      #minibee.set_status( 'waiting' )
       minibee.waiting = 0
     elif firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
       print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
@@ -301,7 +301,7 @@ class MiniHive(object):
     if beeid in self.bees:
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
-	self.serial.send_me( self.bees[ beeid ].serial, 1 )
+	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
@@ -323,7 +323,7 @@ class MiniHive(object):
 	print( "minibee", beeid, "is not configured yet" )
       else:
 	print( "minibee %i is configured"%beeid )
-	self.serial.send_me( self.bees[beeid].serial, 0 )
+	#self.serial.send_me( self.bees[beeid].serial, 0 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -416,6 +416,7 @@ class MiniBeeConfig(object):
     self.dataOutSizes = []
     self.logDataFormat = []
     self.logDataLabels = []
+    self.digitalIns = 0
 
   #def getConfigForFile( self ):
     #fileconf = {}
@@ -537,6 +538,7 @@ class MiniBeeConfig(object):
 #MiniBeeConfig
   def check_config( self, libv, rev ):
     #print "-----CHECKING CONFIG------"
+    self.digitalIns = 0
     self.dataInSizes = []
     self.dataScales = []
     self.dataOffsets = []
@@ -551,6 +553,19 @@ class MiniBeeConfig(object):
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
     #print( digpins, anapins )
+
+    if libv >= 4:
+      for pinname in digpins + anapins: # iterate over all pins
+	if pinname in self.pins:
+	  if self.pins[ pinname ] == 'DigitalIn':
+	    self.digitalIns = self.digitalIns + 1
+	    #self.dataInSizes.append( 1 )
+	    self.dataScales.append( 1 )
+	    self.dataOffsets.append( 0 )
+	    self.logDataFormat.append( 1 )
+	    self.logDataLabels.append( self.pinlabels[ pinname ] )
+	  elif self.pins[ pinname ] == 'DigitalOut':
+	    self.dataOutSizes.append( 1 )
 
     for pinname in anapins: # iterate over analog pins
       if pinname in self.pins:
@@ -573,16 +588,17 @@ class MiniBeeConfig(object):
 	if self.pins[ pinname ] == 'AnalogOut':
 	  self.dataOutSizes.append( 1 )
 
-    for pinname in digpins + anapins: # iterate over all pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'DigitalIn':
-	  self.dataInSizes.append( 1 )
-	  self.dataScales.append( 1 )
-	  self.dataOffsets.append( 0 )
-	  self.logDataFormat.append( 1 )
-	  self.logDataLabels.append( self.pinlabels[ pinname ] )
-	elif self.pins[ pinname ] == 'DigitalOut':
-	  self.dataOutSizes.append( 1 )
+    if libv <= 3:
+      for pinname in digpins + anapins: # iterate over all pins
+	if pinname in self.pins:
+	  if self.pins[ pinname ] == 'DigitalIn':
+	    self.dataInSizes.append( 1 )
+	    self.dataScales.append( 1 )
+	    self.dataOffsets.append( 0 )
+	    self.logDataFormat.append( 1 )
+	    self.logDataLabels.append( self.pinlabels[ pinname ] )
+	  elif self.pins[ pinname ] == 'DigitalOut':
+	    self.dataOutSizes.append( 1 )
 
     for pinname in anapins: # iterate over analog pins
       if pinname in self.pins:
@@ -674,8 +690,7 @@ class MiniBee(object):
     self.customLabels = []
     self.customDataScales = []
     self.customDataOffsets = []
-    
-  
+      
   def incMsgID( self ):
     self.msgID = self.msgID + 1
     self.msgID = self.msgID%255
@@ -830,9 +845,26 @@ class MiniBee(object):
     for sz in self.customDataInSizes:
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
+
+    if self.config.digitalIns > 0:
+      # digital data as bits
+      nodigbytes = self.config.digitalIns / 8 + 1
+      digstoparse = self.config.digitalIns
+      digitalData = data[idx : idx + nodigbytes]
+      idx += nodigbytes
+      for byt in digitalData:
+	for j in range(0, min(digstoparse,8) ):
+	  parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
+	digstoparse -= 8
+    #else: 
+      # digital data as bytes
+
     for sz in self.config.dataInSizes:
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
+
+    print parsedData
+
     for index, dat in enumerate( parsedData ):
       if len( dat ) == 3 :
 	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
@@ -845,16 +877,16 @@ class MiniBee(object):
       if self.firstDataAction != None:
 	self.firstDataAction( self.nodeid, self.data )
     self.set_status( 'receiving' )
-    if len(self.data) == ( len( self.config.dataInSizes ) + len( self.customDataInSizes ) ):
+    if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
       if self.dataAction != None :
 	self.dataAction( self.data, self.nodeid )
       if self.logAction != None :
 	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
       if verbose:
-	print( "data length ok", len(self.data), len( self.config.dataInSizes ), len( self.customDataInSizes ) )
+	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
     #print self.nodeid, data, parsedData, scaledData
     else:
-      print( "data length not ok", len(self.data), len( self.config.dataInSizes ), len( self.customDataInSizes ) )
+      print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
     if verbose:
       print( "data parsed and scaled", self.nodeid, self.data ) 
     
@@ -890,6 +922,7 @@ class MiniBee(object):
       self.config.check_config( self.libversion, self.revision )
       #print confirmconfig
     #print( "CONFIG INFO", configid, confirmconfig, verbose, len( confirmconfig ) )
+      self.digitalIns = 0
       self.dataScales = []
       self.dataOffsets = []
       if len( confirmconfig ) > 4:
@@ -988,6 +1021,7 @@ if __name__ == "__main__":
 
   hive = MiniHive( options.serial, 57600, options.apimode )
   hive.set_id_range( 2, options.minibees + 1 )
+  hive.set_verbose( options.verbose )
   
   hive.load_from_file( options.config )
   #hive.bees[ 1 ].set_action( printDataAction )
@@ -997,12 +1031,10 @@ if __name__ == "__main__":
   #print hive
     
   #hive.write_to_file( "hiveconfig2.xml" )
-  
-  hive.run()
+  try:
+    hive.run()
+  except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
+    hive.exit()
+    print( "Done; goodbye" )    
+    sys.exit()
 
-    #x = ser.readline()
-    #if len( x ) > 0:
-      #print x
-      #hive_parsestring( x )
-
-  hive.exit()
