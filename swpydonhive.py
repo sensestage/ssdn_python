@@ -54,10 +54,13 @@ class SWPydonHive( object ):
 
 # mapping support
   def mapMiniBee( self, nodeid, mid ):
-    self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nodeid, mid ) )
+    self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nid, mid ) )
   
   def setMapAction( self, nodeid, mid ):
-    self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
+    if nodeid not in self.datanetwork.nodes:
+      self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
+    else:
+      self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
 
   def unmapMiniBee( self, nodeid, mid ):
     self.datanetwork.osc.unsubscribeNode( nodeid )
