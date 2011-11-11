@@ -908,7 +908,7 @@ class MiniBee(object):
 
   def getInputSize( self ):
     if self.cid > 0:
-      return len( self.config.dataInSizes )
+      return len( self.config.dataScales )
     return 0
 
   def getOutputSize( self ):
