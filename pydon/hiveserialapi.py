@@ -121,7 +121,7 @@ class HiveSerialAPI(object):
       self.hive.wait_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3]) )
       #self.parse_serial( packet[ 'rf_data' ][2:10] ) # optional more arguments
     elif packet['rf_data'][0] == 'c': # configuration confirmation
-      self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][2] ), [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
+      self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
     self.log_data( packet )
     
   def set_verbose( self, onoff ):
