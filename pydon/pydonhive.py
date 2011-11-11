@@ -98,7 +98,7 @@ class MiniHive(object):
 	  bee.waiting = bee.waiting + 1
 	  if bee.waiting > 1000:
 	    self.wait_config( beeid, bee.cid )
-	    #self.serial.send_me( bee.serial, 1 )
+	    self.serial.send_me( bee.serial, 1 )
 	else:
 	  bee.repeat_output( self.serial, self.redundancy )
 	  bee.repeat_custom( self.serial, self.redundancy )
@@ -106,7 +106,7 @@ class MiniHive(object):
 	    bee.count = bee.count + 1
 	    if bee.count > 5000:
 	      bee.count = 0
-	      #self.serial.send_me( bee.serial, 0 )
+	      self.serial.send_me( bee.serial, 0 )
       time.sleep(0.005)
 
   def exit( self ):
@@ -301,7 +301,7 @@ class MiniHive(object):
     if beeid in self.bees:
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
-	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
+	self.serial.send_me( self.bees[ beeid ].serial, 1 )
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
@@ -323,7 +323,7 @@ class MiniHive(object):
 	print( "minibee", beeid, "is not configured yet" )
       else:
 	print( "minibee %i is configured"%beeid )
-	#self.serial.send_me( self.bees[beeid].serial, 0 )
+	self.serial.send_me( self.bees[beeid].serial, 0 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
