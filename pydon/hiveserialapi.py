@@ -114,7 +114,7 @@ class HiveSerialAPI(object):
     if packet['rf_data'][0] == 'd' : # minibee sending data
       self.recv_data( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )
     elif packet['rf_data'][0] == 's':
-      self.parse_serial( packet[ 'rf_data' ][2:10], packet[ 'rf_data' ][10], packet[ 'rf_data' ][11], packet[ 'rf_data' ][12] ) # optional more arguments
+      self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ) ) # optional more arguments
       #self.send_id( packet[ 'rf_data' ][2:10], 2, 1 )
     elif packet['rf_data'][0] == 'w':
       print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
@@ -329,9 +329,18 @@ class HiveSerialAPI(object):
     self.logAction = action
 
   def log_data( self, packet ):
+    nid = int( ByteToHex( packet[ 'source_addr' ] ), 16 )
+    rssi = int( ByteToHex( packet[ 'rssi' ] ), 16 )
+    #msgid = int( ByteToHex( packet[ 'rfdata' ][1] ), 16 )    
+    data = []
+    data.append( nid )
+    data.append( rssi )
+    data.append( packet[ 'rf_data' ][0] )
+    for x in packet[ 'rf_data' ][1:]:
+      data.append( int( ByteToHex( x ), 16 ) )    
     #print "receiving data"
     if self.logAction != None :
-      self.logAction( packet )
+      self.logAction( data )
     #else:
       #print self.incMsg
     #self.hive.new_data( self.incMsg[1], self.incMsg[2], self.incMsg[3:] )

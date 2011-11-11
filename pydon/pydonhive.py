@@ -863,7 +863,7 @@ class MiniBee(object):
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
 
-    print parsedData
+    #print parsedData
 
     for index, dat in enumerate( parsedData ):
       if len( dat ) == 3 :
