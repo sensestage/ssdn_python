@@ -233,7 +233,7 @@ class MiniHive(object):
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )
 
-  def new_bee( self, serial, libv, rev, caps ):
+  def new_bee( self, serial, libv, rev, caps, remConf = True ):
     firsttimenewbee = False
     # see if we already have this serial number in our config or minibee set, if so use that minibee
     #self.minibeeCount += 1
@@ -250,24 +250,28 @@ class MiniHive(object):
       firsttimenewbee = True
      
     #print minibee
-    if minibee.cid > 0:
-      self.serial.send_id( serial, minibee.nodeid, minibee.cid )
-      #minibee.set_status( 'waiting' )
-      minibee.waiting = 0
-    elif firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
-      print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
-      filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
-      self.write_to_file( filename )
-      print( "configuration saved to " + filename + ". Please adapt (at least define a config id other than -1 for the node), save to a new name," )
-      print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
-      print( "Check documentation for details." )
+    if remConf == 1:
+      if minibee.cid > 0:
+	self.serial.send_id( serial, minibee.nodeid, minibee.cid )
+	#minibee.set_status( 'waiting' )
+	minibee.waiting = 0
+      elif firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
+	filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
+	self.write_to_file( filename )
+	print( "configuration saved to " + filename + ". Please adapt (at least define a config id other than -1 for the node), save to a new name," )
+	print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
+	print( "Check documentation for details." )
       #sys.exit()
+    else:
+      self.serial.send_id( serial, minibee.nodeid )
+      if firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
       self.newBeeAction( minibee )
     
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
-  
   
   def new_data( self, beeid, msgid, data, rssi = 0 ):
     if beeid in self.bees:
