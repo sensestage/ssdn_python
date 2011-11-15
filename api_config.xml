@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<xml>
+  <hive name="myprojectname">
+    <minibee caps="7" configuration="1" id="3" libversion="4" name="minibee2" revision="D" serial="0013A200406A69AB">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <configuration id="1" message_interval="50" name="accelero" samples_per_message="1">
+      <pin config="AnalogIn" id="A0" name="ldr"/>
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <pin config="AnalogOut" id="D9" name="led"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="2" message_interval="50" name="demo" samples_per_message="1">
+      <pin config="AnalogIn10bit" id="A0" name="ldr"/>
+      <pin config="AnalogIn10bit" id="A2" name="foam"/>
+      <pin config="AnalogIn10bit" id="A3" name="paper"/>
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <pin config="AnalogOut" id="D9" name="led"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="3" message_interval="50" name="accelero" samples_per_message="1">
+      <pin config="DigitalIn" id="D3" name="din"/>
+      <pin config="DigitalIn" id="D5" name="din2"/>
+      <pin config="DigitalIn" id="D6" name="din3"/>
+      <pin config="DigitalOut" id="D9" name="led"/>      
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="4" message_interval="50" name="accelero" samples_per_message="1">
+      <pin config="AnalogOut" id="D9" name="led"/>      
+    </configuration>
+  </hive>
+</xml>
