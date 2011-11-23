@@ -306,6 +306,7 @@ class SWMiniHiveOSC( object ):
       print( "Waiting for Server-thread to finish" )
       self.osc.thread.join() ##!!!
       print( "Done; goodbye" )
+      self.hive.exit()
       sys.exit()
 
   
