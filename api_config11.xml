@@ -32,6 +32,9 @@
     <minibee caps="7" configuration="1" id="8" libversion="4" name="minibee8" revision="D" serial="0013A200404988F6">
       <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
       <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+          <custom>
+	<data id="0" size="2" offset="0" scale="16" name="temperature"/>
+	</custom>
     </minibee>
     <minibee caps="7" configuration="1" id="9" libversion="4" name="minibee9" revision="D" serial="0013A2004049875B">
       <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
