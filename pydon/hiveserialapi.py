@@ -139,10 +139,10 @@ class HiveSerialAPI(object):
     self.hive = hive
     
   def announce( self ):
-    self.send_msg_inc( 255, 'A', [] );
+    self.send_msg_inc( 0xFFFF, 'A', [] );
 
   def quit( self ):
-    self.send_msg_inc( 255, 'Q', [] );
+    self.send_msg_inc( 0xFFFF, 'Q', [] );
     self.xbee.halt()
     self.serial.close()
     
@@ -188,6 +188,32 @@ class HiveSerialAPI(object):
           options='\x02',
           command='MY',
           parameter=hrm
+          )
+
+  def store_remote_at64( self, serial ):
+    rfser = HexToByte( serial )
+    #rfser = serial
+    destaddr = ''.join( rfser )
+    #hrm = struct.pack('>H', rmmy)
+    self.xbee.send('remote_at', 
+          frame_id='A',
+          dest_addr_long=destaddr,
+          options='\x02',
+          command='WR'
+          #parameter=hrm
+          )
+
+  def store_remote_at16( self, nodeid ):
+    #rfser = HexToByte( serial )
+    #rfser = serial
+    #destaddr = ''.join( rfser )
+    hrm = struct.pack('>H', nodeid)
+    self.xbee.send('remote_at', 
+          frame_id='A',
+          dest_addr=hrm,
+          options='\x02',
+          command='WR'
+          #parameter=hrm
           )
 
   #def send_data( self, rmmy, data ):
