@@ -867,57 +867,59 @@ class MiniBee(object):
 
   def parse_data( self, msgid, data, verbose = False ):
     # to do: add msgid check
-    idx = 0
-    parsedData = []
-    scaledData = []
-    for sz in self.customDataInSizes:
-      parsedData.append( data[ idx : idx + sz ] )
-      idx += sz
+    if self.cid > 0:
+      idx = 0
+      parsedData = []
+      scaledData = []
+      for sz in self.customDataInSizes:
+	parsedData.append( data[ idx : idx + sz ] )
+	idx += sz
 
-    if self.config.digitalIns > 0:
-      # digital data as bits
-      nodigbytes = self.config.digitalIns / 8 + 1
-      digstoparse = self.config.digitalIns
-      digitalData = data[idx : idx + nodigbytes]
-      idx += nodigbytes
-      for byt in digitalData:
-	for j in range(0, min(digstoparse,8) ):
-	  parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
-	digstoparse -= 8
-    #else: 
-      # digital data as bytes
+      if self.config.digitalIns > 0:
+	# digital data as bits
+	nodigbytes = self.config.digitalIns / 8 + 1
+	digstoparse = self.config.digitalIns
+	digitalData = data[idx : idx + nodigbytes]
+	idx += nodigbytes
+	for byt in digitalData:
+	  for j in range(0, min(digstoparse,8) ):
+	    parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
+	  digstoparse -= 8
+      #else: 
+	# digital data as bytes
 
-    for sz in self.config.dataInSizes:
-      parsedData.append( data[ idx : idx + sz ] )
-      idx += sz
+      for sz in self.config.dataInSizes:
+	parsedData.append( data[ idx : idx + sz ] )
+	idx += sz
+      #print parsedData, self.dataScales, self.customDataScales
 
-    #print parsedData, self.dataScales, self.customDataScales
-
-    for index, dat in enumerate( parsedData ):
-      #print index, dat
-      if len( dat ) == 3 :
-	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-      if len( dat ) == 2 :
-	scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-      if len( dat ) == 1 :
-	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-    self.data = scaledData
-    if self.status != 'receiving':
-      if self.firstDataAction != None:
-	self.firstDataAction( self.nodeid, self.data )
-    self.set_status( 'receiving' )
-    if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
-      if self.dataAction != None :
-	self.dataAction( self.data, self.nodeid )
-      if self.logAction != None :
-	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
+      for index, dat in enumerate( parsedData ):
+	#print index, dat
+	if len( dat ) == 3 :
+	  scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+	if len( dat ) == 2 :
+	  scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+	if len( dat ) == 1 :
+	  scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+      self.data = scaledData
+      if self.status != 'receiving':
+	if self.firstDataAction != None:
+	  self.firstDataAction( self.nodeid, self.data )
+      self.set_status( 'receiving' )
+      if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
+	if self.dataAction != None :
+	  self.dataAction( self.data, self.nodeid )
+	if self.logAction != None :
+	  self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
+	if verbose:
+	  print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+      #print self.nodeid, data, parsedData, scaledData
+      else:
+	print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
       if verbose:
-	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
-    #print self.nodeid, data, parsedData, scaledData
-    else:
-      print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
-    if verbose:
-      print( "data parsed and scaled", self.nodeid, self.data ) 
+	print( "data parsed and scaled", self.nodeid, self.data )
+    elif verbose:
+      print( "no config defined for this minibee", self.nodeid, data )
     
   def getLabels( self ):
     labels = self.customLabels
