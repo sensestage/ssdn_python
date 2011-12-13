@@ -189,6 +189,8 @@ class HiveSerialAPI(object):
           command='MY',
           parameter=hrm
           )
+    #FIXME: this should be a setting or a separate osc message or something
+    self.store_remote_at64( serial )
 
   def store_remote_at64( self, serial ):
     rfser = HexToByte( serial )
