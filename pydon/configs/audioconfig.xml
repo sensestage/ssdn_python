@@ -254,13 +254,13 @@
 
    <minibee id="37" revision="B" serial="0013A200402D0C02" libversion="5" caps="0" configuration="2">   </minibee>
    <minibee id="38" revision="B" serial="0013A2004054C2B4" libversion="5" caps="0" configuration="2">   </minibee>
-   <minibee id="39" revision="B" serial="0013A2004048F566" libversion="5" caps="0" configuration="2">   </minibee>
+   <minibee id="39" revision="B" serial="0013A200402CD1FB" libversion="5" caps="0" configuration="2">   </minibee>
    <minibee id="40" revision="B" serial="0013A200406A2440" libversion="5" caps="0" configuration="2">   </minibee>
 
   <configuration id="1" name="no" message_interval="50" samples_per_message="1">
   </configuration>
 
-  <configuration id="2" name="lightsense" message_interval="25" samples_per_message="1">
+  <configuration id="2" name="lightsense" message_interval="50" samples_per_message="1">
     <pin config="AnalogIn10bit" id="A2" name="ldr1"/>
     <pin config="AnalogIn10bit" id="A6" name="ldr2"/>
   </configuration>
