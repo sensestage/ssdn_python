@@ -199,7 +199,23 @@ class MiniHive(object):
 	bee.set_status( 'waiting' )
 	bee.waiting = 0
     return True
+  
+  def store_ids( self ):
+    if self.apiMode:
+      self.serial.store_remote_at16( 0xFFFF )
     
+  def store_minibee_id( self, mid ):
+    if self.apiMode:
+      if mid in self.bees:
+	minibee = self.bees[ mid ]
+	self.serial.store_remote_at64( minibee.serial )
+
+  def announce_minibee_id( self, mid ):
+    if self.apiMode:
+      if mid in self.bees:
+	#minibee = self.bees[ mid ]
+	self.serial.announce( mid )
+
   def set_minibee_config( self, mid, cid ):
     if mid in self.bees: # if the minibee exists
       minibee = self.bees[ mid ]      
@@ -287,6 +303,8 @@ class MiniHive(object):
       self.bees[beeid].parse_data( msgid, data, self.verbose )
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
+      if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
+	self.serial.announce( 0xFFFA )
     if self.verbose:
       print( "received new data", beeid, msgid, data )
     # find minibee, set data to it

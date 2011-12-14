@@ -138,8 +138,8 @@ class HiveSerialAPI(object):
   def set_hive( self, hive ):
     self.hive = hive
     
-  def announce( self ):
-    self.send_msg_inc( 0xFFFF, 'A', [] );
+  def announce( self, nodeid = 0xFFFF ):
+    self.send_msg_inc( nodeid, 'A', [] );
 
   def quit( self ):
     self.send_msg_inc( 0xFFFF, 'Q', [] );
@@ -190,7 +190,7 @@ class HiveSerialAPI(object):
           parameter=hrm
           )
     #FIXME: this should be a setting or a separate osc message or something
-    self.store_remote_at64( serial )
+    #self.store_remote_at64( serial )
 
   def store_remote_at64( self, serial ):
     rfser = HexToByte( serial )
