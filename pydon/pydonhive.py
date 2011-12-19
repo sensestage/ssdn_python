@@ -41,7 +41,8 @@ def find_key(dic, val):
 # beginning of MiniHive:
 
 class MiniHive(object):
-  def __init__(self, serial_port, baudrate = 57600, apiMode = False ):
+  def __init__(self, serial_port, baudrate = 57600, apiMode = False,
+               poll = None ):
     #self.minibeeCount = 0
     self.name = ""
     self.bees = {}
@@ -59,6 +60,7 @@ class MiniHive(object):
     self.verbose = False
     self.redundancy = 1
     self.create_broadcast_bee()
+    self.poll = poll
     
   def set_verbose( self, onoff ):
     self.verbose = onoff
@@ -108,7 +110,10 @@ class MiniHive(object):
 	    if bee.count > 5000:
 	      bee.count = 0
 	      self.serial.send_me( bee.serial, 0 )
-      time.sleep(0.005)
+      if self.poll:
+        self.poll()
+      else:
+        time.sleep(0.005)
 
   def exit( self ):
     self.serial.quit()
@@ -1021,10 +1026,10 @@ class MiniBee(object):
 	print( "ERROR: samples per message NOT correct", confirmconfig[0], self.config.samplesPerMessage )
       if (confirmconfig[1]*256 + confirmconfig[2]) == self.config.messageInterval :
 	if verbose:
-	  print( "message interval correct", confirmconfig[1:2], self.config.messageInterval )
+	  print( "message interval correct", confirmconfig[1:3], self.config.messageInterval )
       else:
 	configres = False
-	print( "ERROR: message interval NOT correct", confirmconfig[1:2], self.config.messageInterval )
+	print( "ERROR: message interval NOT correct", confirmconfig[1:3], self.config.messageInterval )
       if confirmconfig[3] == (sum( self.config.dataInSizes ) + sum( self.customDataInSizes )):
 	if verbose:
 	  print( "data input size correct", confirmconfig[3], self.config.dataInSizes, self.customDataInSizes )
