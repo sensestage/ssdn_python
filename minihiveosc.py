@@ -145,6 +145,9 @@ class MiniHiveOSC(object):
 
   def infoMiniBee( self, serial, mid, insize, outsize ):
     self.sendMessage( "/minibee/info", [ serial, mid, insize, outsize ] )
+    
+  def sendStatusInfo( self, nid, status ):
+    self.sendMessage( "/minibee/status", [ nid, status ] )
 
   def dataMiniBee( self, mid, data ):
     alldata = [ mid ]
@@ -278,6 +281,7 @@ class SWMiniHiveOSC( object ):
   def hookBeeToOSC( self, minibee ):
     self.osc.infoMiniBee( minibee.serial, minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_action( self.minibeeDataToOSC )
+    minibee.set_status_action( self.osc.sendStatusInfo )
     if self.verbose:
       print( "hooking bee to OSC out", minibee,  minibee.getInputSize(),  minibee.getOutputSize() )
 
