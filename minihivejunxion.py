@@ -285,7 +285,7 @@ class MiniHiveOSC(object):
     
 
 
-class SWMiniHiveOSC( object ):
+class SWMiniHiveJunxion( object ):
   def __init__(self, hostip, hostport, myip, myport, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):
     
     self.hive = pydonhive.MiniHive( serialPort, serialRate, apiMode )
@@ -377,6 +377,6 @@ if __name__ == "__main__":
   #print( options.host )
   
   print( "MiniHive-JunXion - communicating via OSC with Junxion and the MiniBee network" )
-  swhive = SWMiniHiveOSC( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode )
+  swhive = SWMiniHiveJunxion( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode )
   print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(options.ip, options.port, options.host, options.hport, options.serial ) )
   swhive.start()
