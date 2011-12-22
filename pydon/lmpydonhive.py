@@ -6,8 +6,8 @@ import optparse_gui
 
 
 import mapper
-from pydon import pydon
-from pydon import pydonhive
+import pydon
+import pydonhive
 
 class LMPydonHive( object ):
   def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):

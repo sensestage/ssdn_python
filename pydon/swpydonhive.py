@@ -9,8 +9,8 @@ import sys
 
 import time
 
-from pydon import pydon
-from pydon import pydonhive
+import pydon
+import pydonhive
 
 class SWPydonHive( object ):
   def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):

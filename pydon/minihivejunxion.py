@@ -11,7 +11,7 @@ import time
 import OSC
 import threading
 
-from pydon import pydonhive
+import pydonhive
 
 class MiniHiveOSC(object):
   #def __init__(self, port, dnosc ):
