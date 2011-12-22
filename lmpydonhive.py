@@ -1,6 +1,9 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import sys, optparse
+import optparse_gui
+
 
 import mapper
 from pydon import pydon
@@ -109,29 +112,34 @@ class LMPydonHive( object ):
 # main program:
 if __name__ == "__main__":
 
-  parser = optparse.OptionParser(description='Create a libmapper client to communicate with the minibee network.')
-  parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
-		  help='the port on which the client will listen [default:%i]'% 57600 )
-  parser.add_option('-i','--ip', type="string", action='store',dest="ip",default="0.0.0.0",
-		  help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
-  parser.add_option('-n','--name', action='store', type="string", dest="name",default="pydonhive",
-		  help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
+  if 1 == len( sys.argv ):
+    option_parser_class = optparse_gui.OptionParser
+  else:
+    option_parser_class = optparse.OptionParser
+
+  parser = option_parser_class(description='Create a libmapper client to communicate with the minibee network.')
+  parser.add_option('-s','--serial', action='store',type="string",dest="serial",default="/dev/ttyUSB0",
+		  help='the serial port [default:%s]'% '/dev/ttyUSB0')
+  parser.add_option('-a','--apimode', action='store_true', dest="apimode",default=False,
+		  help='use API mode for communication with the minibees [default:%s]'% False)
+  parser.add_option('-v','--verbose', action='store_true', dest="verbose",default=False,
+		  help='verbose printing [default:%i]'% False)
   parser.add_option('-c','--config', action='store', type="string", dest="config",default="pydon/configs/hiveconfig.xml",
 		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
+  parser.add_option('-n','--name', action='store', type="string", dest="name",default="pydonhive",
+		  help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
   parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=20,
 		  help='the number of minibees in the network [default:%i]'% 20)
   parser.add_option('-o','--minibee_offset', type=int, action='store',dest="mboffset",default=1,
 		  help='the offset of the number range for the minibees in the network [default:%i]'% 1)
   parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
 		  help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
-  parser.add_option('-v','--verbose', action='store',dest="verbose",default=False,
-		  help='verbose printing [default:%i]'% False)
-  parser.add_option('-s','--serial', action='store',type="string",dest="serial",default="/dev/ttyUSB0",
-		  help='the serial port [default:%s]'% '/dev/ttyUSB0')
   parser.add_option('-b','--baudrate', action='store',type=int,dest="baudrate",default=57600,
 		  help='the serial port [default:%i]'% 57600)
-  parser.add_option('-a','--apimode', action='store', type="string", dest="apimode",default=False,
-		  help='use API mode for communication with the minibees [default:%s]'% False)
+  parser.add_option('-i','--ip', type="string", action='store',dest="ip",default="0.0.0.0",
+		  help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
+  parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
+		  help='the port on which the client will listen [default:%i]'% 57600 )
 
   (options,args) = parser.parse_args()
   #print args.accumulate(args.integers)
