@@ -45,6 +45,14 @@ go to the pydon directory
 start:
   $ python metapydonhive.py
   will pop up a gui where you can set the options
+  the default options are saved to a file named "pydondefaults.ini", so that next time you open the program, you'll have the same defaults
+
+From metapydonhive you can choose which kind of client to use:
+  - datanetwork: integrate with the SenseWorld DataNetwork
+  - libmapper: integrate with the libmapper world (from IDMIL)
+  - osc: send osc messages to a certain destination (MiniHiveOSC)
+  - junXion: send osc messages that STEIM's JunXion can deal with
+
 
 start:
   $ python metapydonhive.py -h
