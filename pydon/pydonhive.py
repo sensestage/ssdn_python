@@ -59,7 +59,7 @@ class MiniHive(object):
     self.running = True
     self.newBeeAction = None
     self.verbose = False
-    self.redundancy = 1
+    self.redundancy = 10
     self.create_broadcast_bee()
     self.poll = poll
     
@@ -106,6 +106,8 @@ class MiniHive(object):
 	else:
 	  bee.repeat_output( self.serial, self.redundancy )
 	  bee.repeat_custom( self.serial, self.redundancy )
+	  bee.repeat_run( self.serial, self.redundancy )
+	  bee.repeat_loop( self.serial, self.redundancy )
 	  if bee.status == 'receiving':
 	    bee.count = bee.count + 1
 	    if bee.count > 5000:
@@ -114,7 +116,7 @@ class MiniHive(object):
       if self.poll:
         self.poll()
       else:
-        time.sleep(0.005)
+        time.sleep(0.0025)
 
   def exit( self ):
     self.serial.quit()
@@ -444,7 +446,7 @@ class MiniBeeConfig(object):
   miniBeeTwiDataSize = { 'ADXL345': [2,2,2], 'LIS302DL': [2,2,2], 'BMP085': [2,3,3], 'TMP102': [2], 'HMC58X3': [2,2,2] };
   miniBeeTwiDataScale = { 'ADXL345': [8191,8191,8191], 'LIS302DL': [255,255,255], 'BMP085': [100,100,100], 'TMP102': [16], 'HMC58X3': [2047,2047,2047] }; # 
   miniBeeTwiDataOffset = { 'ADXL345': [0,0,0], 'LIS302DL': [0,0,0], 'BMP085': [27300,0,10000], 'TMP102': [2048], 'HMC58X3': [2048,2048,2048] };
-  miniBeeTwiDataLabels = { 'ADXL345': ['accel_x','accel_y','accel_z'], 'LIS302DL': ['accel_x','accel_y','accel_z'], 'BMP085': ['temperature','altitude','barometric_pressure'], 'TMP102': ['temperature'], 'HMC58X3': ['magn_x','magn_y','magn_z'] };
+  miniBeeTwiDataLabels = { 'ADXL345': ['accel_x','accel_y','accel_z'], 'LIS302DL': ['accel_x','accel_y','accel_z'], 'BMP085': ['temperature','barometric_pressure','altitude'], 'TMP102': ['temperature'], 'HMC58X3': ['magn_x','magn_y','magn_z'] };
 
   def __init__(self, cfgid, cfgname, cfgspm, cfgmint ):
     self.name = cfgname
@@ -769,6 +771,10 @@ class MiniBee(object):
     self.outMessage = None
     self.customrepeated = 0
     self.customMessage = None
+    self.runrepeated = 0
+    self.runMessage = None
+    self.looprepeated = 0
+    self.loopMessage = None
     
   def set_nodeid( self, mid ):
     self.nodeid = mid
@@ -875,11 +881,37 @@ class MiniBee(object):
     #if len( data ) == sum( self.config.customOutSizes ) :
     #serPort.send_custom( self.nodeid, data )
 
-  def set_run( self, serPort, status ):
-    serPort.send_run( self.nodeid, status )
+  def send_run( self, serPort, status ):
+    self.runrepeated = 0
+    self.runMessage = self.create_msg( 'R', [ status ], serPort )
+    serPort.send_msg( self.runMessage, self.nodeid )
+
+  def send_loopback( self, serPort, status ):
+    self.looprepeated = 0
+    self.loopMessage = self.create_msg( 'L', [ status ], serPort )
+    serPort.send_msg( self.loopMessage, self.nodeid )
+
+  def repeat_run( self, serPort, redundancy ):
+    if self.runMessage != None:
+      if self.runrepeated < redundancy :
+	self.runrepeated = self.runrepeated + 1
+	serPort.send_msg( self.runMessage, self.nodeid )
+	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
+
+  def repeat_loop( self, serPort, redundancy ):
+    if self.loopMessage != None:
+      if self.looprepeated < redundancy :
+	self.looprepeated = self.looprepeated + 1
+	serPort.send_msg( self.loopMessage, self.nodeid )
+	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
+
+  #def set_run( self, serPort, status ):
+    # TODO: add redundancy
+    #serPort.send_run( self.nodeid, status )
   
-  def set_loopback( self, serPort, status ):
-    serPort.send_loop( self.nodeid, status )
+  ##def set_loopback( self, serPort, status ):
+    # TODO: add redundancy
+    #serPort.send_loop( self.nodeid, status )
     
   def set_status( self, status, msgid = 0, verbose = False ):
     if self.statusAction != None :
