@@ -87,6 +87,7 @@ class HiveSerialAPI(object):
     
     self.dispatch = Dispatch( self.serial )
     self.register_callbacks()
+    self.verbose = False
     self.xbee = XBee( self.serial, callback=self.dispatch.dispatch, escaped=True)
     
     self.hiveMsgId = 0
