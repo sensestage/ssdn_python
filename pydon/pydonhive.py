@@ -108,11 +108,11 @@ class MiniHive(object):
 	  bee.repeat_custom( self.serial, self.redundancy )
 	  bee.repeat_run( self.serial, self.redundancy )
 	  bee.repeat_loop( self.serial, self.redundancy )
-	  if bee.status == 'receiving':
-	    bee.count = bee.count + 1
-	    if bee.count > 5000:
-	      bee.count = 0
-	      self.serial.send_me( bee.serial, 0 )
+	  #if bee.status == 'receiving':
+	    #bee.count = bee.count + 1
+	    #if bee.count > 5000:
+	      #bee.count = 0
+	      #self.serial.send_me( bee.serial, 0 )
       if self.poll:
         self.poll()
       else:
