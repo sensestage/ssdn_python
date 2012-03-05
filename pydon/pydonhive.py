@@ -763,7 +763,7 @@ class MiniBee(object):
     self.customDataScales = []
     self.customDataOffsets = []
     self.dataQueue = Queue()
-    self.time_since_last_message = 0
+    #self.time_since_last_message = 0
     self.time_since_last_update = 0
       
   def incMsgID( self ):
@@ -966,7 +966,7 @@ class MiniBee(object):
       print( "msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
-      self.time_since_last_message = 0
+      #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
 	if self.config.samplesPerMessage == 1:
 	  self.parse_single_data( data, verbose )
