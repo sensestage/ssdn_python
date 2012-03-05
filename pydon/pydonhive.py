@@ -16,6 +16,26 @@ from hiveserialapi import HiveSerialAPI # API based communication (in developmen
 
 from collections import deque
 
+## {{{ http://code.activestate.com/recipes/210459/ (r2)
+class Queue:
+    """A sample implementation of a First-In-First-Out
+       data structure."""
+    def __init__(self):
+        self.in_stack = []
+        self.out_stack = []
+    def push(self, obj):
+        self.in_stack.append(obj)
+    def pop(self):
+        if not self.out_stack:
+            self.in_stack.reverse()
+            self.out_stack = self.in_stack
+            self.in_stack = []
+        if len( self.out_stack ) > 0:
+	  return self.out_stack.pop()
+	else:
+	  return None
+## end of http://code.activestate.com/recipes/210459/ }}}
+
 ### convenience function
 def find_key(dic, val):
   #
@@ -104,6 +124,7 @@ class MiniHive(object):
 	    self.wait_config( beeid, bee.cid )
 	    self.serial.send_me( bee.serial, 1 )
 	else:
+	  bee.send_data( self.verbose )
 	  bee.repeat_output( self.serial, self.redundancy )
 	  bee.repeat_custom( self.serial, self.redundancy )
 	  bee.repeat_run( self.serial, self.redundancy )
@@ -116,7 +137,7 @@ class MiniHive(object):
       if self.poll:
         self.poll()
       else:
-        time.sleep(0.0025)
+        time.sleep(0.001)
 
   def exit( self ):
     self.serial.quit()
@@ -307,15 +328,15 @@ class MiniHive(object):
     self.newBeeAction = action
   
   def new_data( self, beeid, msgid, data, rssi = 0 ):
+    if self.verbose:
+      print( "received new data", beeid, msgid, data )
+    # find minibee, set data to it
     if beeid in self.bees:
       self.bees[beeid].parse_data( msgid, data, self.verbose )
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
 	self.serial.announce( 0xFFFA )
-    if self.verbose:
-      print( "received new data", beeid, msgid, data )
-    # find minibee, set data to it
 
   def bee_active( self, beeid, msgid ):
     if beeid in self.bees:
@@ -458,6 +479,7 @@ class MiniBeeConfig(object):
     self.configid = cfgid
     self.samplesPerMessage = cfgspm
     self.messageInterval = cfgmint
+    self.sampleInterval = self.messageInterval / self.samplesPerMessage
     self.dataInSizes = []
     self.dataScales = []
     self.dataOffsets = []
@@ -730,7 +752,8 @@ class MiniBeeConfig(object):
 class MiniBee(object):
   def __init__(self, mid, serial ):
     self.init_with_serial( mid, serial )
-    self.msgID = 0;
+    self.msgID = 0
+    self.lastRecvMsgID = 255
     self.name = "";
     self.customDataInSizes = []
     self.dataOffsets = []
@@ -739,6 +762,9 @@ class MiniBee(object):
     self.customLabels = []
     self.customDataScales = []
     self.customDataOffsets = []
+    self.dataQueue = Queue()
+    self.time_since_last_message = 0
+    self.time_since_last_update = 0
       
   def incMsgID( self ):
     self.msgID = self.msgID + 1
@@ -844,6 +870,18 @@ class MiniBee(object):
     self.incMsgID()
     msgdata = serPort.create_beemsg( msgtype, self.msgID, data, self.nodeid )
     return msgdata
+    
+  def send_data( self, verbose = False ):
+    if self.cid > 0:
+      if self.config.samplesPerMessage > 1:
+	self.time_since_last_update = self.time_since_last_update + 1
+	#if time_since_last_message > self.messageInterval:
+	  # timeout on data
+	if self.time_since_last_message >= self.config.sampleInterval: # if time to send new sample:
+	  newdata = self.dataQueue.pop()
+	  if newdata != None:
+	    self.parse_single_data( newdata, verbose )
+	    self.time_since_last_update = 0
 
   def repeat_output( self, serPort, redundancy ):
     if self.outMessage != None:
@@ -924,62 +962,80 @@ class MiniBee(object):
 
   def parse_data( self, msgid, data, verbose = False ):
     # to do: add msgid check
-    if self.cid > 0:
-      idx = 0
-      parsedData = []
-      scaledData = []
-      for sz in self.customDataInSizes:
-	parsedData.append( data[ idx : idx + sz ] )
-	idx += sz
-      #print "index after custom data in size", idx
-      if self.config.digitalIns > 0:
-	# digital data as bits
-	nodigbytes = int(math.ceil(self.config.digitalIns / 8.))
-	digstoparse = self.config.digitalIns
-	digitalData = data[idx : idx + nodigbytes]
-	idx += nodigbytes
-	#print "index after digitalIn", idx, nodigbytes, digitalData
-	for byt in digitalData:
-	  for j in range(0, min(digstoparse,8) ):
-	    parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
-	  digstoparse -= 8
-      #else: 
-	# digital data as bytes
+    if verbose:
+      print( "msg ids", msgid, self.lastRecvMsgID )
+    if msgid != self.lastRecvMsgID:
+      self.lastRecvMsgID = msgid
+      self.time_since_last_message = 0
+      if self.cid > 0: # the minibee has a configuration
+	if self.config.samplesPerMessage == 1:
+	  self.parse_single_data( data, verbose )
+	else: # multiple samples per message:
+	  # TODO: adjust message interval to actually measured interval
+	  # clump data into number of samples
+	  blocks = self.config.samplesPerMessage
+	  blocksize = len( data ) / blocks
+	  for i in range( blocks ):
+	    self.dataQueue.push( data[ i*blocksize: i*blocksize + blocksize ] )
+      elif verbose:
+	print( "no config defined for this minibee", self.nodeid, data )
 
-      for sz in self.config.dataInSizes:
-	parsedData.append( data[ idx : idx + sz ] )
-	idx += sz
-      #print parsedData, self.dataScales, self.customDataScales
+	  
+  def parse_single_data( self, data, verbose = False ):
+    idx = 0
+    parsedData = []
+    scaledData = []
+    for sz in self.customDataInSizes:
+      parsedData.append( data[ idx : idx + sz ] )
+      idx += sz
+  #print "index after custom data in size", idx
+    if self.config.digitalIns > 0:
+      # digital data as bits
+      nodigbytes = int(math.ceil(self.config.digitalIns / 8.))
+      digstoparse = self.config.digitalIns
+      digitalData = data[idx : idx + nodigbytes]
+      idx += nodigbytes
+      #print "index after digitalIn", idx, nodigbytes, digitalData
+      for byt in digitalData:
+	for j in range(0, min(digstoparse,8) ):
+	  parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
+	digstoparse -= 8
+    #else: 
+      # digital data as bytes
 
-      for index, dat in enumerate( parsedData ):
-	#print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
-	if len( dat ) == 3 :
-	  scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-	if len( dat ) == 2 :
-	  scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-	if len( dat ) == 1 :
-	  scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-      self.data = scaledData
+    for sz in self.config.dataInSizes:
+      parsedData.append( data[ idx : idx + sz ] )
+      idx += sz
+    #print parsedData, self.dataScales, self.customDataScales
+
+    for index, dat in enumerate( parsedData ):
+      #print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
+      if len( dat ) == 3 :
+	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+      if len( dat ) == 2 :
+	scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+      if len( dat ) == 1 :
+	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+    self.data = scaledData
+    if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
       if self.status != 'receiving':
-	print ( "receiving data from minibee %i."%(self.nodeid) )
 	if self.firstDataAction != None:
 	  self.firstDataAction( self.nodeid, self.data )
-	#self.serial.send_me( self.bees[beeid].serial, 0 )
+	  #self.serial.send_me( self.bees[beeid].serial, 0 )
+	  print ( "receiving data from minibee %i."%(self.nodeid) )
       self.set_status( 'receiving' )
-      if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
-	if self.dataAction != None :
-	  self.dataAction( self.data, self.nodeid )
-	if self.logAction != None :
-	  self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
-	if verbose:
-	  print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
-      #print self.nodeid, data, parsedData, scaledData
-      else:
-	print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+      if self.dataAction != None :
+	self.dataAction( self.data, self.nodeid )
+	#if verbose:
+	  #print( "did data action", self.dataAction )
+      if self.logAction != None :
+	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
       if verbose:
-	print( "data parsed and scaled", self.nodeid, self.data )
-    elif verbose:
-      print( "no config defined for this minibee", self.nodeid, data )
+	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+    else:
+      print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+    if verbose:
+      print( "data parsed and scaled", self.nodeid, self.data )
     
   def getLabels( self ):
     labels = self.customLabels
@@ -1080,10 +1136,11 @@ class MiniBee(object):
 	configres = False
 	print( "ERROR: data output size NOT correct", confirmconfig[4], self.config.dataOutSizes )
       # to add custom in and out
-      self.set_status( 'configured' )
     else:
       configres = False
       print( "ERROR: wrong config number", configid, self.cid )
+    if configres:
+      self.set_status( 'configured' )
     return configres
       
 
