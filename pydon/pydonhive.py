@@ -877,7 +877,7 @@ class MiniBee(object):
 	self.time_since_last_update = self.time_since_last_update + 1
 	#if time_since_last_message > self.messageInterval:
 	  # timeout on data
-	if self.time_since_last_message >= self.config.sampleInterval: # if time to send new sample:
+	if self.time_since_last_update >= self.config.sampleInterval: # if time to send new sample:
 	  newdata = self.dataQueue.pop()
 	  if newdata != None:
 	    self.parse_single_data( newdata, verbose )
