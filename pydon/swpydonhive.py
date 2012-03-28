@@ -43,7 +43,17 @@ class SWPydonHive( object ):
     self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
     
     self.labelbase = "minibee"
-    
+
+  def exit( self ):
+    self.datanetwork.osc.unregister()
+    print( "\nClosing OSCServer." )
+    self.datanetwork.osc.osc.close()
+    print( "Waiting for Server-thread to finish" )
+    self.datanetwork.osc.thread.join() ##!!!
+    print( "Done; goodbye" )
+    self.hive.exit()
+    sys.exit()
+
   def start( self ):
     try :
       while not self.datanetwork.osc.registered:
@@ -55,14 +65,7 @@ class SWPydonHive( object ):
       #try :
       self.hive.run()
     except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
-      self.datanetwork.osc.unregister()
-      print( "\nClosing OSCServer." )
-      self.datanetwork.osc.osc.close()
-      print( "Waiting for Server-thread to finish" )
-      self.datanetwork.osc.thread.join() ##!!!
-      print( "Done; goodbye" )
-      self.hive.exit()
-      sys.exit()
+      self.exit()
 
 # mapping support
   def mapMiniBee( self, nodeid, mid ):
