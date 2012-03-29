@@ -37,17 +37,13 @@ import os
 class HiveSerial(object):
   def __init__(self, serial_port, baudrate = 19200 ):
     #self.init_with_serial( mid, serial, libv, revision, caps)
-    try:
-      self.serial = serial.Serial( serial_port, baudrate, timeout=0, rtscts=1)  # open first serial port
-      self.serialOpened = True
-    except:
-      self.serialOpened = False
-      print( "could not open serial port", serial_port )
-      print( "Please make sure your coordinator node is connected to the computer and pass in the right serial port location upon startup, e.g. \'python swpydonhive.py -s /dev/ttyUSB1\'" )
-      os._exit(1)
-      #raise SystemExit
-      #sys.exit()
-      #raise KeyboardInterrupt
+    #self.serialport = serial_port
+    #self.serialbaudrate = baudrate
+    self.serial = serial.Serial()  # open first serial port
+    self.serial.baudrate = baudrate
+    self.serial.port = serial_port
+
+    self.open_serial_port()
     #self.hive = hive
     self.escape = False
     self.incType = 0
@@ -55,7 +51,27 @@ class HiveSerial(object):
     self.hiveMsgId = 0
     self.logAction = None
     self.verbose = False
-    
+
+  def isOpen( self ):
+    return self.serial.isOpen()
+  
+  def init_comm( self ):
+    print( "initialising communication through serial port")
+
+  def open_serial_port( self ):
+    try:
+      self.serial.open()
+      #self.serial = serial.Serial( self.serialport, self.serialbaudrate )  # open first serial port
+      #self.serialOpened = True
+    except:
+      #self.serialOpened = False
+      print( "could not open serial port", self.serial.port )
+      print( "Please make sure your coordinator node is connected to the computer and pass in the right serial port location upon startup, e.g. \'python swpydonhive.py -s /dev/ttyUSB1\'" )
+      os._exit(1)
+      #raise SystemExit
+      #sys.exit()
+      #raise KeyboardInterrupt
+
   def set_verbose( self, onoff ):
     self.verbose = onoff
     if onoff:

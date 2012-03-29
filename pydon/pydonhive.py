@@ -75,14 +75,21 @@ class MiniHive(object):
     else:
       self.serial = HiveSerial( serial_port, baudrate )
     self.serial.set_hive( self )
-    self.serial.announce()
+    if self.serial.isOpen():
+      self.serial.init_comm()
+      self.serial.announce()
     self.running = True
     self.newBeeAction = None
     self.verbose = False
+    self.ignoreUnknown = False
     #self.redundancy = 10
     self.create_broadcast_bee()
     self.poll = poll
-    
+
+  def set_ignore_unknown( self, onoff ):
+    self.ignoreUnknown = onoff
+    print( "ignoring unknown minibees", self.ignoreUnknown )
+
   def set_verbose( self, onoff ):
     self.verbose = onoff
     self.serial.set_verbose( onoff )
@@ -110,37 +117,47 @@ class MiniHive(object):
       return rid
 
   def run( self ):
+    #print( "running", self.running )
     while self.running:
-      if not self.apiMode:
-	self.serial.read_data()
-      for beeid, bee in self.bees.items():
-	#print beeid, bee
-	bee.countsincestatus = bee.countsincestatus + 1
-	if bee.countsincestatus > 12000:
-	  bee.set_status( 'off' )
-	if bee.status == 'waiting':
-	  bee.waiting = bee.waiting + 1
-	  if bee.waiting > 1000:
-	    self.wait_config( beeid, bee.cid )
-	    self.serial.send_me( bee.serial, 1 )
-	else:
-	  bee.send_data( self.verbose )
-	  bee.repeat_output( self.serial )
-	  bee.repeat_custom( self.serial )
-	  bee.repeat_run( self.serial )
-	  bee.repeat_loop( self.serial )
-	  #if bee.status == 'receiving':
-	    #bee.count = bee.count + 1
-	    #if bee.count > 5000:
-	      #bee.count = 0
-	      #self.serial.send_me( bee.serial, 0 )
-      if self.poll:
-        self.poll()
+      #print( "serial open", self.serial.isOpen() )
+      if self.serial.isOpen():
+	if not self.apiMode:
+	  self.serial.read_data()
+	for beeid, bee in self.bees.items():
+	  #print beeid, bee
+	  bee.countsincestatus = bee.countsincestatus + 1
+	  if bee.countsincestatus > 12000:
+	    bee.set_status( 'off' )
+	  if bee.status == 'waiting':
+	    bee.waiting = bee.waiting + 1
+	    if bee.waiting > 1000:
+	      self.wait_config( beeid, bee.cid )
+	      self.serial.send_me( bee.serial, 1 )
+	  else:
+	    bee.send_data( self.verbose )
+	    bee.repeat_output( self.serial )
+	    bee.repeat_custom( self.serial )
+	    bee.repeat_run( self.serial )
+	    bee.repeat_loop( self.serial )
+	    #if bee.status == 'receiving':
+	      #bee.count = bee.count + 1
+	      #if bee.count > 5000:
+		#bee.count = 0
+		#self.serial.send_me( bee.serial, 0 )
       else:
-        time.sleep(0.001)
+	print "trying to open serial port"
+	self.serial.open_serial_port()
+	if self.serial.isOpen():
+	  self.serial.init_comm()
+	  self.serial.announce()
+      if self.poll:
+	self.poll()
+      else:
+	time.sleep(0.001)
 
   def exit( self ):
-    self.serial.quit()
+    if self.serial.isOpen():
+      self.serial.quit()
     
   def map_serial_to_bee( self, serial, mid ):
     if serial in self.mapBeeToSerial:
@@ -304,12 +321,12 @@ class MiniHive(object):
       firsttimenewbee = True
      
     #print minibee
-    if remConf == 1:
+    if bool( remConf ):
       if minibee.cid > 0:
 	self.serial.send_id( serial, minibee.nodeid, minibee.cid )
 	#minibee.set_status( 'waiting' )
 	minibee.waiting = 0
-      elif firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+      elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
 	filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
 	self.write_to_file( filename )
@@ -319,7 +336,7 @@ class MiniHive(object):
       #sys.exit()
     else:
       self.serial.send_id( serial, minibee.nodeid )
-      if firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+      if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
       self.newBeeAction( minibee )
@@ -361,7 +378,7 @@ class MiniHive(object):
     if beeid in self.bees:
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
-	self.serial.send_me( self.bees[ beeid ].serial, 1 )
+	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
@@ -507,7 +524,7 @@ class MiniBeeConfig(object):
   
   def setRedundancy( self, redun ):
     self.redundancy = redun
-    print self.redundancy
+    #print self.redundancy
   
   def setPins( self, filepins ):
     #print filepins

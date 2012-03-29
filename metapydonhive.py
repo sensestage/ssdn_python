@@ -6,7 +6,8 @@ import optparse
 try:
   import optparse_gui
   haveGui = True
-  import wx
+  #import wx
+  #import thread
   #from wx import *
 except:
   haveGui = False
@@ -26,47 +27,55 @@ from pydon import minihiveosc
 from pydon import minihivejunxion
 
 
-if haveGui:
+#if haveGui:
 
-  class MainFrame(wx.Frame):
-    def __init__(self, parent, id, title, size, pos, style=wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE):
-      wx.Frame.__init__(self, parent, id, title, size, pos, style)
+  #class MainFrame(wx.Frame):
+    #def __init__(self, parent, id, title, size, pos, style=wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE):
+      #wx.Frame.__init__(self, parent, id, title, size, pos, style)
     
-      heading = wx.StaticText(self, -1, 'Communication with MiniBee network is running', (100, 15))
+      #heading = wx.StaticText(self, -1, 'Communication with MiniBee network is running', (100, 15))
 
-      MsgBtn = wx.Button(self, -1, label="EXIT")
-      MsgBtn.Bind(wx.EVT_BUTTON, self.OnMsgBtn )
+      #MsgBtn = wx.Button(self, -1, label="EXIT")
+      #MsgBtn.Bind(wx.EVT_BUTTON, self.OnMsgBtn )
 
-      # Bind close event here
-      self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
-      self.Show(True)
+      ## Bind close event here
+      #self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
+      #self.Show(True)
         
-    def setHive( self, hiv ):
-      self.hive = hiv
+    #def setHive( self, hiv ):
+      #self.hive = hiv
+      
+    #def OnStart( self, evt ):
+      #print( "starting thread ")
+      #self.thread = threading.Thread(target=self.HiveThread)
+      #self.thread.setDaemon(1)
+      #self.alive.set()
+      #self.thread.start()
 
-    #OnCloseWindow is executed when EVT_CLOSE is received
-    def OnCloseWindow(self, evt):
-      #print 'OnCloseWindow() called'
-      #Do other clean up action
-      #and destroy frame
-      print "closing window"
-      self.Destroy()
-      if self.hive != None:
-	self.hive.exit()
-      #sys.exit()
-      #raise SystemExit
-      #print 'OnCloseWindow() destroyed'
+    #def HiveThread( self ):
+      #self.hive.start()
 
-    def OnMsgBtn(self, event=None):
-      """Bring up a wx.MessageDialog with a useless message."""
-      print "hello"
-      self.Close()
+    ##OnCloseWindow is executed when EVT_CLOSE is received
+    #def OnCloseWindow(self, evt):
+      #self.Destroy()
+      #if self.hive != None:
+	#self.hive.exit()
+      ##sys.exit()
+      ##raise SystemExit
+      ##print 'OnCloseWindow() destroyed'
 
+    #def OnMsgBtn(self, event=None):
+      #"""Bring up a wx.MessageDialog with a useless message."""
+      #self.Close()
+
+#def hive_in_thread_function( swhive ):
+  #global swhive
+  #swhive.start()
 
 # main program:
 if __name__ == "__main__":
   
-  defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': "True", 'verbose': "False", 'logdata': "False", 'config': "pydon/configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600" }
+  defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': "True", 'verbose': "False", 'logdata': "False", 'config': "pydon/configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': "False" }
   
   configParser = ConfigParser.SafeConfigParser( defaults )
   configParser.read( "pydondefaults.ini" )
@@ -111,6 +120,13 @@ if __name__ == "__main__":
 		  default = configParser.get( 'program', 'verbose' ),
 		  #group="program", option="verbose",
 		  help='verbose printing [default:%s]'% False)
+  #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
+
+  parser.add_option('-u','--ignore-unknown', action='store_true', dest="ignore",
+		  #default=False, 
+		  default = configParser.get( 'hive', 'ignore' ),
+		  #group="program", option="verbose",
+		  help='ignore unknown minibees [default:%s]'% False)
   #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
   parser.add_option('-l','--logdata', action='store_true', dest="logdata",
@@ -184,7 +200,7 @@ if __name__ == "__main__":
   config.add_section( 'hive' )
   config.add_section( 'program' )
 
-  for key in [ 'mboffset', 'minibees', 'config' ]:
+  for key in [ 'mboffset', 'minibees', 'config', 'ignore' ]:
     #print key, option_dict[ key ]
     config.set( 'hive', key, option_dict[ key ] )
 
@@ -204,10 +220,11 @@ if __name__ == "__main__":
     config.write( configfile )
 
 
-  if haveGui:
-    app = wx.PySimpleApp(True)
-    frame = MainFrame(None, -1, "MetaPydonHive", (-1,-1), (500,50))
-    app.SetOutputWindowAttributes( "MetaPydonHive Output" )
+  #if haveGui:
+    #app = wx.PySimpleApp(True)
+    #app = wx.PySimpleApp(False)
+    #frame = MainFrame(None, -1, "MetaPydonHive", (-1,-1), (500,50))
+    #app.SetOutputWindowAttributes( "MetaPydonHive Output" )
 
   print( "--------------------------------------------------------------------------------------" )
   print( "MetaPydonHive - a universal client to communicate with the minibee network." )
@@ -218,45 +235,49 @@ if __name__ == "__main__":
   print( "--------------------------------------------------------------------------------------" )
   
   if options.program == 'datanetwork':
-    swhive = swpydonhive.SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode )
+    swhive = swpydonhive.SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode, options.ignore )
     if options.logdata:
       swhive.initializeLogger()
-    if haveGui:
-      print "start main loop"
-      frame.setHive( swhive )
-      app.MainLoop()
-      swhive.start()
-    else:
-      swhive.start()
+    #if haveGui:
+      #print "start main loop"
+      #frame.setHive( swhive )
+      #app.MainLoop()
+      #print "starting swhive"
+      #swhive.start()
+    #else:
+    swhive.start()
 
   elif options.program == 'osc':
     swhive = minihiveosc.SWMiniHiveOSC( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode )
     print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(options.ip, options.port, options.host, options.hport, options.serial ) )
-    if haveGui:
-      frame.setHive( swhive )
-      app.MainLoop()
-      swhive.start()
-    else:
-      swhive.start()
+    #if haveGui:
+      #frame.setHive( swhive )
+      #print( "starting thread" )
+      #thread.start_new_thread( hive_in_thread_function, (swhive) )
+      #app.MainLoop()
+      #print "starting swhive"      
+      #swhive.start()
+    #else:
+    swhive.start()
 
   elif options.program == 'junxion':
     swhive = minihivejunxion.SWMiniHiveJunxion( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode )
     print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(options.ip, options.port, options.host, options.hport, options.serial ) )
-    if haveGui:
-      frame.setHive( swhive )
-      app.MainLoop()
-      swhive.start()
-    else:
-      swhive.start()
+    #if haveGui:
+      #frame.setHive( swhive )
+      #app.MainLoop()
+      #swhive.start()
+    #else:
+    swhive.start()
 
   elif options.program == 'libmapper':
     if haveLibmapper:
-      lmhive = lmpydonhive.LMPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode )
-      if haveGui:
-	frame.setHive( lmhive )
-	app.MainLoop()
-	lmhive.start()
-      else:
-	lmhive.start()
+      swhive = lmpydonhive.LMPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode )
+      #if haveGui:
+	#frame.setHive( swhive )
+	#app.MainLoop()
+	#swhive.start()
+      #else:
+      swhive.start()
     else:
       print( "libmapper is not available, please check your installation or choose another mode" )

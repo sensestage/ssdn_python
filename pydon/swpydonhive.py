@@ -19,7 +19,7 @@ import pydon
 import pydonhive
 
 class SWPydonHive( object ):
-  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):
+  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False ):
     self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip )
     self.datanetwork.setVerbose( verbose )
     
@@ -27,6 +27,7 @@ class SWPydonHive( object ):
     self.hive.set_id_range( idrange[0], idrange[1] )
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
+    self.hive.set_ignore_unknown( ignoreUnknown )
     
     self.datanetwork.setHive( self.hive )
 
@@ -55,14 +56,14 @@ class SWPydonHive( object ):
     sys.exit()
 
   def start( self ):
+    print( "starting swpydonhive" )
     try :
       while not self.datanetwork.osc.registered:
         print( "waiting to be registered; is the DataNetwork host running?" )
         #print time
         print self.datanetwork.osc.registered
         time.sleep( 1.0 )
-      print( "now running hive" )
-      #try :
+      print( "now running hive", self.hive.running )
       self.hive.run()
     except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
       self.exit()

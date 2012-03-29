@@ -72,28 +72,44 @@ def HexToByte( hexStr ):
 class HiveSerialAPI(object):
   def __init__(self, serial_port, baudrate = 19200 ):
     #self.init_with_serial( mid, serial, libv, revision, caps)
-    try:
-      self.serial = serial.Serial( serial_port, baudrate )  # open first serial port
-      self.serialOpened = True
-    except:
-      self.serialOpened = False
-      print( "could not open serial port", serial_port )
-      print( "Please make sure your coordinator node is connected to the computer and pass in the right serial port location upon startup, e.g. \'python swpydonhive.py -s /dev/ttyUSB1\'" )
-      os._exit(1)
-      #raise SystemExit
-      #sys.exit()
-      #raise KeyboardInterrupt
+    #self.serialOpened = False
     #self.hive = hive
-    
-    self.dispatch = Dispatch( self.serial )
-    self.register_callbacks()
-    self.verbose = False
-    self.xbee = XBee( self.serial, callback=self.dispatch.dispatch, escaped=True)
-    
+    #self.serialport = serial_port
+    #self.serialbaudrate = baudrate
+    self.serial = serial.Serial()  # open first serial port
+    self.serial.baudrate = baudrate
+    self.serial.port = serial_port
+
+    self.open_serial_port()
     self.hiveMsgId = 0
     self.logAction = None
     self.verbose = False
     
+  def init_comm( self ):
+    print( "initialising communication through serial port")
+    self.dispatch = Dispatch( self.serial )
+    self.register_callbacks()
+    self.xbee = XBee( self.serial, callback=self.dispatch.dispatch, escaped=True)
+  
+  def isOpen( self ):
+    return self.serial.isOpen()
+
+  def open_serial_port( self ):
+    print( "trying to open serial port" )
+    try:
+      self.serial.open()      
+      #self.serial = serial.Serial( self.serialport, self.serialbaudrate )  # open first serial port
+      #self.serialOpened = self.serial.isOpen()
+      print( "Opening serial port", self.serial.port, self.serial.isOpen() )
+    except:
+      #self.serialOpened = False
+      print( "could not open serial port", self.serial.port )
+      print( "Please make sure your coordinator node is connected to the computer and pass in the right serial port location upon startup, e.g. \'python swpydonhive.py -s /dev/ttyUSB1\'" )
+      #os._exit(1)
+      #raise SystemExit
+      #sys.exit()
+      #raise KeyboardInterrupt
+
   def register_callbacks( self ):
     self.dispatch.register(
       "remote_at_response", 
@@ -114,20 +130,20 @@ class HiveSerialAPI(object):
   def rfdata_handler(self, name, packet):
     if self.verbose:
       print "RFData Received: ", packet
-    if packet['rf_data'][0] == 'd' : # minibee sending data
+    if packet['rf_data'][0] == 'd' and len( packet[ 'rf_data' ] ) > 1: # minibee sending data
       self.recv_data( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )
-    elif packet['rf_data'][0] == 's':
+    elif packet['rf_data'][0] == 's' and len( packet[ 'rf_data' ] ) > 12:
       if len( packet[ 'rf_data' ] ) > 13 :
 	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), ord( packet[ 'rf_data' ][13] ) )
       else:
 	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), 1 )
-    elif packet['rf_data'][0] == 'w':
+    elif packet['rf_data'][0] == 'w' and len( packet[ 'rf_data' ] ) > 3:
       if self.verbose:
 	print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
       self.hive.wait_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3]) )
-    elif packet['rf_data'][0] == 'c': # configuration confirmation
+    elif packet['rf_data'][0] == 'c' and len( packet[ 'rf_data' ] ) > 6: # configuration confirmation
       self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
-    elif packet['rf_data'][0] == 'i': # info message
+    elif packet['rf_data'][0] == 'i' and len( packet[ 'rf_data' ] ) > 2: # info message
       print( "info message",  packet, [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
       #self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
     self.log_data( packet )
