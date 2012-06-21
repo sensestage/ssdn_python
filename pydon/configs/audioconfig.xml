@@ -1,7 +1,10 @@
 <xml><hive name="polytope_audio">
    <minibee id="1" revision="D" serial="0013A2004049875B" libversion="5" caps="0" configuration="1">
     <custom>
-	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+	<data id="0" size="1" offset="0" scale="1" name="amp"/>
+	<data id="1" size="1" offset="0" scale="255" name="ldr1"/>
+	<data id="2" size="1" offset="0" scale="255" name="ldr2"/>
+	<data id="3" size="1" offset="0" scale="255" name="ldr3"/>
 <!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
     </custom>
    </minibee>
@@ -257,7 +260,10 @@
    <minibee id="39" revision="B" serial="0013A200402CD1FB" libversion="5" caps="0" configuration="2">   </minibee>
    <minibee id="40" revision="B" serial="0013A200406A2440" libversion="5" caps="0" configuration="2">   </minibee>
 
-  <configuration id="1" name="no" message_interval="50" samples_per_message="1">
+  <configuration id="1" name="xpauled" message_interval="50" samples_per_message="1">
+<!--    <pin config="AnalogIn10bit" id="A1" name="ldr1"/>
+    <pin config="AnalogIn10bit" id="A2" name="ldr2"/>
+    <pin config="AnalogIn10bit" id="A3" name="ldr3"/>-->
   </configuration>
 
   <configuration id="2" name="lightsense" message_interval="50" samples_per_message="1">
