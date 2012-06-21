@@ -1073,7 +1073,6 @@ class DataNode(object):
 # begin class DataNetwork
 class DataNetwork(object):
   def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0' ):
-    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
     self.nodes = {} # contains the nodes we are subscribed to
     self.expectednodes = set([]) # contains node ids that are expected and could be subscribed to
     self.setters = set([]) # contains the nodes we are the setters of
@@ -1086,6 +1085,8 @@ class DataNetwork(object):
     self.unmapAction = None
     self.mapCustomAction = None
     self.unmapCustomAction = None
+
+    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
   
   def setHive( self, hive ):
     self.hive = hive
@@ -1146,8 +1147,7 @@ class DataNetwork(object):
     if nodeid in self.nodes:
       self.nodes[ nodeid ].setLabelSlot( slotid, label )
     else:
-      if self.verbose:
-	print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
+      print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
 
   def setNodeData( self, nodeid, data ):
     if nodeid in self.nodes:
