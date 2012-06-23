@@ -97,7 +97,7 @@ class HiveConfigFile():
 	    el_twisl.set( "id", sid )
 	    el_twisl.set( "name", str( sname ) )
       if cfg.hasCustom:
-	el_beeCustom = ET.SubElement( el_bee, "customconf" )
+	el_beeCustom = ET.SubElement( el_cfg, "customconf" )
 	for index in range( len( cfg.custom.dataInSizes ) ):
 	#for cusD in bee.customData.items(): #FIXME: this is not encoded as such in MiniBee at the moment
 	  el_customData = ET.SubElement( el_beeCustom, "data" )

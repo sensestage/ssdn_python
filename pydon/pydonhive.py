@@ -1182,11 +1182,12 @@ class MiniBee(object):
 	      self.custom.dataInSizes.append( customPinCfgs[i*2 + 1] )
 	  for i in range( customIns ):
 	    self.custom.dataInSizes[i] = (customDataSize - customPinSizes) / customIns
-	  self.dataScales = []
-	  self.dataOffsets = []
 	  for size in self.custom.dataInSizes:
 	    self.custom.dataOffsets.append( 0 )
 	    self.custom.dataScales.append( 1 )
+
+      self.dataScales = []
+      self.dataOffsets = []
 
       if self.hasCustom:
 	self.dataScales = list( self.custom.dataScales )

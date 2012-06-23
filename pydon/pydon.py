@@ -164,13 +164,15 @@ class DataNetworkOSC(object):
 
   #@make_method('/info/node', 'isii' )
   def handler_node_info( self, path,  types, args, source ):
-    self.info_node( args[0], args[1], args[2], args[3] )
     #print "Present node:", args
+    self.info_node( args[0], args[1], args[2], args[3] )
+    
 
   #@make_method('/info/slot', 'iisi' )
   def handler_slot_info( self, path,  types, args, source ):
-    self.info_slot( args[0], args[1], args[2], args[3] )
     #print "Present slot:", args
+    self.info_slot( args[0], args[1], args[2], args[3] )
+    
 
   #@make_method('/info/client', 'sis' )
   def handler_client_info( self, path,  types, args, source ):
@@ -185,6 +187,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/subscribed/node', 'isi' )
   def handler_node_subscribed( self, path, types, args, source ):
+    #print( "subscribe node", args )
     self.call_callback( 'subscribe', args[2] )
     #if 'subscribe' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -207,7 +210,8 @@ class DataNetworkOSC(object):
 
   #@make_method('/subscribed/slot', 'isii' )
   def handler_slot_subscribed( self, path,  types, args, source ):
-    self.call_callback( 'subscribeSlot', args[2] )
+    #print( "subscribe slot", args )
+    self.call_callback( 'subscribeSlot', args[2], args[3] )
     #if 'subscribeSlot' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
       #if args[2] in self.callbacks['subscribeSlot']:
@@ -218,7 +222,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/unsubscribed/slot', 'isii' )
   def handler_slot_unsubscribed( self, path, types, args, source ):
-    self.call_callback( 'unsubscribeSlot', args[2] )
+    self.call_callback( 'unsubscribeSlot', args[2], args[3] )
     # could add a check if this is really me
     #if 'unsubscribeSlot' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -230,7 +234,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/removed/node', 'i' )
   def handler_node_removed( self, path, types, args, source ):
-    self.call_callback( 'remove', args[2] )
+    self.call_callback( 'remove', args[0] )
     # could add a check if this is really me
     #if 'remove' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
