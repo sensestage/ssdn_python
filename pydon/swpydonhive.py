@@ -32,6 +32,8 @@ class SWPydonHive( object ):
     self.datanetwork.setHive( self.hive )
 
     # self.datanetwork.setterCallback(
+    
+    self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
       
     self.hive.set_newBeeAction( self.hookBeeToDatanetwork )
     
@@ -115,6 +117,17 @@ class SWPydonHive( object ):
     
   def sendStatusInfo( self, nid, status ):
     self.datanetwork.osc.statusMinibee( nid, status )
+    
+  def reregisterBees( self, state ):
+    if state:
+      for beeid, bee in self.hive.bees.items():
+	#print bee
+	if beeid < 65535:
+	  self.hookBeeToDatanetwork( bee )
+	  self.sendStatusInfo( beeid, bee.status )
+	  #self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
+	  #self.datanetwork.osc.subscribeNode( nid )
+	  self.addAndSubscribe( beeid, [] )
 
   def addAndSubscribe( self, nid, data ):
     mybee = self.hive.bees[ nid ]

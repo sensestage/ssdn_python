@@ -640,7 +640,10 @@ class DataNetworkOSC(object):
     self.sendSimpleMessage( "/remove/all" )
 
   def setterCallback( self, mycallback ):
-      self.callbacks[ 'setter' ] = mycallback
+    self.callbacks[ 'setter' ] = mycallback
+
+  def add_callback_noid( self, ctype, mycallback ):
+    self.callbacks[ ctype ] = mycallback
 
   def add_callback( self, ctype, cid, mycallback ):
       if ctype not in self.callbacks:
