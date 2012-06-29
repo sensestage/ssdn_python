@@ -125,9 +125,11 @@ class SWPydonHive( object ):
 	if beeid < 65535:
 	  self.hookBeeToDatanetwork( bee )
 	  self.sendStatusInfo( beeid, bee.status )
+	  if bee.status == 'receiving':
+	    self.datanetwork.osc.addExpected( nid, [] )
 	  #self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
 	  #self.datanetwork.osc.subscribeNode( nid )
-	  self.addAndSubscribe( beeid, [] )
+	  #self.addAndSubscribe( beeid, [] )
 
   def addAndSubscribe( self, nid, data ):
     mybee = self.hive.bees[ nid ]
