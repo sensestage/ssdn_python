@@ -70,6 +70,13 @@ class MiniHive(object):
     self.mapBeeToSerial = {}
     self.configs = {}
     self.apiMode = apiMode
+    self.running = True
+    self.newBeeAction = None
+    self.verbose = False
+    self.ignoreUnknown = False
+    #self.redundancy = 10
+    self.create_broadcast_bee()
+    self.poll = poll
     if self.apiMode:
       self.serial = HiveSerialAPI( serial_port, baudrate )
     else:
@@ -78,13 +85,6 @@ class MiniHive(object):
     if self.serial.isOpen():
       self.serial.init_comm()
       self.serial.announce()
-    self.running = True
-    self.newBeeAction = None
-    self.verbose = False
-    self.ignoreUnknown = False
-    #self.redundancy = 10
-    self.create_broadcast_bee()
-    self.poll = poll
 
   def set_ignore_unknown( self, onoff ):
     self.ignoreUnknown = onoff
