@@ -32,9 +32,8 @@ class SWPydonHive( object ):
     self.datanetwork.setHive( self.hive )
 
     # self.datanetwork.setterCallback(
-    
+          
     self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
-      
     self.hive.set_newBeeAction( self.hookBeeToDatanetwork )
     
     self.datanetwork.set_runAction( self.runMiniBee )
@@ -126,7 +125,7 @@ class SWPydonHive( object ):
 	  self.hookBeeToDatanetwork( bee )
 	  self.sendStatusInfo( beeid, bee.status )
 	  if bee.status == 'receiving':
-	    self.datanetwork.osc.addExpected( nid, [] )
+	    self.datanetwork.osc.addExpected( beeid, [] )
 	  #self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
 	  #self.datanetwork.osc.subscribeNode( nid )
 	  #self.addAndSubscribe( beeid, [] )
@@ -136,7 +135,8 @@ class SWPydonHive( object ):
     if mybee.name == "":
       mybee.name = (self.labelbase + str(nid) )
     self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
-    self.datanetwork.osc.subscribeNode( nid )
+    self.datanetwork.createNode( nid, mybee.getInputSize(), mybee.name, 0 )
+    #self.datanetwork.osc.subscribeNode( nid )
     self.sendBeeLabels( mybee )
     
   def sendBeeLabels( self, mybee ):
@@ -147,7 +147,7 @@ class SWPydonHive( object ):
 
   def minibeeDataToDataNode( self, data, nid ):
     #print( "sending data to network", nid, data )
-    self.datanetwork.sendData( nid, data )
+    self.datanetwork.setNodeData( nid, data, False )
 
 # data node to minibee
   def dataNodeDataToMiniBee( self, data, nid ):
