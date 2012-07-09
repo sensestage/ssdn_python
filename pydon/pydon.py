@@ -502,7 +502,7 @@ class DataNetworkOSC(object):
     #try:
     receive_address = ( self.myIP, self.port )
     #receive_address = ( '127.0.0.1', self.port )
-    self.osc = OSC.OSCServer( receive_address )
+    self.osc = OSC.ThreadingOSCServer( receive_address )
     self.add_handlers()
     self.thread = threading.Thread( target = self.osc.serve_forever )
     self.thread.start()
@@ -548,7 +548,7 @@ class DataNetworkOSC(object):
     
 ## data!
   def data_for_node( self, nodeid, data ):
-    self.network.setNodeData( nodeid, data )
+    self.network.setNodeData( nodeid, data, True )
 
   def data_for_slot( self, nodeid, slotid, data ):
     self.network.setSlotData( nodeid, slotid, data )
@@ -1137,10 +1137,15 @@ class DataNetwork(object):
 	print( "setter", sid )
       self.osc.addExpected( nodeid, [ self.nodes[ nodeid ].label, self.nodes[ nodeid ].size ] )
       self.nodes[nodeid].sendData()
+      
+  def createNode( self, nodeid, size, label, dntype ):
+    if nodeid not in self.nodes:
+      self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
 
   def infoNode( self, nodeid, label, size, dntype ):
     if nodeid not in self.nodes:
-      self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
+      self.createNode( nodeid, size, label, dntype )
+      #self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
     else:
       #try:
       self.nodes[ nodeid ].setLabel( label )
@@ -1156,9 +1161,11 @@ class DataNetwork(object):
     else:
       print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
 
-  def setNodeData( self, nodeid, data ):
+  def setNodeData( self, nodeid, data, fromNetwork = False ):
     if nodeid in self.nodes:
       self.nodes[ nodeid ].setData( data )
+      if not fromNetwork:
+	self.sendData( nodeid, data )
     else:
       print( "DataNode: nodeid ", nodeid, " not in nodes" ) #, "not in nodes", self.nodes )
 
