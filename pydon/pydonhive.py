@@ -303,6 +303,17 @@ class MiniHive(object):
     self.serial.send_id( serial, minibee.nodeid )
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )
+      
+  def reset_bee( self, beeid ):
+    if self.apiMode:
+      if beeid in self.bees:
+	minibee = self.bees[ beeid ]
+	self.serial.set_digital_out3( minibee.serial, 5 )
+	# these should be callbacks:
+	time.sleep(0.05)
+	self.serial.reset_minibee( minibee.serial )
+	time.sleep(0.20)
+	self.serial.restart_minibee( minibee.serial )
 
   def new_bee( self, serial, libv, rev, caps, remConf = True ):
     firsttimenewbee = False
