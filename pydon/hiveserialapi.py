@@ -197,6 +197,47 @@ class HiveSerialAPI(object):
     config = [ chr(x) for x in configuration ]
     self.send_msg_inc( nodeid, 'C', config )
 
+  def set_digital_out3( self, serial, rmmy ):
+    rfser = HexToByte( serial )
+    #rfser = serial
+    destaddr = ''.join( rfser )
+    hrm = struct.pack('>H', rmmy)
+    self.xbee.send('remote_at', 
+          frame_id='B',
+          dest_addr_long=destaddr,
+          options='\x02',
+          command='D3',
+          parameter=hrm
+          )
+    #FIXME: this should be a setting or a separate osc message or something
+    #self.store_remote_at64( serial )
+
+  def reset_minibee( self, serial ):
+    rfser = HexToByte( serial )
+    #rfser = serial
+    destaddr = ''.join( rfser )
+    hrm = struct.pack('>H', 8 )
+    self.xbee.send('remote_at', 
+          frame_id='C',
+          dest_addr_long=destaddr,
+          options='\x02',
+          command='IO',
+          parameter=hrm
+          )
+
+  def restart_minibee( self, serial ):
+    rfser = HexToByte( serial )
+    #rfser = serial
+    destaddr = ''.join( rfser )
+    hrm = struct.pack('>H', 0 )
+    self.xbee.send('remote_at', 
+          frame_id='D',
+          dest_addr_long=destaddr,
+          options='\x02',
+          command='IO',
+          parameter=hrm
+          )
+
   def assign_remote_my( self, serial, rmmy ):
     rfser = HexToByte( serial )
     #rfser = serial
@@ -218,7 +259,7 @@ class HiveSerialAPI(object):
     destaddr = ''.join( rfser )
     #hrm = struct.pack('>H', rmmy)
     self.xbee.send('remote_at', 
-          frame_id='A',
+          frame_id='8',
           dest_addr_long=destaddr,
           options='\x02',
           command='WR'
@@ -231,7 +272,7 @@ class HiveSerialAPI(object):
     #destaddr = ''.join( rfser )
     hrm = struct.pack('>H', nodeid)
     self.xbee.send('remote_at', 
-          frame_id='A',
+          frame_id='9',
           dest_addr=hrm,
           options='\x02',
           command='WR'
