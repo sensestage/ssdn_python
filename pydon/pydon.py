@@ -520,6 +520,7 @@ class DataNetworkOSC(object):
   
   def quitHost( self, hip, hop ):
     #print hip, hop
+    self.set_registered( False )
     if self.hostIP == hip:
       if self.hostPort == hop:
 	self.findHost( self.hostIP ) # try and find host again, if not we just wait for an announce message
@@ -578,7 +579,7 @@ class DataNetworkOSC(object):
     if mycallback != None:
       #if 'register' not in self.callbacks:
       self.callbacks[ 'register' ] = mycallback
-    self.sendSimpleMessage( "/register" )
+    self.sendSimpleMessage( "/register", False )
     
   def unregister( self, mycallback = None ):
     if mycallback != None:
@@ -741,7 +742,7 @@ class DataNetworkOSC(object):
   def registerHive( self, number ):
     if self.verbose:
       print( "sending a register hive message" )
-    self.sendMessage( "/register/hive", [ number ] )
+    self.sendMessage( "/register/hive", [ number ], False )
     #self.sendSimpleMessage( "/register/hive" )
     #msg = liblo.Message( "/register/hive", self.port, self.name, number )
     #self.sendMessage( msg )
@@ -987,39 +988,41 @@ class DataNetworkOSC(object):
       print( "saved configuration to: ", filename )
 
 ## message sending
-  def sendMessage( self, path, args ):
-    msg = OSC.OSCMessage()
-    msg.setAddress( path )
-    msg.append( self.port )
-    msg.append( self.name )
-    #print args
-    for a in args:
-      msg.append( a )
-    try:
-      self.host.send( msg )
-      if self.verbose:
-	print( "sending message", msg )
-    except OSC.OSCClientError:
-      if self.verbose:
-	print( "error sending message", msg )
+  def sendMessage( self, path, args, onlyWhenRegistered = True ):
+    if not onlyWhenRegistered or self.registered:
+      msg = OSC.OSCMessage()
+      msg.setAddress( path )
+      msg.append( self.port )
+      msg.append( self.name )
+      #print args
+      for a in args:
+	msg.append( a )
+      try:
+	self.host.send( msg )
+	if self.verbose:
+	  print( "sending message", msg )
+      except OSC.OSCClientError:
+	if self.verbose:
+	  print( "error sending message", msg )
 
     #try:
       #self.server.send( self.host, msg )
     #except liblo.AddressError, err:
       #print str(err)
   
-  def sendSimpleMessage( self, path ):
-    msg = OSC.OSCMessage()
-    msg.setAddress( path )
-    msg.append( self.port )
-    msg.append( self.name )
-    try:
-      self.host.send( msg )
-      if self.verbose:
-	print( "sending message", msg )
-    except OSC.OSCClientError:
-      if self.verbose:
-	print( "error sending message", msg )
+  def sendSimpleMessage( self, path, onlyWhenRegistered = True ):
+    if not onlyWhenRegistered or self.registered:
+      msg = OSC.OSCMessage()
+      msg.setAddress( path )
+      msg.append( self.port )
+      msg.append( self.name )
+      try:
+	self.host.send( msg )
+	if self.verbose:
+	  print( "sending message", msg )
+      except OSC.OSCClientError:
+	if self.verbose:
+	  print( "error sending message", msg )
     #try:
       #self.server.send( self.host, path, self.port, self.name )
     #except liblo.AddressError, err:
