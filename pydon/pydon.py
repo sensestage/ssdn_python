@@ -82,6 +82,7 @@ class DataNetworkOSC(object):
 
     #end# map to broadcast bee
 
+    self.osc.addMsgHandler( "/reset/minibee", self.handler_reset_minibee )
     self.osc.addMsgHandler( "/run/minibee", self.handler_run_minibee )
     self.osc.addMsgHandler( "/loopback/minibee", self.handler_loop_minibee )
 
@@ -847,6 +848,10 @@ class DataNetworkOSC(object):
   def statusMinibee( self, mid, status ):
     self.sendMessage( "/status/minibee", [ mid, status ] )
 
+  def reset_minibee( self, mid ):
+    self.network.resetAction( mid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
   def run_minibee( self, mid, status ):
     self.network.runAction( mid, status )
     #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
@@ -1089,6 +1094,7 @@ class DataNetwork(object):
     
     self.hive = None
    
+    self.resetAction = None
     self.runAction = None
     self.loopAction = None
     self.mapAction = None
@@ -1106,6 +1112,9 @@ class DataNetwork(object):
     
   def add_setter( self, nodeid ):
     self.setters.add( nodeid )
+
+  def set_resetAction( self, action ):
+    self.resetAction = action
 
   def set_runAction( self, action ):
     self.runAction = action
