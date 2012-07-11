@@ -260,6 +260,7 @@ class MiniHive(object):
     if self.apiMode:
       if mid in self.bees:
 	#minibee = self.bees[ mid ]
+	print( "sending announce to minibee", mid )
 	self.serial.announce( mid )
 
   def set_minibee_config( self, mid, cid ):
@@ -308,6 +309,7 @@ class MiniHive(object):
     if self.apiMode:
       if beeid in self.bees:
 	minibee = self.bees[ beeid ]
+	# check whether 5 is right (otherwise 4)
 	self.serial.set_digital_out3( minibee.serial, 5 )
 	# these should be callbacks:
 	time.sleep(0.05)
@@ -832,6 +834,7 @@ class MiniBee(object):
     self.dataOffsets = []
     self.dataScales = []
     self.hasCustom = False
+    self.redundancy = 1
     self.custom = MiniBeeCustomConfig()
     #self.customDataInSizes = []
     #self.customLabels = []
@@ -909,6 +912,7 @@ class MiniBee(object):
     #self.dataOffsets = self.customDataOffsets
     self.dataScales.extend( self.config.dataScales )
     self.dataOffsets.extend( self.config.dataOffsets )
+    self.redundancy = self.config.redundancy
     #print( "set_config", self.dataScales, self.custom.dataInSizes, self.custom.dataScales )
 
   def set_custom(self, customconf ):
@@ -966,7 +970,7 @@ class MiniBee(object):
 
   def repeat_output( self, serPort ):
     if self.outMessage != None:
-      if self.outrepeated < self.config.redundancy :
+      if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
 	serPort.send_msg( self.outMessage, self.nodeid )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
@@ -987,7 +991,7 @@ class MiniBee(object):
 
   def repeat_custom( self, serPort ):
     if self.customMessage != None:
-      if self.customrepeated < self.config.redundancy :
+      if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
 	serPort.send_msg( self.customMessage, self.nodeid )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
@@ -1012,14 +1016,14 @@ class MiniBee(object):
 
   def repeat_run( self, serPort ):
     if self.runMessage != None:
-      if self.runrepeated < self.config.redundancy :
+      if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
 	serPort.send_msg( self.runMessage, self.nodeid )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def repeat_loop( self, serPort ):
     if self.loopMessage != None:
-      if self.looprepeated < self.config.redundancy :
+      if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
 	serPort.send_msg( self.loopMessage, self.nodeid )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
