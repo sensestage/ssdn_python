@@ -274,7 +274,7 @@ class DataNetworkOSC(object):
 
   def handler_reset_minibee( self, path, types, args, source ):
     self.reset_minibee( args[0] )
-    print( "Run minibee:", args )
+    print( "Reset minibee:", args )
 
   def handler_run_minibee( self, path, types, args, source ):
     self.run_minibee( args[0], args[1] )
