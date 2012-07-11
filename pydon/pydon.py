@@ -272,6 +272,10 @@ class DataNetworkOSC(object):
     self.set_registered_hive( False )
     print( "Unregistered as hive client:", args )
 
+  def handler_reset_minibee( self, path, types, args, source ):
+    self.reset_minibee( args[0] )
+    print( "Run minibee:", args )
+
   def handler_run_minibee( self, path, types, args, source ):
     self.run_minibee( args[0], args[1] )
     print( "Run minibee:", args )
@@ -503,7 +507,8 @@ class DataNetworkOSC(object):
     #try:
     receive_address = ( self.myIP, self.port )
     #receive_address = ( '127.0.0.1', self.port )
-    self.osc = OSC.ThreadingOSCServer( receive_address )
+    #self.osc = OSC.ThreadingOSCServer( receive_address )
+    self.osc = OSC.OSCServer( receive_address )
     self.add_handlers()
     self.thread = threading.Thread( target = self.osc.serve_forever )
     self.thread.start()
@@ -1150,20 +1155,19 @@ class DataNetwork(object):
       self.osc.addExpected( nodeid, [ self.nodes[ nodeid ].label, self.nodes[ nodeid ].size ] )
       self.nodes[nodeid].sendData()
       
-  def createNode( self, nodeid, size, label, dntype ):
+  def createNode( self, nodeid, size, label, dntype = 0 ):
     if nodeid not in self.nodes:
+      print( "creating node", nodeid, size, label, dntype )
       self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
-
-  def infoNode( self, nodeid, label, size, dntype ):
-    if nodeid not in self.nodes:
-      self.createNode( nodeid, size, label, dntype )
-      #self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
     else:
       #try:
       self.nodes[ nodeid ].setLabel( label )
       self.nodes[ nodeid ].setSize( size )
       self.nodes[ nodeid ].setType( dntype )
-      #except:
+
+  def infoNode( self, nodeid, label, size, dntype ):
+    self.createNode( nodeid, size, label, dntype )
+    #self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
     if nodeid not in self.nodes:
       print( "InfoNode: nodeid ", nodeid, " not in nodes") #, self.nodes )
 
