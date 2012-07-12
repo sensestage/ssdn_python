@@ -140,6 +140,7 @@ class MiniHive(object):
 	    if bee.waiting > 1000:
 	      self.wait_config( beeid, bee.cid )
 	      self.serial.send_me( bee.serial, 1 )
+	      time.sleep( 0.0001 )
 	  else:
 	    bee.send_data( self.verbose )
 	    bee.repeat_output( self.serial )
@@ -157,10 +158,11 @@ class MiniHive(object):
 	if self.serial.isOpen():
 	  self.serial.init_comm()
 	  self.serial.announce()
+	  time.sleep( 0.0001 )
       if self.poll:
 	self.poll()
       else:
-	time.sleep(0.001)
+	time.sleep(0.005)
 
   def exit( self ):
     if self.serial.isOpen():
@@ -406,6 +408,7 @@ class MiniHive(object):
 	if self.verbose:
 	  print( "sent configmessage to minibee", configMsg )
 	self.serial.send_config( beeid, configMsg )
+	time.sleep( 0.0001 )
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
     else:
@@ -421,6 +424,7 @@ class MiniHive(object):
       else:
 	print( "minibee %i is configured"%beeid )
 	self.serial.send_me( self.bees[beeid].serial, 0 )
+	time.sleep( 0.0001 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -984,6 +988,7 @@ class MiniBee(object):
       if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
 	serPort.send_msg( self.outMessage, self.nodeid )
+	time.sleep( 0.0001 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
@@ -992,44 +997,51 @@ class MiniBee(object):
 	self.outdata = data
 	self.outrepeated = 0
 	self.outMessage = self.create_msg( 'O', self.outdata, serPort )
-	serPort.send_msg( self.outMessage, self.nodeid )
+	#DONT SEND UNTIL CALLED IN THE QUEUE
+	#serPort.send_msg( self.outMessage, self.nodeid )
 	#serPort.send_data_inclid( self.nodeid, self.msgID, data )
     elif self.nodeid == 0xFFFF: #broadcast node
       self.outdata = data
       self.outrepeated = 0
       self.outMessage = self.create_msg( 'O', self.outdata, serPort )
-      serPort.send_msg( self.outMessage, self.nodeid )
+      #DONT SEND UNTIL CALLED IN THE QUEUE
+      #serPort.send_msg( self.outMessage, self.nodeid )
 
   def repeat_custom( self, serPort ):
     if self.customMessage != None:
       if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
 	serPort.send_msg( self.customMessage, self.nodeid )
+	time.sleep( 0.0001 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
     self.customdata = data
     self.customrepeated = 0
     self.customMessage = self.create_msg( 'E', self.customdata, serPort )
-    serPort.send_msg( self.customMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.customMessage, self.nodeid )
     #if len( data ) == sum( self.config.customOutSizes ) :
     #serPort.send_custom( self.nodeid, data )
 
   def send_run( self, serPort, status ):
     self.runrepeated = 0
     self.runMessage = self.create_msg( 'R', [ status ], serPort )
-    serPort.send_msg( self.runMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.runMessage, self.nodeid )
 
   def send_loopback( self, serPort, status ):
     self.looprepeated = 0
     self.loopMessage = self.create_msg( 'L', [ status ], serPort )
-    serPort.send_msg( self.loopMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.loopMessage, self.nodeid )
 
   def repeat_run( self, serPort ):
     if self.runMessage != None:
       if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
 	serPort.send_msg( self.runMessage, self.nodeid )
+	time.sleep( 0.0001 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def repeat_loop( self, serPort ):
@@ -1037,6 +1049,7 @@ class MiniBee(object):
       if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
 	serPort.send_msg( self.loopMessage, self.nodeid )
+	time.sleep( 0.0001 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   #def set_run( self, serPort, status ):
