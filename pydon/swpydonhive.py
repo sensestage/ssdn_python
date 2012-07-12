@@ -46,8 +46,8 @@ class SWPydonHive( object ):
     self.datanetwork.set_unmapAction( self.unmapMiniBee )
     self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
 
-    self.datanetwork.startOSC()
     self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
+    self.datanetwork.startOSC()
     self.hive.start_serial()
 
 
