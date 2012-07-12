@@ -486,6 +486,7 @@ class DataNetworkOSC(object):
     self.cltype = cltype
     self.nonodes = nonodes
     self.osc = None
+    self.createOSC()
     #self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
     
   def add_hive( self, hive ):
@@ -496,6 +497,8 @@ class DataNetworkOSC(object):
     print( "Found host at", self.hostIP, self.hostPort )
     self.resetHost()
     self.createClient()
+    
+  def startDataNetwork( self ):
     self.doRegister()
     
   def doRegister(self):
@@ -1114,7 +1117,8 @@ class DataNetwork(object):
     self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
   
   def startOSC( self ):
-    self.osc.createOSC()
+    #self.osc.createOSC()
+    self.osc.startDataNetwork()
   
   def setHive( self, hive ):
     self.hive = hive
