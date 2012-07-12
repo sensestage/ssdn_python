@@ -18,13 +18,14 @@ import threading
 # begin class DNOSCServer
 #class DNOSCServer( ServerThread ):
 class DataNetworkOSC(object):
-  #def __init__(self, port, dnosc ):
+  #def __init__(self):
     #ServerThread.__init__(self, port)
     #self.dnosc = dnosc
     
   def setVerbose( self, onoff ):
     self.verbose = onoff;
-    self.osc.print_tracebacks = onoff
+    if self.osc != None:
+      self.osc.print_tracebacks = onoff
     
   def add_handlers( self ):
     self.osc.addMsgHandler( "/datanetwork/announce", self.handler_announced )
@@ -478,22 +479,23 @@ class DataNetworkOSC(object):
     self.network = network
     self.callbacks = {}
     self.verbose = False
-    self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
-    
-  def add_hive( self, hive ):
-    self.hive = hive
-    
-  def createOSC( self, hostip, myport, myname, cltype, nonodes, myhost ):
     self.name = myname
     self.hostIP = hostip
     self.port = myport
     self.myIP = myhost
-    self.findHost( hostip )
+    self.cltype = cltype
+    self.nonodes = nonodes
+    self.osc = None
+    #self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
+    
+  def add_hive( self, hive ):
+    self.hive = hive
+    
+  def createOSC( self ):
+    self.findHost( self.hostIP )
     print( "Found host at", self.hostIP, self.hostPort )
     self.resetHost()
     self.createClient()
-    self.cltype = cltype
-    self.nonodes = nonodes
     self.doRegister()
     
   def doRegister(self):
@@ -509,6 +511,8 @@ class DataNetworkOSC(object):
     #receive_address = ( '127.0.0.1', self.port )
     #self.osc = OSC.ThreadingOSCServer( receive_address )
     self.osc = OSC.OSCServer( receive_address )
+    self.osc.print_tracebacks = self.verbose
+    #self.osc.verbose = self.verbose
     self.add_handlers()
     self.thread = threading.Thread( target = self.osc.serve_forever )
     self.thread.start()
@@ -1109,11 +1113,16 @@ class DataNetwork(object):
 
     self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
   
+  def startOSC( self ):
+    self.osc.createOSC()
+  
   def setHive( self, hive ):
     self.hive = hive
   
   def setVerbose( self, onoff ):
-    self.osc.setVerbose( onoff )
+    self.verbose = onoff
+    if self.osc != None:
+      self.osc.setVerbose( onoff )
     
   def add_setter( self, nodeid ):
     self.setters.add( nodeid )

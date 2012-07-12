@@ -77,14 +77,20 @@ class MiniHive(object):
     #self.redundancy = 10
     self.create_broadcast_bee()
     self.poll = poll
+    self.serial_port = serial_port
+    self.baudrate = baudrate
+    self.serial = None
+      
+  def start_serial( self ):
     if self.apiMode:
-      self.serial = HiveSerialAPI( serial_port, baudrate )
+      self.serial = HiveSerialAPI( self.serial_port, self.baudrate )
     else:
-      self.serial = HiveSerial( serial_port, baudrate )
+      self.serial = HiveSerial( self.serial_port, self.baudrate )
+    self.serial.set_verbose( self.verbose )
     self.serial.set_hive( self )
     if self.serial.isOpen():
       self.serial.init_comm()
-      self.serial.announce()
+      self.serial.announce()    
 
   def set_ignore_unknown( self, onoff ):
     self.ignoreUnknown = onoff
@@ -92,7 +98,8 @@ class MiniHive(object):
 
   def set_verbose( self, onoff ):
     self.verbose = onoff
-    self.serial.set_verbose( onoff )
+    if self.serial != None:
+      self.serial.set_verbose( onoff )
   
   def set_id_range( self, minid, maxid ):
     self.idrange = range( minid, maxid )
@@ -862,6 +869,7 @@ class MiniBee(object):
     self.cid = -1
     self.status = 'init'
     self.logAction = None
+    self.infoAction = None
     self.statusAction = None
     self.dataAction = None
     self.firstDataAction = None
@@ -944,6 +952,9 @@ class MiniBee(object):
 
   def set_action( self, action ):
     self.dataAction = action
+
+  def set_info_action( self, action ):
+    self.infoAction = action
 
   def set_status_action( self, action ):
     self.statusAction = action
@@ -1104,6 +1115,8 @@ class MiniBee(object):
     self.data = scaledData
     if len(self.data) == ( len( self.config.dataScales ) + len( self.custom.dataInSizes ) ):
       if self.status != 'receiving':
+	if self.infoAction != None:
+	  self.infoAction( self )
 	if self.firstDataAction != None:
 	  self.firstDataAction( self.nodeid, self.data )
 	  #self.serial.send_me( self.bees[beeid].serial, 0 )

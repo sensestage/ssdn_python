@@ -22,6 +22,8 @@ class SWPydonHive( object ):
   def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False ):
     self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip )
     self.datanetwork.setVerbose( verbose )
+
+    self.labelbase = "minibee"
     
     self.hive = pydonhive.MiniHive( serialPort, serialRate, apiMode )
     self.hive.set_id_range( idrange[0], idrange[1] )
@@ -33,7 +35,6 @@ class SWPydonHive( object ):
 
     # self.datanetwork.setterCallback(
           
-    self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
     self.hive.set_newBeeAction( self.hookBeeToDatanetwork )
     
     self.datanetwork.set_resetAction( self.resetMiniBee )
@@ -44,8 +45,11 @@ class SWPydonHive( object ):
     self.datanetwork.set_mapCustomAction( self.mapMiniBeeCustom )
     self.datanetwork.set_unmapAction( self.unmapMiniBee )
     self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
-    
-    self.labelbase = "minibee"
+
+    self.datanetwork.startOSC()
+    self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
+    self.hive.start_serial()
+
 
   def exit( self ):
     self.datanetwork.osc.unregister()
@@ -113,12 +117,16 @@ class SWPydonHive( object ):
 
 # bee to datanode
   def hookBeeToDatanetwork( self, minibee ):
-    self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
+    #self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
+    minibee.set_info_action( self.sendInfoBee )
     minibee.set_first_action( self.addAndSubscribe )
     minibee.set_action( self.minibeeDataToDataNode )
     minibee.set_status_action( self.sendStatusInfo )
     
-  def sendStatusInfo( self, nid, status ):
+  def sendInfoBee( self, minibee ):    
+    self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
+
+  def sendStatusInfo( self, nid, status ):    
     self.datanetwork.osc.statusMinibee( nid, status )
     
   def reregisterBees( self, state ):
@@ -127,6 +135,7 @@ class SWPydonHive( object ):
 	#print bee
 	if beeid < 65535:
 	  self.hookBeeToDatanetwork( bee )
+	  self.datanetwork.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
 	  self.sendStatusInfo( beeid, bee.status )
 	  if bee.status == 'receiving':
 	    self.datanetwork.osc.addExpected( beeid, [] )
