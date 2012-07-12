@@ -79,11 +79,10 @@ class HiveSerialAPI(object):
     self.serial = serial.Serial()  # open first serial port
     self.serial.baudrate = baudrate
     self.serial.port = serial_port
-
-    self.open_serial_port()
     self.hiveMsgId = 0
     self.logAction = None
     self.verbose = False
+    self.open_serial_port()
     
   def init_comm( self ):
     print( "initialising communication through serial port")
