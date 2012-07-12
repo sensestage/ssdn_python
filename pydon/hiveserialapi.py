@@ -112,20 +112,56 @@ class HiveSerialAPI(object):
 
   def register_callbacks( self ):
     self.dispatch.register(
-      "remote_at_response", 
-      self.remoteatresponse_handler, 
-      lambda packet: packet['id']=='remote_at_response'
-    )
-    
-    self.dispatch.register(
       "rfdata", 
       self.rfdata_handler,
       lambda packet: packet['id']=='rx'
     )
 
-  def remoteatresponse_handler(self, name, packet):
+    self.dispatch.register(
+      "status",
+      self.generic_handler, 
+      lambda packet: packet['id']=='status'
+    )
+
+    self.dispatch.register(
+      "tx_status",
+      self.generic_handler, 
+      lambda packet: packet['id']=='tx_status'
+    )
+
+    self.dispatch.register(
+      "remote_at_response", 
+      self.generic_handler, 
+      lambda packet: packet['id']=='remote_at_response'
+    )
+
+    self.dispatch.register(
+      "at_response", 
+      self.generic_handler, 
+      lambda packet: packet['id']=='at_response'
+    )
+
+    self.dispatch.register(
+      "rx_io_data", 
+      self.generic_handler,
+      lambda packet: packet['id']=='rx_io_data'
+    )
+
+    self.dispatch.register(
+      "rx_io_data_long", 
+      self.generic_handler,
+      lambda packet: packet['id']=='rx_io_data_long_addr'
+    )
+
+    self.dispatch.register(
+      "rfdata_long", 
+      self.generic_handler,
+      lambda packet: packet['id']=='rx_long_addr'
+    )
+
+  def generic_handler( self, name, packet ):
     if self.verbose:
-      print "Remote AT response: ", packet
+      print( name, packet )
 
   def rfdata_handler(self, name, packet):
     if self.verbose:
