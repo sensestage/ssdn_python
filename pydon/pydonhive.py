@@ -5,6 +5,7 @@ import sys
 import os
 import datetime
 import math
+import threading
 
 import optparse
 #print time
@@ -17,7 +18,7 @@ from hiveserialapi import HiveSerialAPI # API based communication (in developmen
 from collections import deque
 
 ## {{{ http://code.activestate.com/recipes/210459/ (r2)
-class Queue:
+class QueueFifo:
     """A sample implementation of a First-In-First-Out
        data structure."""
     def __init__(self):
@@ -80,6 +81,8 @@ class MiniHive(object):
     self.serial_port = serial_port
     self.baudrate = baudrate
     self.serial = None
+    self.seriallock = threading.Lock()
+    self.osclock = threading.Lock()
       
   def start_serial( self ):
     if self.apiMode:
@@ -130,6 +133,10 @@ class MiniHive(object):
       if self.serial.isOpen():
 	if not self.apiMode:
 	  self.serial.read_data()
+	else:
+	  # check whether thread alive, if not start it again
+	  if not self.serial.isRunning():
+	    self.serial.start()
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
@@ -139,14 +146,18 @@ class MiniHive(object):
 	    bee.waiting = bee.waiting + 1
 	    if bee.waiting > 1000:
 	      self.wait_config( beeid, bee.cid )
+	      self.seriallock.acquire()
 	      self.serial.send_me( bee.serial, 1 )
+	      self.seriallock.release()
 	      time.sleep( 0.0001 )
 	  else:
 	    bee.send_data( self.verbose )
+	    self.seriallock.acquire()
 	    bee.repeat_output( self.serial )
 	    bee.repeat_custom( self.serial )
 	    bee.repeat_run( self.serial )
 	    bee.repeat_loop( self.serial )
+	    self.seriallock.release()
 	    #if bee.status == 'receiving':
 	      #bee.count = bee.count + 1
 	      #if bee.count > 5000:
@@ -157,7 +168,9 @@ class MiniHive(object):
 	self.serial.open_serial_port()
 	if self.serial.isOpen():
 	  self.serial.init_comm()
+	  self.seriallock.acquire()
 	  self.serial.announce()
+	  self.seriallock.release()
 	  time.sleep( 0.0001 )
       if self.poll:
 	self.poll()
@@ -166,7 +179,9 @@ class MiniHive(object):
 
   def exit( self ):
     if self.serial.isOpen():
+      self.seriallock.acquire()      
       self.serial.quit()
+      self.seriallock.release()
     
   def map_serial_to_bee( self, serial, mid ):
     if serial in self.mapBeeToSerial:
@@ -250,27 +265,35 @@ class MiniHive(object):
     for beeid, bee in self.bees.items():
       if bee.cid == cid and bee.has_new_config_id():
 	bee.set_config( cid, newconfig )
+	self.seriallock.acquire()
 	self.serial.send_id( bee.serial, bee.nodeid, bee.cid )
+	self.seriallock.release()
 	bee.set_status( 'waiting' )
 	bee.waiting = 0
     return True
   
   def store_ids( self ):
     if self.apiMode:
+      self.seriallock.acquire()
       self.serial.store_remote_at16( 0xFFFF )
+      self.seriallock.release()
     
   def store_minibee_id( self, mid ):
     if self.apiMode:
       if mid in self.bees:
 	minibee = self.bees[ mid ]
+	self.seriallock.acquire()
 	self.serial.store_remote_at64( minibee.serial )
+	self.seriallock.release()
 
   def announce_minibee_id( self, mid ):
     if self.apiMode:
       if mid in self.bees:
 	#minibee = self.bees[ mid ]
 	print( "sending announce to minibee", mid )
+	self.seriallock.acquire()
 	self.serial.announce( mid )
+	self.seriallock.release()
 
   def set_minibee_config( self, mid, cid ):
     if mid in self.bees: # if the minibee exists
@@ -280,7 +303,9 @@ class MiniHive(object):
 	minibee.set_config( cid, config )
       else:
 	minibee.set_config_id( cid )
+      self.seriallock.acquire()
       self.serial.send_id( minibee.serial, minibee.nodeid, minibee.cid )
+      self.seriallock.release()
       minibee.set_status( 'waiting' )
       minibee.waiting = 0
       if self.newBeeAction:
@@ -310,7 +335,9 @@ class MiniHive(object):
       self.mapBeeToSerial[ serial ] = mid
       firsttimenewbee = True
       
+    self.seriallock.acquire()
     self.serial.send_id( serial, minibee.nodeid )
+    self.seriallock.release()
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )
       
@@ -319,12 +346,18 @@ class MiniHive(object):
       if beeid in self.bees:
 	minibee = self.bees[ beeid ]
 	# check whether 5 is right (otherwise 4)
+	self.seriallock.acquire()
 	self.serial.set_digital_out3( minibee.serial, 5 )
+	self.seriallock.release()
 	# these should be callbacks:
 	time.sleep(0.05)
+	self.seriallock.acquire()
 	self.serial.reset_minibee( minibee.serial )
+	self.seriallock.release()
 	time.sleep(0.20)
+	self.seriallock.acquire()
 	self.serial.restart_minibee( minibee.serial )
+	self.seriallock.release()
 
   def new_bee( self, serial, libv, rev, caps, remConf = True ):
     firsttimenewbee = False
@@ -345,7 +378,9 @@ class MiniHive(object):
     #print minibee
     if bool( remConf ):
       if minibee.cid > 0:
+	self.seriallock.acquire()
 	self.serial.send_id( serial, minibee.nodeid, minibee.cid )
+	self.seriallock.release()
 	#minibee.set_status( 'waiting' )
 	minibee.waiting = 0
       elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
@@ -357,7 +392,9 @@ class MiniHive(object):
 	print( "Check documentation for details." )
       #sys.exit()
     else:
+      self.seriallock.acquire()
       self.serial.send_id( serial, minibee.nodeid )
+      self.seriallock.release()
       if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
@@ -375,7 +412,9 @@ class MiniHive(object):
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
+	self.seriallock.acquire()
 	self.serial.announce( 0xFFFA )
+	self.seriallock.release()
 
   def bee_active( self, beeid, msgid ):
     if beeid in self.bees:
@@ -407,7 +446,9 @@ class MiniHive(object):
 	self.bees[ beeid ].waiting = 0
 	if self.verbose:
 	  print( "sent configmessage to minibee", configMsg )
+	self.seriallock.acquire()
 	self.serial.send_config( beeid, configMsg )
+	self.seriallock.release()
 	time.sleep( 0.0001 )
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
@@ -423,7 +464,9 @@ class MiniHive(object):
 	print( "minibee", beeid, "is not configured yet" )
       else:
 	print( "minibee %i is configured"%beeid )
+	self.seriallock.acquire()
 	self.serial.send_me( self.bees[beeid].serial, 0 )
+	self.seriallock.release()
 	time.sleep( 0.0001 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
@@ -851,7 +894,7 @@ class MiniBee(object):
     #self.customLabels = []
     #self.customDataScales = []
     #self.customDataOffsets = []
-    self.dataQueue = Queue()
+    self.dataQueue = QueueFifo()
     #self.time_since_last_message = 0
     self.time_since_last_update = 0
       
