@@ -89,7 +89,13 @@ class HiveSerialAPI(object):
     self.dispatch = Dispatch( self.serial )
     self.register_callbacks()
     self.xbee = XBee( self.serial, callback=self.dispatch.dispatch, escaped=True)
-  
+
+  def start( self ):
+    self.xbee.start()
+
+  def isRunning( self ):
+    return self.xbee.is_alive()
+
   def isOpen( self ):
     return self.serial.isOpen()
 
