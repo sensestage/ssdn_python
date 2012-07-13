@@ -124,10 +124,16 @@ class SWPydonHive( object ):
     minibee.set_status_action( self.sendStatusInfo )
     
   def sendInfoBee( self, minibee ):    
+    self.hive.osclock.acquire()
+    print( "osc lock acquired by thread ", threading.current_thread().name )
     self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
+    self.hive.osclock.release()
 
-  def sendStatusInfo( self, nid, status ):    
+  def sendStatusInfo( self, nid, status ):
+    self.hive.osclock.acquire()
+    print( "osc lock acquired by thread ", threading.current_thread().name )
     self.datanetwork.osc.statusMinibee( nid, status )
+    self.hive.osclock.release()
     
   def reregisterBees( self, state ):
     if state:
@@ -135,10 +141,13 @@ class SWPydonHive( object ):
 	#print bee
 	if beeid < 65535:
 	  self.hookBeeToDatanetwork( bee )
+	  self.hive.osclock.acquire()
+	  print( "osc lock acquired by thread ", threading.current_thread().name )
 	  self.datanetwork.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
 	  self.sendStatusInfo( beeid, bee.status )
 	  if bee.status == 'receiving':
 	    self.datanetwork.osc.addExpected( beeid, [] )
+	  self.hive.osclock.release()
 	  #self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
 	  #self.datanetwork.osc.subscribeNode( nid )
 	  #self.addAndSubscribe( beeid, [] )
@@ -147,7 +156,10 @@ class SWPydonHive( object ):
     mybee = self.hive.bees[ nid ]
     if mybee.name == "":
       mybee.name = (self.labelbase + str(nid) )
+    self.hive.osclock.acquire()
+    print( "osc lock acquired by thread ", threading.current_thread().name )
     self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
+    self.hive.osclock.release()
     self.datanetwork.createNode( nid, mybee.getInputSize(), mybee.name, 0 )
     #self.datanetwork.osc.subscribeNode( nid )
     self.sendBeeLabels( mybee )
@@ -156,11 +168,17 @@ class SWPydonHive( object ):
     if mybee.cid > 0:
       count = 0
       mylabels = mybee.getLabels()
+      self.hive.osclock.acquire()
+      print( "osc lock acquired by thread ", threading.current_thread().name )
       [ self.datanetwork.osc.labelSlot( mybee.nodeid, index, mybee.name + "_" + str( item )) for index, item in enumerate(mylabels)]
+      self.hive.osclock.release()
 
   def minibeeDataToDataNode( self, data, nid ):
     #print( "sending data to network", nid, data )
+    self.hive.osclock.acquire()
+    print( "osc lock acquired by thread ", threading.current_thread().name )
     self.datanetwork.setNodeData( nid, data, False )
+    self.hive.osclock.release()
 
 # data node to minibee
   def dataNodeDataToMiniBee( self, data, nid ):
