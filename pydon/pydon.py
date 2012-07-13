@@ -517,7 +517,7 @@ class DataNetworkOSC(object):
     self.osc.print_tracebacks = self.verbose
     #self.osc.verbose = self.verbose
     self.add_handlers()
-    self.thread = threading.Thread( target = self.osc.serve_forever )
+    self.thread = threading.Thread( target = self.osc.serve_forever, name = "osc server thread" )
     self.thread.start()
       #self.server = DNOSCServer( self.port, self )
       #self.server.start()
