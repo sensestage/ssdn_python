@@ -112,6 +112,9 @@ class HiveSerialAPI(object):
   def start( self ):
     self.xbee.start()
 
+  def hasXBeeError( self ):
+    return self.xbee.hasXBeeError()
+
   def isRunning( self ):
     return self.xbee.is_alive()
 
@@ -220,6 +223,9 @@ class HiveSerialAPI(object):
     
   def announce( self, nodeid = 0xFFFF ):
     self.send_msg_inc( nodeid, 'A', [] );
+
+  def closePort( self ):
+    self.serial.close()
 
   def quit( self ):
     self.send_msg_inc( 0xFFFF, 'Q', [] );

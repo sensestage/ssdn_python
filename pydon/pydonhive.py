@@ -136,7 +136,10 @@ class MiniHive(object):
 	else:
 	  # check whether thread alive, if not start it again
 	  if not self.serial.isRunning():
-	    self.serial.start()
+	    if not self.serial.hasXBeeError():
+	      self.serial.start()
+	    else:
+	      self.serial.closePort()
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
