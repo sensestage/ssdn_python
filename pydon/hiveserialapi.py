@@ -68,6 +68,21 @@ def HexToByte( hexStr ):
 
     return ''.join( bytes )
 
+class TappedSerial(object):
+    def __init__(self, ser):
+        self.ser = ser
+        
+    def inWaiting( self ):
+      return self.ser.inWaiting()
+
+    def read(self, *args, **kwargs):
+        data = self.ser.read(*args, **kwargs)
+        print "Read:", repr(data)
+        return data
+
+    def write(self, data, **kwargs):
+        print "Wrote:", repr(data)
+        return self.ser.write(data, **kwargs)
 
 class HiveSerialAPI(object):
   def __init__(self, serial_port, baudrate = 19200 ):
@@ -79,6 +94,7 @@ class HiveSerialAPI(object):
     self.serial = serial.Serial()  # open first serial port
     self.serial.baudrate = baudrate
     self.serial.port = serial_port
+    
     self.hiveMsgId = 0
     self.logAction = None
     self.verbose = False
@@ -86,9 +102,12 @@ class HiveSerialAPI(object):
     
   def init_comm( self ):
     print( "initialising communication through serial port")
-    self.dispatch = Dispatch( self.serial )
+    self.tapped_ser = TappedSerial( self.serial )
+    #self.tapped_ser = self.serial
+    self.dispatch = Dispatch( self.tapped_ser )
     self.register_callbacks()
-    self.xbee = XBee( self.serial, callback=self.dispatch.dispatch, escaped=True)
+    self.xbee = XBee( self.tapped_ser, callback=self.dispatch.dispatch, escaped=True)
+    self.xbee.name = "xbee-thread"
 
   def start( self ):
     self.xbee.start()
