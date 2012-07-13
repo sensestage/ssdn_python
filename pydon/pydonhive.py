@@ -81,8 +81,8 @@ class MiniHive(object):
     self.serial_port = serial_port
     self.baudrate = baudrate
     self.serial = None
-    self.seriallock = threading.Lock()
-    self.osclock = threading.Lock()
+    self.seriallock = threading.RLock()
+    self.osclock = threading.RLock()
       
   def start_serial( self ):
     if self.apiMode:
@@ -150,7 +150,7 @@ class MiniHive(object):
 	      print( "lock acquired by thread ", threading.current_thread().name )
 	      self.serial.send_me( bee.serial, 1 )
 	      self.seriallock.release()
-	      time.sleep( 0.0001 )
+	      time.sleep( 0.002 )
 	  else:
 	    bee.send_data( self.verbose )
 	    self.seriallock.acquire()
@@ -173,7 +173,7 @@ class MiniHive(object):
 	  print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.announce()
 	  self.seriallock.release()
-	  time.sleep( 0.0001 )
+	  time.sleep( 0.002 )
       if self.poll:
 	self.poll()
       else:
@@ -465,7 +465,7 @@ class MiniHive(object):
 	print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_config( beeid, configMsg )
 	self.seriallock.release()
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
     else:
@@ -484,7 +484,7 @@ class MiniHive(object):
 	print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_me( self.bees[beeid].serial, 0 )
 	self.seriallock.release()
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -1048,7 +1048,7 @@ class MiniBee(object):
       if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
 	serPort.send_msg( self.outMessage, self.nodeid )
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
@@ -1072,7 +1072,7 @@ class MiniBee(object):
       if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
 	serPort.send_msg( self.customMessage, self.nodeid )
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
@@ -1101,7 +1101,7 @@ class MiniBee(object):
       if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
 	serPort.send_msg( self.runMessage, self.nodeid )
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def repeat_loop( self, serPort ):
@@ -1109,7 +1109,7 @@ class MiniBee(object):
       if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
 	serPort.send_msg( self.loopMessage, self.nodeid )
-	time.sleep( 0.0001 )
+	time.sleep( 0.002 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   #def set_run( self, serPort, status ):
