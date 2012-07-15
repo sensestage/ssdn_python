@@ -96,6 +96,7 @@ class HiveSerialAPI(object):
     self.serial.port = serial_port
     
     self.ack_cnt = 0
+    self.framecnt = 1
     self.hiveMsgId = 1
     self.logAction = None
     self.verbose = False
@@ -384,14 +385,15 @@ class HiveSerialAPI(object):
 
   def send_msg( self, datalistin, rmmy ):
     if self.serial.isOpen():
+      self.framecnt = self.framecnt + 1
+      if self.framecnt == 256:
+	self.framecnt = 1
+      msgid = chr( self.framecnt )
+      self.ack_cnt = self.ack_cnt + 1
       datalist = []
       datalist.extend( datalistin )
       data = ''.join( datalist )
       hrm = struct.pack('>H', rmmy)
-      #msgid = struct.pack('>H', chr(self.hiveMsgId) )
-      msgid = chr( self.hiveMsgId )
-      self.ack_cnt = self.ack_cnt + 1
-      #print( hrm, datalist, data )
       self.xbee.send('tx',
           dest_addr=hrm,
           data=data,
@@ -403,17 +405,17 @@ class HiveSerialAPI(object):
     
   def send_msg_inc( self, rmmy, msgtype, datalistin ):
     if self.serial.isOpen():
+      self.framecnt = self.framecnt + 1
+      if self.framecnt == 256:
+	self.framecnt = 1
+      msgid = chr( self.framecnt )
+      self.ack_cnt = self.ack_cnt + 1
       self.incMsgID()
       datalist = [ msgtype ]
       datalist.append( chr( self.hiveMsgId ) )
       datalist.extend( datalistin )
-      #print datalist, datalistin
       data = ''.join( datalist )
       hrm = struct.pack('>H', rmmy)
-      #msgid = struct.pack('>H', chr( self.hiveMsgId ) )
-      msgid = chr( self.hiveMsgId )
-      self.ack_cnt = self.ack_cnt + 1
-      #print( hrm, datalist, data )
       self.xbee.send('tx',
           dest_addr=hrm,
           options='\x02',
@@ -425,6 +427,11 @@ class HiveSerialAPI(object):
 
   def send_msg64( self, ser, msgtype, datalistin ):
     if self.serial.isOpen():
+      self.framecnt = self.framecnt + 1
+      if self.framecnt == 256:
+	self.framecnt = 1
+      msgid = chr( self.framecnt )
+      self.ack_cnt = self.ack_cnt + 1
       self.incMsgID()
       rfser = HexToByte( ser )
       destaddr = ''.join( rfser )
@@ -432,11 +439,6 @@ class HiveSerialAPI(object):
       datalist.append( chr( self.hiveMsgId) )
       datalist.extend( datalistin )
       data = ''.join( datalist )
-      #msgid = struct.pack('>H', chr( self.hiveMsgId ) )
-      msgid = chr( self.hiveMsgId )
-      self.ack_cnt = self.ack_cnt + 1
-      #hrm = struct.pack('>H', rmmy)
-      #print( hrm, datalist, data )
       self.xbee.send('tx_long_addr',
 	    dest_addr=destaddr,
 	    data=data,
