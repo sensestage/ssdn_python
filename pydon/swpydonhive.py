@@ -24,6 +24,7 @@ class SWPydonHive( object ):
     self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip )
     self.datanetwork.setVerbose( verbose )
 
+    self.verbose = verbose
     self.labelbase = "minibee"
     
     self.hive = pydonhive.MiniHive( serialPort, serialRate, apiMode )
@@ -103,7 +104,7 @@ class SWPydonHive( object ):
       self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )
 
   def resetMiniBee( self, mid ):
-    self.hive.reset_minibee( mid )
+    self.hive.reset_bee( mid )
 
   def runMiniBee( self, mid, status ):
     self.hive.bees[ mid ].send_run( self.hive.serial, status )
@@ -189,9 +190,13 @@ class SWPydonHive( object ):
 
 # data node to minibee
   def dataNodeDataToMiniBee( self, data, nid ):
+    if self.verbose:
+      print( "output mapped data", nid, data )
     self.hive.bees[ nid ].send_output( self.hive.serial, data )
 
   def dataNodeDataToMiniBeeCustom( self, data, nid ):
+    if self.verbose:
+      print( "custom mapped data", nid, data )
     self.hive.bees[ nid ].send_custom( self.hive.serial, data )
 
 # logger:

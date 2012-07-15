@@ -1191,6 +1191,8 @@ class DataNetwork(object):
       print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
 
   def setNodeData( self, nodeid, data, fromNetwork = False ):
+    if self.verbose:
+      print( "Data for node:", nodeid, data )
     if nodeid in self.nodes:
       self.nodes[ nodeid ].setData( data )
       if not fromNetwork:
