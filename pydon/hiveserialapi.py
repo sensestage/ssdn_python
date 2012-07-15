@@ -85,7 +85,7 @@ class TappedSerial(object):
         return self.ser.write(data, **kwargs)
 
 class HiveSerialAPI(object):
-  def __init__(self, serial_port, baudrate = 19200 ):
+  def __init__(self, serial_port, baudrate = 57600 ):
     #self.init_with_serial( mid, serial, libv, revision, caps)
     #self.serialOpened = False
     #self.hive = hive
@@ -95,7 +95,8 @@ class HiveSerialAPI(object):
     self.serial.baudrate = baudrate
     self.serial.port = serial_port
     
-    self.hiveMsgId = 0
+    self.ack_cnt = 0
+    self.hiveMsgId = 1
     self.logAction = None
     self.verbose = False
     self.open_serial_port()
@@ -113,7 +114,7 @@ class HiveSerialAPI(object):
     self.xbee.start()
 
   def hasXBeeError( self ):
-    return self.xbee.hasXBeeError()
+    return self.xbee.hasXBeeError
 
   def isRunning( self ):
     return self.xbee.is_alive()
@@ -152,7 +153,7 @@ class HiveSerialAPI(object):
 
     self.dispatch.register(
       "tx_status",
-      self.generic_handler, 
+      self.txstatus_handler, 
       lambda packet: packet['id']=='tx_status'
     )
 
@@ -189,6 +190,24 @@ class HiveSerialAPI(object):
   def generic_handler( self, name, packet ):
     if self.verbose:
       print( name, packet )
+
+  def txstatus_handler( self, name, packet ):
+    if self.verbose:
+      print "TXStatus Received: ", packet
+    if packet['status'] == 0:
+      self.ack_cnt = self.ack_cnt - 1
+    elif self.verbose:
+      if packet['status'] == 1:
+	print( "TX, No ACK (Acknowledgement) received" )
+      elif packet['status'] == 2:
+	print( "TX, CCA failure" )
+      elif packet['status'] == 3:
+	print( "TX, Purged" )
+      #0 = Success
+      #1 = No ACK (Acknowledgement) received
+      #2 = CCA failure
+      #3 = Purged
+
 
   def rfdata_handler(self, name, packet):
     if self.verbose:
@@ -235,7 +254,7 @@ class HiveSerialAPI(object):
   def incMsgID( self ):
     self.hiveMsgId = self.hiveMsgId + 1
     if self.hiveMsgId > 255:
-      self.hiveMsgId = 0
+      self.hiveMsgId = 1
 
   def send_me( self, ser, onoff ):
     if self.verbose:
@@ -264,86 +283,92 @@ class HiveSerialAPI(object):
     self.send_msg_inc( nodeid, 'C', config )
 
   def set_digital_out3( self, serial, rmmy ):
-    rfser = HexToByte( serial )
-    #rfser = serial
-    destaddr = ''.join( rfser )
-    hrm = struct.pack('>H', rmmy)
-    self.xbee.send('remote_at', 
-          frame_id='B',
-          dest_addr_long=destaddr,
-          options='\x02',
-          command='D3',
-          parameter=hrm
-          )
+    if self.serial.isOpen():
+      rfser = HexToByte( serial )
+      #rfser = serial
+      destaddr = ''.join( rfser )
+      hrm = struct.pack('>H', rmmy)
+      self.xbee.send('remote_at', 
+	    frame_id='B',
+	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='D3',
+	    parameter=hrm
+	    )
     #FIXME: this should be a setting or a separate osc message or something
     #self.store_remote_at64( serial )
 
   def reset_minibee( self, serial ):
-    rfser = HexToByte( serial )
-    #rfser = serial
-    destaddr = ''.join( rfser )
-    hrm = struct.pack('>H', 8 )
-    self.xbee.send('remote_at', 
-          frame_id='C',
-          dest_addr_long=destaddr,
-          options='\x02',
-          command='IO',
-          parameter=hrm
-          )
+    if self.serial.isOpen():
+      rfser = HexToByte( serial )
+      #rfser = serial
+      destaddr = ''.join( rfser )
+      hrm = struct.pack('>H', 8 )
+      self.xbee.send('remote_at', 
+	    frame_id='C',
+	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='IO',
+	    parameter=hrm
+	    )
 
   def restart_minibee( self, serial ):
-    rfser = HexToByte( serial )
-    #rfser = serial
-    destaddr = ''.join( rfser )
-    hrm = struct.pack('>H', 0 )
-    self.xbee.send('remote_at', 
-          frame_id='D',
-          dest_addr_long=destaddr,
-          options='\x02',
-          command='IO',
-          parameter=hrm
-          )
+    if self.serial.isOpen():
+      rfser = HexToByte( serial )
+      #rfser = serial
+      destaddr = ''.join( rfser )
+      hrm = struct.pack('>H', 0 )
+      self.xbee.send('remote_at', 
+	    frame_id='D',
+	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='IO',
+	    parameter=hrm
+	    )
 
   def assign_remote_my( self, serial, rmmy ):
-    rfser = HexToByte( serial )
-    #rfser = serial
-    destaddr = ''.join( rfser )
-    hrm = struct.pack('>H', rmmy)
-    self.xbee.send('remote_at', 
-          frame_id='A',
-          dest_addr_long=destaddr,
-          options='\x02',
-          command='MY',
-          parameter=hrm
-          )
+    if self.serial.isOpen():
+      rfser = HexToByte( serial )
+      #rfser = serial
+      destaddr = ''.join( rfser )
+      hrm = struct.pack('>H', rmmy)
+      self.xbee.send('remote_at', 
+	    frame_id='A',
+	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='MY',
+	    parameter=hrm
+	    )
     #FIXME: this should be a setting or a separate osc message or something
     #self.store_remote_at64( serial )
 
   def store_remote_at64( self, serial ):
-    rfser = HexToByte( serial )
-    #rfser = serial
-    destaddr = ''.join( rfser )
-    #hrm = struct.pack('>H', rmmy)
-    self.xbee.send('remote_at', 
-          frame_id='8',
-          dest_addr_long=destaddr,
-          options='\x02',
-          command='WR'
-          #parameter=hrm
-          )
+    if self.serial.isOpen():
+      rfser = HexToByte( serial )
+      #rfser = serial
+      destaddr = ''.join( rfser )
+      #hrm = struct.pack('>H', rmmy)
+      self.xbee.send('remote_at', 
+	    frame_id='8',
+	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='WR'
+	    #parameter=hrm
+	    )
 
   def store_remote_at16( self, nodeid ):
-    #rfser = HexToByte( serial )
-    #rfser = serial
-    #destaddr = ''.join( rfser )
-    hrm = struct.pack('>H', nodeid)
-    self.xbee.send('remote_at', 
-          frame_id='9',
-          dest_addr=hrm,
-          options='\x02',
-          command='WR'
-          #parameter=hrm
-          )
+    if self.serial.isOpen():
+      #rfser = HexToByte( serial )
+      #rfser = serial
+      #destaddr = ''.join( rfser )
+      hrm = struct.pack('>H', nodeid)
+      self.xbee.send('remote_at', 
+	    frame_id='9',
+	    dest_addr=hrm,
+	    options='\x02',
+	    command='WR'
+	    #parameter=hrm
+	    )
 
   #def send_data( self, rmmy, data ):
     #self.send_msg( rmmy, 'O', data )
@@ -358,51 +383,68 @@ class HiveSerialAPI(object):
     return datalist
 
   def send_msg( self, datalistin, rmmy ):
-    datalist = []
-    datalist.extend( datalistin )
-    data = ''.join( datalist )
-    hrm = struct.pack('>H', rmmy)
-    #print( hrm, datalist, data )
-    self.xbee.send('tx',
+    if self.serial.isOpen():
+      datalist = []
+      datalist.extend( datalistin )
+      data = ''.join( datalist )
+      hrm = struct.pack('>H', rmmy)
+      #msgid = struct.pack('>H', chr(self.hiveMsgId) )
+      msgid = chr( self.hiveMsgId )
+      self.ack_cnt = self.ack_cnt + 1
+      #print( hrm, datalist, data )
+      self.xbee.send('tx',
           dest_addr=hrm,
-          data=data
+          data=data,
+          frame_id=msgid,
+          options='\x02'
           )
-    if self.verbose:
-      print( "sending message to minibee", rmmy, hrm, data )
+      if self.verbose:
+	print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
     
   def send_msg_inc( self, rmmy, msgtype, datalistin ):
-    self.incMsgID()
-    datalist = [ msgtype ]
-    datalist.append( chr( self.hiveMsgId ) )
-    datalist.extend( datalistin )
-    #print datalist, datalistin
-    data = ''.join( datalist )
-    hrm = struct.pack('>H', rmmy)
-    #print( hrm, datalist, data )
-    self.xbee.send('tx',
+    if self.serial.isOpen():
+      self.incMsgID()
+      datalist = [ msgtype ]
+      datalist.append( chr( self.hiveMsgId ) )
+      datalist.extend( datalistin )
+      #print datalist, datalistin
+      data = ''.join( datalist )
+      hrm = struct.pack('>H', rmmy)
+      #msgid = struct.pack('>H', chr( self.hiveMsgId ) )
+      msgid = chr( self.hiveMsgId )
+      self.ack_cnt = self.ack_cnt + 1
+      #print( hrm, datalist, data )
+      self.xbee.send('tx',
           dest_addr=hrm,
           options='\x02',
+          frame_id=msgid,
           data=data
           )
-    if self.verbose:
-      print( "sending message to minibee", rmmy, hrm, data )
+      if self.verbose:
+	print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
 
   def send_msg64( self, ser, msgtype, datalistin ):
-    self.incMsgID()
-    rfser = HexToByte( ser )
-    destaddr = ''.join( rfser )
-    datalist = [ msgtype ]
-    datalist.append( chr( self.hiveMsgId) )
-    datalist.extend( datalistin )
-    data = ''.join( datalist )
-    #hrm = struct.pack('>H', rmmy)
-    #print( hrm, datalist, data )
-    self.xbee.send('tx_long_addr',
-          dest_addr=destaddr,
-          data=data
-          )
-    if self.verbose:
-      print( "sending message to minibee with long addr", ser, rfser, data )
+    if self.serial.isOpen():
+      self.incMsgID()
+      rfser = HexToByte( ser )
+      destaddr = ''.join( rfser )
+      datalist = [ msgtype ]
+      datalist.append( chr( self.hiveMsgId) )
+      datalist.extend( datalistin )
+      data = ''.join( datalist )
+      #msgid = struct.pack('>H', chr( self.hiveMsgId ) )
+      msgid = chr( self.hiveMsgId )
+      self.ack_cnt = self.ack_cnt + 1
+      #hrm = struct.pack('>H', rmmy)
+      #print( hrm, datalist, data )
+      self.xbee.send('tx_long_addr',
+	    dest_addr=destaddr,
+	    data=data,
+	    frame_id=msgid,
+	    options='\x02'
+	    )
+      if self.verbose:
+	print( "sending message to minibee with long addr", ser, rfser, data, self.ack_cnt )
 
   def send_run( self, mid, run ):
     if self.verbose:
