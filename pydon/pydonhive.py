@@ -92,8 +92,11 @@ class MiniHive(object):
     self.serial.set_verbose( self.verbose )
     self.serial.set_hive( self )
     if self.serial.isOpen():
+      self.seriallock.acquire()
+      print( "lock acquired by thread ", threading.current_thread().name, "announce" )
       self.serial.init_comm()
-      self.serial.announce()    
+      self.serial.announce()
+      self.seriallock.release()
 
   def set_ignore_unknown( self, onoff ):
     self.ignoreUnknown = onoff
@@ -127,6 +130,7 @@ class MiniHive(object):
       return rid
 
   def run( self ):
+    self.hadXBeeError = False
     #print( "running", self.running )
     while self.running:
       #print( "serial open", self.serial.isOpen() )
@@ -140,6 +144,7 @@ class MiniHive(object):
 	      self.serial.start()
 	    else:
 	      self.serial.closePort()
+	      self.hadXBeeError = True
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
@@ -150,18 +155,19 @@ class MiniHive(object):
 	    if bee.waiting > 1000:
 	      self.wait_config( beeid, bee.cid )
 	      self.seriallock.acquire()
-	      print( "lock acquired by thread ", threading.current_thread().name )
+	      print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
 	      self.serial.send_me( bee.serial, 1 )
 	      self.seriallock.release()
-	      time.sleep( 0.002 )
+	      time.sleep( 0.005 )
 	  else:
 	    bee.send_data( self.verbose )
-	    self.seriallock.acquire()
-	    bee.repeat_output( self.serial )
-	    bee.repeat_custom( self.serial )
-	    bee.repeat_run( self.serial )
-	    bee.repeat_loop( self.serial )
-	    self.seriallock.release()
+	    #self.seriallock.acquire()
+	    #print( "lock acquired by thread ", threading.current_thread().name, "sending output data" )
+	    bee.repeat_output( self.serial, self.seriallock )
+	    bee.repeat_custom( self.serial, self.seriallock )
+	    bee.repeat_run( self.serial, self.seriallock )
+	    bee.repeat_loop( self.serial, self.seriallock )
+	    #self.seriallock.release()
 	    #if bee.status == 'receiving':
 	      #bee.count = bee.count + 1
 	      #if bee.count > 5000:
@@ -169,14 +175,20 @@ class MiniHive(object):
 		#self.serial.send_me( bee.serial, 0 )
       else:
 	print "trying to open serial port"
+	self.seriallock.acquire()
+	print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.open_serial_port()
+	self.seriallock.release()
 	if self.serial.isOpen():
-	  self.serial.init_comm()
 	  self.seriallock.acquire()
 	  print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.announce()
+	  self.serial.init_comm()
+	  if not self.hadXBeeError:
+	    self.serial.announce()
+	  else:
+	    self.hadXBeeError = False
 	  self.seriallock.release()
-	  time.sleep( 0.002 )
+	  time.sleep( 0.005 )
       if self.poll:
 	self.poll()
       else:
@@ -468,7 +480,7 @@ class MiniHive(object):
 	print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_config( beeid, configMsg )
 	self.seriallock.release()
-	time.sleep( 0.002 )
+	time.sleep( 0.005 )
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
     else:
@@ -487,7 +499,7 @@ class MiniHive(object):
 	print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_me( self.bees[beeid].serial, 0 )
 	self.seriallock.release()
-	time.sleep( 0.002 )
+	time.sleep( 0.005 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -1046,12 +1058,15 @@ class MiniBee(object):
 	    self.parse_single_data( newdata, verbose )
 	    self.time_since_last_update = 0
 
-  def repeat_output( self, serPort ):
+  def repeat_output( self, serPort, lock ):
     if self.outMessage != None:
       if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
+	lock.acquire()
+	print( "lock acquired by thread ", threading.current_thread().name, "repeat output", self.nodeid )
 	serPort.send_msg( self.outMessage, self.nodeid )
-	time.sleep( 0.002 )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
@@ -1070,12 +1085,15 @@ class MiniBee(object):
       #DONT SEND UNTIL CALLED IN THE QUEUE
       #serPort.send_msg( self.outMessage, self.nodeid )
 
-  def repeat_custom( self, serPort ):
+  def repeat_custom( self, serPort, lock ):
     if self.customMessage != None:
       if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
+	lock.acquire()
+	print( "lock acquired by thread ", threading.current_thread().name, "repeat custom", self.nodeid )
 	serPort.send_msg( self.customMessage, self.nodeid )
-	time.sleep( 0.002 )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
@@ -1099,20 +1117,26 @@ class MiniBee(object):
     #DONT SEND UNTIL CALLED IN THE QUEUE
     #serPort.send_msg( self.loopMessage, self.nodeid )
 
-  def repeat_run( self, serPort ):
+  def repeat_run( self, serPort, lock ):
     if self.runMessage != None:
       if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
+	lock.acquire()
+	print( "lock acquired by thread ", threading.current_thread().name, "repeat run", self.nodeid )
 	serPort.send_msg( self.runMessage, self.nodeid )
-	time.sleep( 0.002 )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
-  def repeat_loop( self, serPort ):
+  def repeat_loop( self, serPort, lock ):
     if self.loopMessage != None:
       if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
+	lock.acquire()
+	print( "lock acquired by thread ", threading.current_thread().name, "repeat loop", self.nodeid )
 	serPort.send_msg( self.loopMessage, self.nodeid )
-	time.sleep( 0.002 )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   #def set_run( self, serPort, status ):
