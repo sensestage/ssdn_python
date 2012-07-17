@@ -104,8 +104,9 @@ class HiveSerialAPI(object):
     
   def init_comm( self ):
     print( "initialising communication through serial port")
-    self.tapped_ser = TappedSerial( self.serial )
-    #self.tapped_ser = self.serial
+    self.tapped_ser = self.serial
+    if self.verbose:
+      self.tapped_ser = TappedSerial( self.serial )
     self.dispatch = Dispatch( self.tapped_ser )
     self.register_callbacks()
     self.xbee = XBee( self.tapped_ser, callback=self.dispatch.dispatch, escaped=True)
@@ -229,6 +230,7 @@ class HiveSerialAPI(object):
     elif packet['rf_data'][0] == 'i' and len( packet[ 'rf_data' ] ) > 2: # info message
       print( "info message",  packet, [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
       #self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
+    self.hive.gotData()
     self.log_data( packet )
     
   def set_verbose( self, onoff ):
