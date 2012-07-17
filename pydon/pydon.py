@@ -83,6 +83,8 @@ class DataNetworkOSC(object):
 
     #end# map to broadcast bee
 
+    self.osc.addMsgHandler( "/reset/hive", self.handler_reset_hive )
+
     self.osc.addMsgHandler( "/reset/minibee", self.handler_reset_minibee )
     self.osc.addMsgHandler( "/run/minibee", self.handler_run_minibee )
     self.osc.addMsgHandler( "/loopback/minibee", self.handler_loop_minibee )
@@ -272,6 +274,10 @@ class DataNetworkOSC(object):
   def handler_unregistered_hive( self, path, types, args, source ):
     self.set_registered_hive( False )
     print( "Unregistered as hive client:", args )
+
+  def handler_reset_hive( self, path, types, args, source ):
+    self.reset_hive()
+    print( "Reset hive:", args )
 
   def handler_reset_minibee( self, path, types, args, source ):
     self.reset_minibee( args[0] )
@@ -860,6 +866,10 @@ class DataNetworkOSC(object):
   def statusMinibee( self, mid, status ):
     self.sendMessage( "/status/minibee", [ mid, status ] )
 
+  def reset_hive( self ):
+    self.network.resetHiveAction()
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
   def reset_minibee( self, mid ):
     self.network.resetAction( mid )
     #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
@@ -1130,6 +1140,9 @@ class DataNetwork(object):
     
   def add_setter( self, nodeid ):
     self.setters.add( nodeid )
+
+  def set_resetHiveAction( self, action ):
+    self.resetHiveAction = action
 
   def set_resetAction( self, action ):
     self.resetAction = action
