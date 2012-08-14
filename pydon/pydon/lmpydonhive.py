@@ -28,6 +28,13 @@ class LMPydonHive( object ):
     self.hive.set_newBeeAction( self.hookBeeToMapper )
     self.labelbase = "minibee"
     
+  def exit( self ):
+    print( "Done; goodbye" )
+    self.hive.exit()
+    del self.device
+    sys.exit()
+
+  
   def start( self ):
     try :
       while not self.device.ready():
@@ -36,10 +43,7 @@ class LMPydonHive( object ):
       print( "now running hive" )
       self.hive.run()
     except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
-      print( "Done; goodbye" )
-      self.hive.exit()
-      del self.device
-      sys.exit()
+      self.exit()
 
 # mapping support
 # LM: what is this?
