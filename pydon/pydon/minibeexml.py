@@ -49,14 +49,14 @@ class HiveConfigFile():
 
 	if bee.hasCustom:
 	  el_beeCustom = ET.SubElement( el_bee, "custom" )
-	  for index in range( len( bee.customDataInSizes ) ):
+	  for index in range( len( bee.custom.dataInSizes ) ):
 	#for cusD in bee.customData.items(): #FIXME: this is not encoded as such in MiniBee at the moment
 	    el_customData = ET.SubElement( el_beeCustom, "data" )
 	    el_customData.set( "id", str( index ) )
-	    el_customData.set( "size", str( bee.customDataInSizes[ index ] ) )
-	    el_customData.set( "offset", str( bee.customDataOffsets[ index ] ) )
-	    el_customData.set( "scale", str( bee.customDataScales[ index ] ) )
-	    el_customData.set( "name", str( bee.customLabels[ index ] ) )
+	    el_customData.set( "size", str( bee.custom.dataInSizes[ index ] ) )
+	    el_customData.set( "offset", str( bee.custom.dataOffsets[ index ] ) )
+	    el_customData.set( "scale", str( bee.custom.dataScales[ index ] ) )
+	    el_customData.set( "name", str( bee.custom.labels[ index ] ) )
 
       #el_beeConfig.set( "name", "" )
       #ET.dump( el_bee )
@@ -96,6 +96,16 @@ class HiveConfigFile():
 	    el_twisl = ET.SubElement( el_twi, "twislot" )
 	    el_twisl.set( "id", sid )
 	    el_twisl.set( "name", str( sname ) )
+      if cfg.hasCustom:
+	el_beeCustom = ET.SubElement( el_cfg, "customconf" )
+	for index in range( len( cfg.custom.dataInSizes ) ):
+	#for cusD in bee.customData.items(): #FIXME: this is not encoded as such in MiniBee at the moment
+	  el_customData = ET.SubElement( el_beeCustom, "data" )
+	  el_customData.set( "id", str( index ) )
+	  el_customData.set( "size", str( cfg.custom.dataInSizes[ index ] ) )
+	  el_customData.set( "offset", str( cfg.custom.dataOffsets[ index ] ) )
+	  el_customData.set( "scale", str( cfg.custom.dataScales[ index ] ) )
+	  el_customData.set( "name", str( cfg.custom.labels[ index ] ) )
     # wrap it in an ElementTree instance, and save as XML
     #tree = ET.ElementTree( root )
     #tree.indent()
@@ -180,6 +190,15 @@ class HiveConfigFile():
 	    for twislot in configs.getiterator("twislot"):
 	      hiveconfig['configs'][ configs.get( "id" ) ]["twislots"][ twi.get("id") ][ twislot.get("id") ] = twislot.get( "name" )
 	#print hiveconfig
+	  for custom in configs.getiterator("customconf"):
+	    hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ] = {}
+	    for data in custom.getiterator("data"):
+	      hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ][ int( data.get( "id" ) ) ] = {}
+	      hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "size" ] = int( data.get( "size" ) )
+	      hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "offset" ] = int( data.get( "offset" ) )
+	      hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "scale" ] = int( data.get( "scale" ) )
+	      hiveconfig['configs'][ configs.get( "id" ) ][ "customdata" ][ int( data.get( "id" ) ) ][ "name" ] = data.get( "name" )
+      #print hiveconfig
       return hiveconfig
     except IOError as e:
       print( 'WARNING: Could not open the file %s for reading. Does the file exist?'%filename )
