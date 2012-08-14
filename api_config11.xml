@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<xml>
+  <hive name="myprojectname">
+    <minibee caps="7" configuration="1" id="1" libversion="4" name="minibee1" revision="D" serial="0013A200407E506D">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="2" libversion="4" name="minibee2" revision="D" serial="0013A20040638254">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="3" libversion="4" name="minibee3" revision="D" serial="0013A200406A69AB">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="4" libversion="4" name="minibee4" revision="D" serial="0013A200407E4EAC">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="5" libversion="4" name="minibee5" revision="D" serial="0013A200403B3F73">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="6" libversion="4" name="minibee6" revision="D" serial="0013A200403B3F85">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="7" libversion="4" name="minibee7" revision="D" serial="0013A200406A6859">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="8" libversion="4" name="minibee8" revision="D" serial="0013A200404988F6">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+          <custom>
+	<data id="0" size="2" offset="0" scale="16" name="temperature"/>
+	</custom>
+    </minibee>
+    <minibee caps="7" configuration="1" id="9" libversion="4" name="minibee9" revision="D" serial="0013A2004049875B">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="10" libversion="4" name="minibee10" revision="D" serial="0013A200403B3FB4">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <minibee caps="7" configuration="1" id="11" libversion="4" name="minibee11" revision="D" serial="0013A200406381F2">
+      <!-- the id given inside the minibee tag is the unique id or number of the minibee -->
+      <!-- the configutaion inside the minibee tag is the unique id of the configuration that is used. It has to match one of the configuration id's that are defined in this file. -->
+    </minibee>
+    <configuration id="1" message_interval="100" name="accelero" samples_per_message="1">
+      <pin config="AnalogIn" id="A0" name="ldr"/>
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <pin config="AnalogOut" id="D9" name="led"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="2" message_interval="50" name="demo" samples_per_message="1">
+      <pin config="AnalogIn10bit" id="A0" name="ldr"/>
+      <pin config="AnalogIn10bit" id="A3" name="paper"/>
+      <pin config="AnalogIn10bit" id="A2" name="foam"/>
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <pin config="AnalogOut" id="D9" name="led"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="3" message_interval="50" name="accelero" samples_per_message="1">
+      <pin config="TWIClock" id="A5" name="None"/>
+      <pin config="TWIData" id="A4" name="None"/>
+      <pin config="DigitalOut" id="D9" name="led"/>
+      <pin config="DigitalIn" id="D6" name="din3"/>
+      <pin config="DigitalIn" id="D5" name="din2"/>
+      <pin config="DigitalIn" id="D3" name="din"/>
+      <twi device="ADXL345" id="1" name="accelero">
+        <twislot id="1" name="y"/>
+        <twislot id="0" name="x"/>
+        <twislot id="2" name="z"/>
+      </twi>
+    </configuration>
+    <configuration id="4" message_interval="50" name="accelero" samples_per_message="1">
+      <pin config="AnalogOut" id="D9" name="led"/>
+    </configuration>
+  </hive>
+</xml>

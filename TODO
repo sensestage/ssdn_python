@@ -1,0 +1,87 @@
+pydonhive <-> SWDataNetworkOSC
+
+SWDataNetworkOSC:
+to implement:
+  - queryConfigurations
+
+/query/configurations
+-> /info/configuration
+
+--> how to keep track of whether client already received all known configurations?
+
+
+
+-- if minibee config changes, remove old node and create a new one
+-- if reconnecting to datanetwork, recreated existing minibees on network
+
+
+
+
+
+
+
+SPI - pins?
+
+
+minihiveosc:
+  - implement actual query responses
+
+pydonhive:
+  saving new config -> different autoname, and improve the instructions as to which name to use.
+  
+  graceful exit when serial port not opened
+  
+  if TWI is defined, then use pins A4 and A5 for that, no need to configure it!
+
+pydon:
+  - create datanode if none present (in reply to subscribed)
+  + reageert niet op announce message? - fixed!
+  - add current minibee nodes!
+  
+  - test creating nodes
+  - test subscribing to nodes
+  - test using node data
+  - add action for node data
+
+ --- /quit - still an error upon datanetwork quit
+ --- /error handling - could implement
+ --- /expected - could do something with all arguments
+ --- /info/client - could do something with this data. maybe as a callback from /query/clients
+ --- /info/setter - could do something with this data. maybe as a callback from /query/setters
+ 
+ 
+ --- setting callbacks:
+      - unsubscribeNode
+      - subscribeSlot and unsubscribeSlot
+      - registerHive and unregisterHive
+      - (un)mapping bees
+ --- handling callbacks:
+      - set_registered_hive
+
+  minibee integration:
+    - handle (un)map minibee request
+    - handle (un)map minibee custom request
+
+pydonhive:
+  - custom config parsing in MiniBee
+  - threaded approach to reading serial interface, maybe set a callback function?
+  - loopback message is configured how?
+  - timed playback when more than 1 sample per message is used
+  - clever deduction that if TWI devices are configured, pins A4 and A5 are used for TWI
+ 
+  + connect met pydon!
+  
+ 
+xml:
+  + reading in a hive configuration from file (returns a dictionary with the info)
+  - adding names for pinconfigs, which can be used as labels in the datanetwork
+  - custom config writing and parsing
+  - pretty file writing
+  
+MiniBee:
+  + accelerometer data? what format? --> solved now
+  - but, interesting would be:
+    - make use of other options available for accelerometer
+  
+  - i2c needs to be ordered in pydonhive
+  - me_led cannot be changed yet. but only important for exp. boards EXpree, so don't worry about it?

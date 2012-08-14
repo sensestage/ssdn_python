@@ -1,0 +1,274 @@
+<xml><hive name="polytope_audio">
+   <minibee id="1" revision="D" serial="0013A2004049875B" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="1" offset="0" scale="1" name="amp"/>
+	<data id="1" size="1" offset="0" scale="255" name="ldr1"/>
+	<data id="2" size="1" offset="0" scale="255" name="ldr2"/>
+	<data id="3" size="1" offset="0" scale="255" name="ldr3"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200406381F2 -->
+
+   <minibee id="2" revision="D" serial="0013A200406381F2" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200403B3F85 -->
+
+   <minibee id="3" revision="D" serial="0013A200403B3F85" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200403B3F73 -->
+
+   <minibee id="4" revision="D" serial="0013A200403B3F73" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200403B3FB4 -->
+
+   <minibee id="5" revision="D" serial="0013A200403B3FB4" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A20040638254 -->
+
+   <minibee id="6" revision="D" serial="0013A20040638254" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200407E4EAC -->
+
+   <minibee id="7" revision="D" serial="0013A200407E4EAC" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200407E506D -->
+
+   <minibee id="8" revision="D" serial="0013A200407E506D" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+<!-- 0013A200406A69AB -->
+
+   <minibee id="9" revision="D" serial="0013A200406A69AB" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="10" revision="D" serial="0013A200407E503F" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="11" revision="D" serial="0013A20040638234" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+   
+   <minibee id="12" revision="D" serial="0013A200407E5046" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+   
+   <minibee id="13" revision="D" serial="0013A200407E506B" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="14" revision="D" serial="0013A200407E506C" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="15" revision="D" serial="0013A200407E5076" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="16" revision="D" serial="0013A20040638295" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="17" revision="D" serial="0013A200407E5067" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="18" revision="D" serial="0013A200404988F6" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="19" revision="D" serial="0013A200407E5044" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="20" revision="D" serial="0013A20040557F83" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="21" revision="D" serial="0013A200403AF4AB" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="22" revision="D" serial="0013A2004049889C" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="23" revision="D" serial="0013A200403B3FB3" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+<!-- 	<data id="1" size="1" offset="0" scale="1" name="rssi"/> -->
+    </custom>
+   </minibee>
+
+   <minibee id="24" revision="D" serial="0013A20040497F77" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="25" revision="D" serial="0013A200407E5047" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="26" revision="D" serial="0013A20040638407" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="27" revision="D" serial="0013A200407E5075" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="28" revision="D" serial="0013A200407E5071" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="29" revision="D" serial="0013A200407E4EAB" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="30" revision="D" serial="0013A200407E5072" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="31" revision="D" serial="0013A200407E5052" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="32" revision="D" serial="0013A200407E5069" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="33" revision="D" serial="0013A200407E4F9C" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="34" revision="D" serial="0013A200407E5074" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="35" revision="D" serial="0013A200407E5042" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="36" revision="D" serial="0013A200404988D6" libversion="5" caps="0" configuration="1">
+    <custom>
+	<data id="0" size="2" offset="0" scale="1" name="amp"/>
+    </custom>
+   </minibee>
+
+   <minibee id="37" revision="B" serial="0013A200402D0C02" libversion="5" caps="0" configuration="2">   </minibee>
+   <minibee id="38" revision="B" serial="0013A2004054C2B4" libversion="5" caps="0" configuration="2">   </minibee>
+   <minibee id="39" revision="B" serial="0013A200402CD1FB" libversion="5" caps="0" configuration="2">   </minibee>
+   <minibee id="40" revision="B" serial="0013A200406A2440" libversion="5" caps="0" configuration="2">   </minibee>
+
+  <configuration id="1" name="xpauled" message_interval="50" samples_per_message="1">
+<!--    <pin config="AnalogIn10bit" id="A1" name="ldr1"/>
+    <pin config="AnalogIn10bit" id="A2" name="ldr2"/>
+    <pin config="AnalogIn10bit" id="A3" name="ldr3"/>-->
+  </configuration>
+
+  <configuration id="2" name="lightsense" message_interval="50" samples_per_message="1">
+    <pin config="AnalogIn10bit" id="A2" name="ldr1"/>
+    <pin config="AnalogIn10bit" id="A6" name="ldr2"/>
+  </configuration>
+
+</hive></xml>
