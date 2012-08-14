@@ -18,13 +18,14 @@ import threading
 # begin class DNOSCServer
 #class DNOSCServer( ServerThread ):
 class DataNetworkOSC(object):
-  #def __init__(self, port, dnosc ):
+  #def __init__(self):
     #ServerThread.__init__(self, port)
     #self.dnosc = dnosc
     
   def setVerbose( self, onoff ):
     self.verbose = onoff;
-    self.osc.print_tracebacks = onoff
+    if self.osc != None:
+      self.osc.print_tracebacks = onoff
     
   def add_handlers( self ):
     self.osc.addMsgHandler( "/datanetwork/announce", self.handler_announced )
@@ -82,6 +83,9 @@ class DataNetworkOSC(object):
 
     #end# map to broadcast bee
 
+    self.osc.addMsgHandler( "/reset/hive", self.handler_reset_hive )
+
+    self.osc.addMsgHandler( "/reset/minibee", self.handler_reset_minibee )
     self.osc.addMsgHandler( "/run/minibee", self.handler_run_minibee )
     self.osc.addMsgHandler( "/loopback/minibee", self.handler_loop_minibee )
 
@@ -164,13 +168,15 @@ class DataNetworkOSC(object):
 
   #@make_method('/info/node', 'isii' )
   def handler_node_info( self, path,  types, args, source ):
-    self.info_node( args[0], args[1], args[2], args[3] )
     #print "Present node:", args
+    self.info_node( args[0], args[1], args[2], args[3] )
+    
 
   #@make_method('/info/slot', 'iisi' )
   def handler_slot_info( self, path,  types, args, source ):
-    self.info_slot( args[0], args[1], args[2], args[3] )
     #print "Present slot:", args
+    self.info_slot( args[0], args[1], args[2], args[3] )
+    
 
   #@make_method('/info/client', 'sis' )
   def handler_client_info( self, path,  types, args, source ):
@@ -185,6 +191,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/subscribed/node', 'isi' )
   def handler_node_subscribed( self, path, types, args, source ):
+    #print( "subscribe node", args )
     self.call_callback( 'subscribe', args[2] )
     #if 'subscribe' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -207,7 +214,8 @@ class DataNetworkOSC(object):
 
   #@make_method('/subscribed/slot', 'isii' )
   def handler_slot_subscribed( self, path,  types, args, source ):
-    self.call_callback( 'subscribeSlot', args[2] )
+    #print( "subscribe slot", args )
+    self.call_callback( 'subscribeSlot', args[2], args[3] )
     #if 'subscribeSlot' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
       #if args[2] in self.callbacks['subscribeSlot']:
@@ -218,7 +226,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/unsubscribed/slot', 'isii' )
   def handler_slot_unsubscribed( self, path, types, args, source ):
-    self.call_callback( 'unsubscribeSlot', args[2] )
+    self.call_callback( 'unsubscribeSlot', args[2], args[3] )
     # could add a check if this is really me
     #if 'unsubscribeSlot' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -230,7 +238,7 @@ class DataNetworkOSC(object):
 
   #@make_method('/removed/node', 'i' )
   def handler_node_removed( self, path, types, args, source ):
-    self.call_callback( 'remove', args[2] )
+    self.call_callback( 'remove', args[0] )
     # could add a check if this is really me
     #if 'remove' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -266,6 +274,14 @@ class DataNetworkOSC(object):
   def handler_unregistered_hive( self, path, types, args, source ):
     self.set_registered_hive( False )
     print( "Unregistered as hive client:", args )
+
+  def handler_reset_hive( self, path, types, args, source ):
+    self.reset_hive()
+    print( "Reset hive:", args )
+
+  def handler_reset_minibee( self, path, types, args, source ):
+    self.reset_minibee( args[0] )
+    print( "Reset minibee:", args )
 
   def handler_run_minibee( self, path, types, args, source ):
     self.run_minibee( args[0], args[1] )
@@ -469,22 +485,26 @@ class DataNetworkOSC(object):
     self.network = network
     self.callbacks = {}
     self.verbose = False
-    self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
-    
-  def add_hive( self, hive ):
-    self.hive = hive
-    
-  def createOSC( self, hostip, myport, myname, cltype, nonodes, myhost ):
     self.name = myname
     self.hostIP = hostip
     self.port = myport
     self.myIP = myhost
-    self.findHost( hostip )
+    self.cltype = cltype
+    self.nonodes = nonodes
+    self.osc = None
+    self.createOSC()
+    #self.createOSC( hostip, myport, myname, cltype, nonodes, myhost )
+    
+  def add_hive( self, hive ):
+    self.hive = hive
+    
+  def createOSC( self ):
+    self.findHost( self.hostIP )
     print( "Found host at", self.hostIP, self.hostPort )
     self.resetHost()
     self.createClient()
-    self.cltype = cltype
-    self.nonodes = nonodes
+    
+  def startDataNetwork( self ):
     self.doRegister()
     
   def doRegister(self):
@@ -498,9 +518,12 @@ class DataNetworkOSC(object):
     #try:
     receive_address = ( self.myIP, self.port )
     #receive_address = ( '127.0.0.1', self.port )
+    #self.osc = OSC.ThreadingOSCServer( receive_address )
     self.osc = OSC.OSCServer( receive_address )
+    self.osc.print_tracebacks = self.verbose
+    #self.osc.verbose = self.verbose
     self.add_handlers()
-    self.thread = threading.Thread( target = self.osc.serve_forever )
+    self.thread = threading.Thread( target = self.osc.serve_forever, name = "osc server thread" )
     self.thread.start()
       #self.server = DNOSCServer( self.port, self )
       #self.server.start()
@@ -516,6 +539,7 @@ class DataNetworkOSC(object):
   
   def quitHost( self, hip, hop ):
     #print hip, hop
+    self.set_registered( False )
     if self.hostIP == hip:
       if self.hostPort == hop:
 	self.findHost( self.hostIP ) # try and find host again, if not we just wait for an announce message
@@ -544,7 +568,7 @@ class DataNetworkOSC(object):
     
 ## data!
   def data_for_node( self, nodeid, data ):
-    self.network.setNodeData( nodeid, data )
+    self.network.setNodeData( nodeid, data, True )
 
   def data_for_slot( self, nodeid, slotid, data ):
     self.network.setSlotData( nodeid, slotid, data )
@@ -574,7 +598,7 @@ class DataNetworkOSC(object):
     if mycallback != None:
       #if 'register' not in self.callbacks:
       self.callbacks[ 'register' ] = mycallback
-    self.sendSimpleMessage( "/register" )
+    self.sendSimpleMessage( "/register", False )
     
   def unregister( self, mycallback = None ):
     if mycallback != None:
@@ -636,7 +660,10 @@ class DataNetworkOSC(object):
     self.sendSimpleMessage( "/remove/all" )
 
   def setterCallback( self, mycallback ):
-      self.callbacks[ 'setter' ] = mycallback
+    self.callbacks[ 'setter' ] = mycallback
+
+  def add_callback_noid( self, ctype, mycallback ):
+    self.callbacks[ ctype ] = mycallback
 
   def add_callback( self, ctype, cid, mycallback ):
       if ctype not in self.callbacks:
@@ -734,7 +761,7 @@ class DataNetworkOSC(object):
   def registerHive( self, number ):
     if self.verbose:
       print( "sending a register hive message" )
-    self.sendMessage( "/register/hive", [ number ] )
+    self.sendMessage( "/register/hive", [ number ], False )
     #self.sendSimpleMessage( "/register/hive" )
     #msg = liblo.Message( "/register/hive", self.port, self.name, number )
     #self.sendMessage( msg )
@@ -838,6 +865,14 @@ class DataNetworkOSC(object):
   # sending status message about a minibee
   def statusMinibee( self, mid, status ):
     self.sendMessage( "/status/minibee", [ mid, status ] )
+
+  def reset_hive( self ):
+    self.network.resetHiveAction()
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
+  def reset_minibee( self, mid ):
+    self.network.resetAction( mid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
 
   def run_minibee( self, mid, status ):
     self.network.runAction( mid, status )
@@ -980,39 +1015,41 @@ class DataNetworkOSC(object):
       print( "saved configuration to: ", filename )
 
 ## message sending
-  def sendMessage( self, path, args ):
-    msg = OSC.OSCMessage()
-    msg.setAddress( path )
-    msg.append( self.port )
-    msg.append( self.name )
-    #print args
-    for a in args:
-      msg.append( a )
-    try:
-      self.host.send( msg )
-      if self.verbose:
-	print( "sending message", msg )
-    except OSC.OSCClientError:
-      if self.verbose:
-	print( "error sending message", msg )
+  def sendMessage( self, path, args, onlyWhenRegistered = True ):
+    if not onlyWhenRegistered or self.registered:
+      msg = OSC.OSCMessage()
+      msg.setAddress( path )
+      msg.append( self.port )
+      msg.append( self.name )
+      #print args
+      for a in args:
+	msg.append( a )
+      try:
+	self.host.send( msg )
+	if self.verbose:
+	  print( "sending message", msg )
+      except OSC.OSCClientError:
+	if self.verbose:
+	  print( "error sending message", msg )
 
     #try:
       #self.server.send( self.host, msg )
     #except liblo.AddressError, err:
       #print str(err)
   
-  def sendSimpleMessage( self, path ):
-    msg = OSC.OSCMessage()
-    msg.setAddress( path )
-    msg.append( self.port )
-    msg.append( self.name )
-    try:
-      self.host.send( msg )
-      if self.verbose:
-	print( "sending message", msg )
-    except OSC.OSCClientError:
-      if self.verbose:
-	print( "error sending message", msg )
+  def sendSimpleMessage( self, path, onlyWhenRegistered = True ):
+    if not onlyWhenRegistered or self.registered:
+      msg = OSC.OSCMessage()
+      msg.setAddress( path )
+      msg.append( self.port )
+      msg.append( self.name )
+      try:
+	self.host.send( msg )
+	if self.verbose:
+	  print( "sending message", msg )
+      except OSC.OSCClientError:
+	if self.verbose:
+	  print( "error sending message", msg )
     #try:
       #self.server.send( self.host, path, self.port, self.name )
     #except liblo.AddressError, err:
@@ -1073,28 +1110,42 @@ class DataNode(object):
 # begin class DataNetwork
 class DataNetwork(object):
   def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0' ):
-    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
     self.nodes = {} # contains the nodes we are subscribed to
     self.expectednodes = set([]) # contains node ids that are expected and could be subscribed to
     self.setters = set([]) # contains the nodes we are the setters of
     
     self.hive = None
    
+    self.resetAction = None
     self.runAction = None
     self.loopAction = None
     self.mapAction = None
     self.unmapAction = None
     self.mapCustomAction = None
     self.unmapCustomAction = None
+
+    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
+  
+  def startOSC( self ):
+    #self.osc.createOSC()
+    self.osc.startDataNetwork()
   
   def setHive( self, hive ):
     self.hive = hive
   
   def setVerbose( self, onoff ):
-    self.osc.setVerbose( onoff )
+    self.verbose = onoff
+    if self.osc != None:
+      self.osc.setVerbose( onoff )
     
   def add_setter( self, nodeid ):
     self.setters.add( nodeid )
+
+  def set_resetHiveAction( self, action ):
+    self.resetHiveAction = action
+
+  def set_resetAction( self, action ):
+    self.resetAction = action
 
   def set_runAction( self, action ):
     self.runAction = action
@@ -1129,16 +1180,20 @@ class DataNetwork(object):
 	print( "setter", sid )
       self.osc.addExpected( nodeid, [ self.nodes[ nodeid ].label, self.nodes[ nodeid ].size ] )
       self.nodes[nodeid].sendData()
-
-  def infoNode( self, nodeid, label, size, dntype ):
+      
+  def createNode( self, nodeid, size, label, dntype = 0 ):
     if nodeid not in self.nodes:
+      print( "creating node", nodeid, size, label, dntype )
       self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
     else:
       #try:
       self.nodes[ nodeid ].setLabel( label )
       self.nodes[ nodeid ].setSize( size )
       self.nodes[ nodeid ].setType( dntype )
-      #except:
+
+  def infoNode( self, nodeid, label, size, dntype ):
+    self.createNode( nodeid, size, label, dntype )
+    #self.nodes[ nodeid ] = DataNode( self, nodeid, size, label, dntype )
     if nodeid not in self.nodes:
       print( "InfoNode: nodeid ", nodeid, " not in nodes") #, self.nodes )
 
@@ -1146,12 +1201,15 @@ class DataNetwork(object):
     if nodeid in self.nodes:
       self.nodes[ nodeid ].setLabelSlot( slotid, label )
     else:
-      if self.verbose:
-	print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
+      print( "InfoSlot: nodeid ", nodeid, " not in nodes" ) #, self.nodes )
 
-  def setNodeData( self, nodeid, data ):
+  def setNodeData( self, nodeid, data, fromNetwork = False ):
+    if self.verbose:
+      print( "Data for node:", nodeid, data )
     if nodeid in self.nodes:
       self.nodes[ nodeid ].setData( data )
+      if not fromNetwork:
+	self.sendData( nodeid, data )
     else:
       print( "DataNode: nodeid ", nodeid, " not in nodes" ) #, "not in nodes", self.nodes )
 

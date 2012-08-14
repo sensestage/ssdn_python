@@ -5,6 +5,7 @@ import sys
 import os
 import datetime
 import math
+import threading
 
 import optparse
 #print time
@@ -17,7 +18,7 @@ from hiveserialapi import HiveSerialAPI # API based communication (in developmen
 from collections import deque
 
 ## {{{ http://code.activestate.com/recipes/210459/ (r2)
-class Queue:
+class QueueFifo:
     """A sample implementation of a First-In-First-Out
        data structure."""
     def __init__(self):
@@ -70,22 +71,43 @@ class MiniHive(object):
     self.mapBeeToSerial = {}
     self.configs = {}
     self.apiMode = apiMode
-    if self.apiMode:
-      self.serial = HiveSerialAPI( serial_port, baudrate )
-    else:
-      self.serial = HiveSerial( serial_port, baudrate )
-    self.serial.set_hive( self )
-    self.serial.announce()
     self.running = True
     self.newBeeAction = None
     self.verbose = False
+    self.ignoreUnknown = False
     #self.redundancy = 10
     self.create_broadcast_bee()
     self.poll = poll
-    
+    self.serial_port = serial_port
+    self.baudrate = baudrate
+    self.serial = None    
+    self.countSinceLastData = 0
+    self.seriallock = threading.RLock()
+    self.osclock = threading.RLock()
+      
+  def start_serial( self ):
+    if self.apiMode:
+      self.serial = HiveSerialAPI( self.serial_port, self.baudrate )
+    else:
+      self.serial = HiveSerial( self.serial_port, self.baudrate )
+    self.serial.set_verbose( self.verbose )
+    self.serial.set_hive( self )
+    if self.serial.isOpen():
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name, "announce" )
+      self.serial.init_comm()
+      self.serial.announce()
+      self.seriallock.release()
+
+  def set_ignore_unknown( self, onoff ):
+    self.ignoreUnknown = onoff
+    print( "ignoring unknown minibees", self.ignoreUnknown )
+
   def set_verbose( self, onoff ):
     self.verbose = onoff
-    self.serial.set_verbose( onoff )
+    if self.serial != None:
+      self.serial.set_verbose( onoff )
   
   def set_id_range( self, minid, maxid ):
     self.idrange = range( minid, maxid )
@@ -109,38 +131,89 @@ class MiniHive(object):
       #print self.idrange, rid
       return rid
 
+  def gotData( self ):
+    self.countSinceLastData = 0
+
   def run( self ):
+    self.hadXBeeError = False 
+    #print( "running", self.running )
     while self.running:
-      if not self.apiMode:
-	self.serial.read_data()
-      for beeid, bee in self.bees.items():
-	#print beeid, bee
-	bee.countsincestatus = bee.countsincestatus + 1
-	if bee.countsincestatus > 12000:
-	  bee.set_status( 'off' )
-	if bee.status == 'waiting':
-	  bee.waiting = bee.waiting + 1
-	  if bee.waiting > 1000:
-	    self.wait_config( beeid, bee.cid )
-	    self.serial.send_me( bee.serial, 1 )
+      #print( "serial open", self.serial.isOpen() )
+      if self.serial.isOpen():
+	self.countSinceLastData = self.countSinceLastData + 1
+	if not self.apiMode:
+	  self.serial.read_data()
 	else:
-	  bee.send_data( self.verbose )
-	  bee.repeat_output( self.serial )
-	  bee.repeat_custom( self.serial )
-	  bee.repeat_run( self.serial )
-	  bee.repeat_loop( self.serial )
-	  #if bee.status == 'receiving':
-	    #bee.count = bee.count + 1
-	    #if bee.count > 5000:
-	      #bee.count = 0
-	      #self.serial.send_me( bee.serial, 0 )
-      if self.poll:
-        self.poll()
+	  # check whether thread alive, if not start it again
+	  if not self.serial.isRunning():
+	    if not self.serial.hasXBeeError():
+	      self.serial.start()
+	    else:
+	      self.serial.closePort()
+	      self.hadXBeeError = True
+	  #elif self.countSinceLastData > 2000: # we did not receive any data for about 10 seconds, something's up, let's close and reopen the serial port
+	    #self.serial.closePort()
+	    #self.countSinceLastData = 0
+	    #self.hadXBeeError = True    
+	for beeid, bee in self.bees.items():
+	  #print beeid, bee
+	  bee.countsincestatus = bee.countsincestatus + 1
+	  if bee.countsincestatus > 12000:
+	    bee.set_status( 'off' )
+	  if bee.status == 'waiting':
+	    bee.waiting = bee.waiting + 1
+	    if bee.waiting > 1000:
+	      self.wait_config( beeid, bee.cid )
+	      self.seriallock.acquire()
+	      if self.verbose:
+		print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
+	      self.serial.send_me( bee.serial, 1 )
+	      self.seriallock.release()
+	      time.sleep( 0.005 )
+	  else:
+	    bee.send_data( self.verbose )
+	    #self.seriallock.acquire()
+	    #print( "lock acquired by thread ", threading.current_thread().name, "sending output data" )
+	    bee.repeat_output( self.serial, self.seriallock )
+	    bee.repeat_custom( self.serial, self.seriallock )
+	    bee.repeat_run( self.serial, self.seriallock )
+	    bee.repeat_loop( self.serial, self.seriallock )
+	    #self.seriallock.release()
+	    #if bee.status == 'receiving':
+	      #bee.count = bee.count + 1
+	      #if bee.count > 5000:
+		#bee.count = 0
+		#self.serial.send_me( bee.serial, 0 )
       else:
-        time.sleep(0.001)
+	print "trying to open serial port"
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
+	self.serial.open_serial_port()
+	self.seriallock.release()
+	if self.serial.isOpen():
+	  self.seriallock.acquire()
+	  if self.verbose:
+	    print( "lock acquired by thread ", threading.current_thread().name )
+	  self.serial.init_comm()
+	  if not self.hadXBeeError:
+	    self.serial.announce()
+	  else:
+	    self.hadXBeeError = False
+	  self.seriallock.release()
+	  time.sleep( 0.005 )
+      if self.poll:
+	self.poll()
+      else:
+	time.sleep(0.005)
 
   def exit( self ):
-    self.serial.quit()
+    if self.serial.isOpen():
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name )
+      self.serial.quit()
+      self.seriallock.release()
     
   def map_serial_to_bee( self, serial, mid ):
     if serial in self.mapBeeToSerial:
@@ -224,26 +297,43 @@ class MiniHive(object):
     for beeid, bee in self.bees.items():
       if bee.cid == cid and bee.has_new_config_id():
 	bee.set_config( cid, newconfig )
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_id( bee.serial, bee.nodeid, bee.cid )
+	self.seriallock.release()
 	bee.set_status( 'waiting' )
 	bee.waiting = 0
     return True
   
   def store_ids( self ):
     if self.apiMode:
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name )
       self.serial.store_remote_at16( 0xFFFF )
+      self.seriallock.release()
     
   def store_minibee_id( self, mid ):
     if self.apiMode:
       if mid in self.bees:
 	minibee = self.bees[ mid ]
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.store_remote_at64( minibee.serial )
+	self.seriallock.release()
 
   def announce_minibee_id( self, mid ):
     if self.apiMode:
       if mid in self.bees:
 	#minibee = self.bees[ mid ]
+	print( "sending announce to minibee", mid )
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.announce( mid )
+	self.seriallock.release()
 
   def set_minibee_config( self, mid, cid ):
     if mid in self.bees: # if the minibee exists
@@ -253,7 +343,11 @@ class MiniHive(object):
 	minibee.set_config( cid, config )
       else:
 	minibee.set_config_id( cid )
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name )
       self.serial.send_id( minibee.serial, minibee.nodeid, minibee.cid )
+      self.seriallock.release()
       minibee.set_status( 'waiting' )
       minibee.waiting = 0
       if self.newBeeAction:
@@ -283,9 +377,46 @@ class MiniHive(object):
       self.mapBeeToSerial[ serial ] = mid
       firsttimenewbee = True
       
+    self.seriallock.acquire()
+    if self.verbose:
+      print( "lock acquired by thread ", threading.current_thread().name )
     self.serial.send_id( serial, minibee.nodeid )
+    self.seriallock.release()
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )
+      
+  def reset_hive( self ):
+    if self.apiMode:
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name )
+      self.serial.closePort()
+      self.hadXBeeError = True
+      self.seriallock.release()
+   
+  def reset_bee( self, beeid ):
+    if self.apiMode:
+      if beeid in self.bees:
+	minibee = self.bees[ beeid ]
+	# check whether 5 is right (otherwise 4)
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
+	self.serial.set_digital_out3( minibee.serial, 5 )
+	self.seriallock.release()
+	# these should be callbacks:
+	time.sleep(0.05)
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
+	self.serial.reset_minibee( minibee.serial )
+	self.seriallock.release()
+	time.sleep(0.20)
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
+	self.serial.restart_minibee( minibee.serial )
+	self.seriallock.release()
 
   def new_bee( self, serial, libv, rev, caps, remConf = True ):
     firsttimenewbee = False
@@ -304,12 +435,16 @@ class MiniHive(object):
       firsttimenewbee = True
      
     #print minibee
-    if remConf == 1:
+    if bool( remConf ):
       if minibee.cid > 0:
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_id( serial, minibee.nodeid, minibee.cid )
+	self.seriallock.release()
 	#minibee.set_status( 'waiting' )
 	minibee.waiting = 0
-      elif firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+      elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
 	filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
 	self.write_to_file( filename )
@@ -318,8 +453,12 @@ class MiniHive(object):
 	print( "Check documentation for details." )
       #sys.exit()
     else:
+      self.seriallock.acquire()
+      if self.verbose:
+	print( "lock acquired by thread ", threading.current_thread().name )
       self.serial.send_id( serial, minibee.nodeid )
-      if firsttimenewbee: # this could be different behaviour! e.g. wait for a new configuration to come in
+      self.seriallock.release()
+      if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
       self.newBeeAction( minibee )
@@ -336,7 +475,11 @@ class MiniHive(object):
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.announce( 0xFFFA )
+	self.seriallock.release()
 
   def bee_active( self, beeid, msgid ):
     if beeid in self.bees:
@@ -361,14 +504,19 @@ class MiniHive(object):
     if beeid in self.bees:
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
-	self.serial.send_me( self.bees[ beeid ].serial, 1 )
+	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
 	self.bees[ beeid ].waiting = 0
 	if self.verbose:
 	  print( "sent configmessage to minibee", configMsg )
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_config( beeid, configMsg )
+	self.seriallock.release()
+	time.sleep( 0.005 )
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
     else:
@@ -383,7 +531,12 @@ class MiniHive(object):
 	print( "minibee", beeid, "is not configured yet" )
       else:
 	print( "minibee %i is configured"%beeid )
+	self.seriallock.acquire()
+	if self.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_me( self.bees[beeid].serial, 0 )
+	self.seriallock.release()
+	time.sleep( 0.005 )
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -408,6 +561,8 @@ class MiniHive(object):
 	self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
 	self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
 	self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
+	if 'customdata' in config:
+	  self.configs[ int( cid ) ].set_custom( config[ 'customdata' ] )
 	#print self.configs[ int( cid ) ]
       for ser, bee in hiveconf[ 'bees' ].items():
 	#print bee
@@ -455,6 +610,31 @@ class MiniHive(object):
 
 # end of MiniHive
 
+# custom elements
+
+class MiniBeeCustomConfig(object):
+  def __init__(self):
+    self.dataInSizes = []
+    self.labels = []
+    self.dataScales = []
+    self.dataOffsets = []
+    
+  def set_conf( self, customconf ):
+    hasCustom = False;
+    self.labels = []
+    self.dataScales = []
+    self.dataOffsets = []
+    sortedConf = [ (k,customconf[k]) for k in sorted(customconf.keys())]
+    #print sortedConf
+    for cid, cdat in sortedConf:
+      #print cid, cdat
+      hasCustom = True
+      self.labels.append( cdat[ "name" ] )
+      self.dataScales.append( cdat[ "scale" ] )
+      self.dataOffsets.append( cdat[ "offset" ] )
+      self.dataInSizes.append( cdat[ "size" ] )
+    return hasCustom
+
 # MiniBee Config
 
 class MiniBeeConfig(object):
@@ -489,6 +669,8 @@ class MiniBeeConfig(object):
     self.logDataLabels = []
     self.digitalIns = 0
     self.redundancy = 3
+    self.hasCustom = False
+    self.custom = MiniBeeCustomConfig()
 
   #def getConfigForFile( self ):
     #fileconf = {}
@@ -507,7 +689,7 @@ class MiniBeeConfig(object):
   
   def setRedundancy( self, redun ):
     self.redundancy = redun
-    print self.redundancy
+    #print self.redundancy
   
   def setPins( self, filepins ):
     #print filepins
@@ -611,13 +793,24 @@ class MiniBeeConfig(object):
     #print "-----END MAKING CONFIG MESSAGE------"
     return configMessage
 
+  def set_custom(self, customconf ):
+    self.hasCustom = self.custom.set_conf( customconf )
+    #print( "set_custom_config", self.hasCustom, self.custom.dataInSizes )
+
 #MiniBeeConfig
   def check_config( self, libv, rev ):
+    #print( "begin check config", self.dataInSizes, self.custom.dataInSizes )
+    if self.hasCustom:
+      self.dataScales = list( self.custom.dataScales )
+      self.dataOffsets = list( self.custom.dataOffsets )
+      self.dataInSizes = list( self.custom.dataInSizes )
+    else:
+      self.dataScales = []
+      self.dataOffsets = []
+      self.dataInSizes = []
+      
     #print "-----CHECKING CONFIG------"
     self.digitalIns = 0
-    self.dataInSizes = []
-    self.dataScales = []
-    self.dataOffsets = []
     self.dataOutSizes = []
     self.logDataFormat = []
     self.logDataLabels = []
@@ -736,7 +929,7 @@ class MiniBeeConfig(object):
 	  self.dataOffsets.append( 0 )
 	  self.logDataFormat.append( 1 )
 	  self.logDataLabels.append( self.pinlabels[ pinname ] )  
-
+    #print( "end check config", self.dataInSizes, self.custom.dataInSizes )
     #if self.verbose:
     #print self.digitalIns, self.dataInSizes, self.dataOutSizes, self.dataScales
     #print self.logDataFormat, self.logDataLabels
@@ -761,14 +954,16 @@ class MiniBee(object):
     self.msgID = 0
     self.lastRecvMsgID = 255
     self.name = "";
-    self.customDataInSizes = []
     self.dataOffsets = []
     self.dataScales = []
     self.hasCustom = False
-    self.customLabels = []
-    self.customDataScales = []
-    self.customDataOffsets = []
-    self.dataQueue = Queue()
+    self.redundancy = 1
+    self.custom = MiniBeeCustomConfig()
+    #self.customDataInSizes = []
+    #self.customLabels = []
+    #self.customDataScales = []
+    #self.customDataOffsets = []
+    self.dataQueue = QueueFifo()
     #self.time_since_last_message = 0
     self.time_since_last_update = 0
       
@@ -790,6 +985,7 @@ class MiniBee(object):
     self.cid = -1
     self.status = 'init'
     self.logAction = None
+    self.infoAction = None
     self.statusAction = None
     self.dataAction = None
     self.firstDataAction = None
@@ -834,27 +1030,33 @@ class MiniBee(object):
     self.cid = cid
     self.config = configuration
     self.config.check_config( self.libversion, self.revision )
-    self.dataScales = self.customDataScales
-    self.dataOffsets = self.customDataOffsets
+    self.dataScales = list(self.custom.dataScales)
+    self.dataOffsets = list(self.custom.dataOffsets)
+    #self.dataScales = self.customDataScales
+    #self.dataOffsets = self.customDataOffsets
     self.dataScales.extend( self.config.dataScales )
     self.dataOffsets.extend( self.config.dataOffsets )
+    self.redundancy = self.config.redundancy
+    #print( "set_config", self.dataScales, self.custom.dataInSizes, self.custom.dataScales )
 
   def set_custom(self, customconf ):
-    self.customLabels = []
-    self.customDataScales = []
-    self.customDataOffsets = []
-    sortedConf = [ (k,customconf[k]) for k in sorted(customconf.keys())]
-    #print sortedConf
-    for cid, cdat in sortedConf:
-      #print cid, cdat
-      self.hasCustom = True
-      self.customLabels.append( cdat[ "name" ] )
-      self.customDataScales.append( cdat[ "scale" ] )
-      self.customDataOffsets.append( cdat[ "offset" ] )
-      self.customDataInSizes.append( cdat[ "size" ] )
-    self.dataScales = self.customDataScales
+    self.hasCustom = self.custom.set_conf( customconf )
+    #print( "set_custom", self.hasCustom, self.custom.dataInsizes )
+    #self.customLabels = []
+    #self.customDataScales = []
+    #self.customDataOffsets = []
+    #sortedConf = [ (k,customconf[k]) for k in sorted(customconf.keys())]
+    ##print sortedConf
+    #for cid, cdat in sortedConf:
+      ##print cid, cdat
+      #self.hasCustom = True
+      #self.customLabels.append( cdat[ "name" ] )
+      #self.customDataScales.append( cdat[ "scale" ] )
+      #self.customDataOffsets.append( cdat[ "offset" ] )
+      #self.customDataInSizes.append( cdat[ "size" ] )
+    self.dataScales = list( self.custom.dataScales )
     self.dataScales.extend( self.config.dataScales )
-    self.dataOffsets = self.customDataOffsets
+    self.dataOffsets = list( self.custom.dataOffsets )
     self.dataOffsets.extend( self.config.dataOffsets )
     #print( self.customLabels, self.dataScales, self.dataOffsets, self.customDataInSizes )
     #if len(self.dataScales) == 0:
@@ -866,6 +1068,9 @@ class MiniBee(object):
 
   def set_action( self, action ):
     self.dataAction = action
+
+  def set_info_action( self, action ):
+    self.infoAction = action
 
   def set_status_action( self, action ):
     self.statusAction = action
@@ -890,11 +1095,16 @@ class MiniBee(object):
 	    self.parse_single_data( newdata, verbose )
 	    self.time_since_last_update = 0
 
-  def repeat_output( self, serPort ):
+  def repeat_output( self, serPort, lock ):
     if self.outMessage != None:
-      if self.outrepeated < self.config.redundancy :
+      if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
+	lock.acquire()
+	if serPort.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name, "repeat output", self.nodeid )
 	serPort.send_msg( self.outMessage, self.nodeid )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
@@ -903,51 +1113,71 @@ class MiniBee(object):
 	self.outdata = data
 	self.outrepeated = 0
 	self.outMessage = self.create_msg( 'O', self.outdata, serPort )
-	serPort.send_msg( self.outMessage, self.nodeid )
+	#DONT SEND UNTIL CALLED IN THE QUEUE
+	#serPort.send_msg( self.outMessage, self.nodeid )
 	#serPort.send_data_inclid( self.nodeid, self.msgID, data )
     elif self.nodeid == 0xFFFF: #broadcast node
       self.outdata = data
       self.outrepeated = 0
       self.outMessage = self.create_msg( 'O', self.outdata, serPort )
-      serPort.send_msg( self.outMessage, self.nodeid )
+      #DONT SEND UNTIL CALLED IN THE QUEUE
+      #serPort.send_msg( self.outMessage, self.nodeid )
 
-  def repeat_custom( self, serPort ):
+  def repeat_custom( self, serPort, lock ):
     if self.customMessage != None:
-      if self.customrepeated < self.config.redundancy :
+      if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
+	lock.acquire()
+	if serPort.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name, "repeat custom", self.nodeid )
 	serPort.send_msg( self.customMessage, self.nodeid )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
     self.customdata = data
     self.customrepeated = 0
     self.customMessage = self.create_msg( 'E', self.customdata, serPort )
-    serPort.send_msg( self.customMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.customMessage, self.nodeid )
     #if len( data ) == sum( self.config.customOutSizes ) :
     #serPort.send_custom( self.nodeid, data )
 
   def send_run( self, serPort, status ):
     self.runrepeated = 0
     self.runMessage = self.create_msg( 'R', [ status ], serPort )
-    serPort.send_msg( self.runMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.runMessage, self.nodeid )
 
   def send_loopback( self, serPort, status ):
     self.looprepeated = 0
     self.loopMessage = self.create_msg( 'L', [ status ], serPort )
-    serPort.send_msg( self.loopMessage, self.nodeid )
+    #DONT SEND UNTIL CALLED IN THE QUEUE
+    #serPort.send_msg( self.loopMessage, self.nodeid )
 
-  def repeat_run( self, serPort ):
+  def repeat_run( self, serPort, lock ):
     if self.runMessage != None:
-      if self.runrepeated < self.config.redundancy :
+      if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
+	lock.acquire()
+	if serPort.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name, "repeat run", self.nodeid )
 	serPort.send_msg( self.runMessage, self.nodeid )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
-  def repeat_loop( self, serPort ):
+  def repeat_loop( self, serPort, lock ):
     if self.loopMessage != None:
-      if self.looprepeated < self.config.redundancy :
+      if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
+	lock.acquire()
+	if serPort.verbose:
+	  print( "lock acquired by thread ", threading.current_thread().name, "repeat loop", self.nodeid )
 	serPort.send_msg( self.loopMessage, self.nodeid )
+	lock.release()
+	time.sleep( 0.005 )
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   #def set_run( self, serPort, status ):
@@ -992,7 +1222,7 @@ class MiniBee(object):
     idx = 0
     parsedData = []
     scaledData = []
-    for sz in self.customDataInSizes:
+    for sz in self.custom.dataInSizes:
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
   #print "index after custom data in size", idx
@@ -1024,8 +1254,10 @@ class MiniBee(object):
       if len( dat ) == 1 :
 	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
     self.data = scaledData
-    if len(self.data) == ( len( self.config.dataScales ) + len( self.customDataInSizes ) ):
+    if len(self.data) == ( len( self.config.dataScales ) + len( self.custom.dataInSizes ) ):
       if self.status != 'receiving':
+	if self.infoAction != None:
+	  self.infoAction( self )
 	if self.firstDataAction != None:
 	  self.firstDataAction( self.nodeid, self.data )
 	  #self.serial.send_me( self.bees[beeid].serial, 0 )
@@ -1038,14 +1270,14 @@ class MiniBee(object):
       if self.logAction != None :
 	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
       if verbose:
-	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
     else:
-      print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.customDataInSizes ) )
+      print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
     if verbose:
       print( "data parsed and scaled", self.nodeid, self.data )
     
   def getLabels( self ):
-    labels = self.customLabels
+    labels = self.custom.labels
     labels.extend( self.config.logDataLabels )
     #print( labels )
     #labels = self.config.pinlabels
@@ -1079,6 +1311,8 @@ class MiniBee(object):
       #self.digitalIns = 0
       #self.dataScales = []
       #self.dataOffsets = []
+      #print( "custom in 1", self.hasCustom, self.custom.dataInSizes, self.config.custom.dataInSizes )
+      
       if len( confirmconfig ) > 4:
 	customIns = confirmconfig[5]
 	customDataSize = confirmconfig[6]
@@ -1087,34 +1321,49 @@ class MiniBee(object):
 
 	self.customPins = {}
 
-	if len( self.customDataInSizes ) > 0:
+	customDataInSizes = list(self.custom.dataInSizes)
+	customDataInSizes.extend( self.config.custom.dataInSizes )
+	customDataScales = list(self.custom.dataScales)
+	customDataScales.extend( self.config.custom.dataScales )
+	
+	#print( "custom in 2", self.hasCustom, customDataInSizes, self.custom.dataInSizes, self.config.custom.dataInSizes )
+
+	#if len( self.custom.dataInSizes ) > 0:
+	if len( customDataInSizes ) > 0:
 	  # there is custom config info in the configuration file, so we take the data from there
 	  myindex = 0
 	  customError = False
-	  self.dataScales = self.customDataScales
-	  self.dataOffsets = self.customDataOffsets
-	  for c in self.customDataInSizes:
+	  #for c in self.custom.dataInSizes:
+	  for c in customDataInSizes:
 	    #print c,myindex
 	    #if ( self.customDataInSizes 
 	    myindex = myindex + 1
 	  #print( self.customDataInSizes )
 	else:
+	  self.hasCustom = True
 	  # we create our own set based on the info sent by the minibee
-	  self.customDataInSizes = [ 0 for x in range( customIns ) ]
+	  self.custom.dataInSizes = [ 0 for x in range( customIns ) ]
 	  for i in range( len( customPinCfgs ) / 2 ):
 	    #print ( i, customPinCfgs[i*2], customPinCfgs[i*2 + 1] )
 	    self.customPins[ customPinCfgs[i*2] ] = customPinCfgs[i*2 + 1]
 	    customPinSizes = customPinSizes + customPinCfgs[i*2 + 1]
 	    if customPinCfgs[i*2 + 1]>0:
-	      self.customDataInSizes.append( customPinCfgs[i*2 + 1] )
+	      self.custom.dataInSizes.append( customPinCfgs[i*2 + 1] )
 	  for i in range( customIns ):
-	    self.customDataInSizes[i] = (customDataSize - customPinSizes) / customIns
-	  self.dataScales = []
-	  self.dataOffsets = []
-	  for size in self.customDataInSizes:
-	    self.dataOffsets.append( 0 )
-	    self.dataScales.append( 1 )
+	    self.custom.dataInSizes[i] = (customDataSize - customPinSizes) / customIns
+	  for size in self.custom.dataInSizes:
+	    self.custom.dataOffsets.append( 0 )
+	    self.custom.dataScales.append( 1 )
 
+      self.dataScales = []
+      self.dataOffsets = []
+
+      if self.hasCustom:
+	self.dataScales = list( self.custom.dataScales )
+	self.dataOffsets = list( self.custom.dataOffsets )
+
+      #print( "custom in 3", self.hasCustom, customDataInSizes, self.custom.dataInSizes, self.config.custom.dataInSizes )
+      
       self.dataScales.extend( self.config.dataScales )
       self.dataOffsets.extend( self.config.dataOffsets )
       #print( self.dataScales, self.dataOffsets )
@@ -1130,12 +1379,12 @@ class MiniBee(object):
       else:
 	configres = False
 	print( "ERROR: message interval NOT correct", confirmconfig[1:3], self.config.messageInterval )
-      if confirmconfig[3] == (self.config.digitalIns + sum( self.config.dataInSizes ) + sum( self.customDataInSizes )):
+      if confirmconfig[3] == (self.config.digitalIns + sum( self.config.dataInSizes ) + sum( self.custom.dataInSizes )):
 	if verbose:
-	  print( "data input size correct", confirmconfig[3], self.config.digitalIns, self.config.dataInSizes, self.customDataInSizes )
+	  print( "data input size correct", confirmconfig[3], self.config.digitalIns, self.config.dataInSizes, self.custom.dataInSizes )
       else:
 	configres = False
-	print( "ERROR: data input size NOT correct", confirmconfig[3], self.config.digitalIns, self.config.dataInSizes, self.customDataInSizes )
+	print( "ERROR: data input size NOT correct", confirmconfig[3], self.config.digitalIns, self.config.dataInSizes, self.custom.dataInSizes )
       if confirmconfig[4] == sum( self.config.dataOutSizes ):
 	if verbose:
 	  print( "data output size correct", confirmconfig[4], self.config.dataOutSizes )
