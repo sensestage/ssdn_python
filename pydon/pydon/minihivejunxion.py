@@ -304,17 +304,20 @@ class SWMiniHiveJunxion( object ):
     self.verbose = verbose
 
     self.hive.set_newBeeAction( self.hookBeeToOSC )
-        
+
+  def exit( self ):
+    self.osc.osc.close()
+    print( "Waiting for Server-thread to finish" )
+    self.osc.thread.join() ##!!!
+    print( "Done; goodbye" )
+    self.hive.exit()
+    sys.exit()
+
   def start( self ):
     try :
       self.hive.run()
     except (SystemExit, RuntimeError,KeyboardInterrupt, IOError ) :
-      self.osc.osc.close()
-      print( "Waiting for Server-thread to finish" )
-      self.osc.thread.join() ##!!!
-      print( "Done; goodbye" )
-      self.hive.exit()
-      sys.exit()
+      self.exit()
 
   
   #def setMapAction( self, nodeid, mid ):
