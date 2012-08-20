@@ -151,10 +151,10 @@ class MiniHive(object):
 	    else:
 	      self.serial.closePort()
 	      self.hadXBeeError = True
-	  #elif self.countSinceLastData > 2000: # we did not receive any data for about 10 seconds, something's up, let's close and reopen the serial port
-	    #self.serial.closePort()
-	    #self.countSinceLastData = 0
-	    #self.hadXBeeError = True    
+	  elif self.countSinceLastData > 2000: # we did not receive any data for about 10 seconds, something's up, let's close and reopen the serial port
+	    self.serial.closePort()
+	    self.countSinceLastData = 0
+	    self.hadXBeeError = True    
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
