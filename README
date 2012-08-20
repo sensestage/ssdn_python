@@ -2,13 +2,11 @@ Pydon hive
 
 Hive manager for the datanetwork in Python.
 
-INSTALLATION
+INSTALLATION - Detailed installation info is found in the HOWTO file.
 
-Dependencies are:
-* python (version 2.6 or higher) - e.g. http://www.python.org/download/releases/2.7.1/
-* pyOSC - http://gitorious.org/pyosc (checkout included in the packaged version)
-* pyserial (version 2.5 or higher) - http://pyserial.sourceforge.net/
-* python-xbee-api (version 2.0.0 or higher) - (included in the packaged version)
+GETTING_STARTED gives a quick overview on how to start with the MiniBees you just got and how to interface with them.
+
+MINIHIVEOSC_DOCUMENTATION gives an overview of the OSC interface of MiniHiveOsc, one of the ways to interface with the minibees.
 
 
 CREATING THE CONFIG FILE:

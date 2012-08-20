@@ -5,14 +5,14 @@ XBees
 =====
 
 If you did not buy the MiniBees in a kit, you will need to configure your XBees as described on:
-http://sensestage.hexagram.ca/xbee-choice-andconfiguration
+http://docs.sensestage.eu/xbee-choice-andconfiguration
 
 
 ========
 MiniBees
 ========
 
-These should be ready to go.
+These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check http://docs.sensestage.eu on how to configure your setup.
 
 
 ===========
@@ -32,17 +32,9 @@ PYDONHIVE
 Pydonhive is a python client for the datanetwork that will talk to the MiniBees and send data to the datanetwork, or send data from the datanetwork to the MiniBees.
 
 You start it with:
-$ python swpydonhive.py -c nameofconfigfile.xml -s /dev/ttyUSB0
+$ python metapydonhive.py
 
-/dev/ttyUSB0 is the address of your serial port, it will be different on a mac (something like: /dev/tty-ASSFADF0002332).
-
-If you are using the API mode on the XBees then you start with:
-$ python swpydonhive.py -c nameofconfigfile.xml -s /dev/ttyUSB0 -a True
-
-If the DataNetwork host is running on another machine:
-$ python swpydonhive.py -c nameofconfigfile.xml -d 192.168.0.7
-where 192.168.0.7 is the IP address of the DataNetwork.
-You can see the actual IP address of the DataNetwork in the DataNetwork GUI.
+See also the HOWTO file for more detailed information.
 
 ===========
 YOUR CLIENT

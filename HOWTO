@@ -87,6 +87,8 @@ From metapydonhive you can choose which kind of client to use:
   - osc: send osc messages to a certain destination (MiniHiveOSC)
   - junXion: send osc messages that STEIM's JunXion can deal with
 
+Serial port:
+/dev/ttyUSB0 is the address of your serial port, it will be different on a mac (something like: /dev/tty-ASSFADF0002332).
 
 start:
   $ python metapydonhive.py -h
