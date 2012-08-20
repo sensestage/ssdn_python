@@ -63,8 +63,7 @@ def find_key(dic, val):
 # beginning of MiniHive:
 
 class MiniHive(object):
-  def __init__(self, serial_port, baudrate = 57600, apiMode = False
-               poll = None ):
+  def __init__(self, serial_port, baudrate = 57600, apiMode = False, poll = None ):
     #self.minibeeCount = 0
     self.name = ""
     self.bees = {}
@@ -148,7 +147,7 @@ class MiniHive(object):
 	self.countSinceLastData = self.countSinceLastData + 1
 	if not self.apiMode:
 	  self.serial.read_data()
-	else if self.checkXBeeError:
+	elif self.checkXBeeError:
 	  # check whether thread alive, if not start it again
 	  if not self.serial.isRunning():
 	    if not self.serial.hasXBeeError():
