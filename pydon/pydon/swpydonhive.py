@@ -20,7 +20,7 @@ import pydon
 import pydonhive
 
 class SWPydonHive( object ):
-  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False ):
+  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False ):
     self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip )
     self.datanetwork.setVerbose( verbose )
 
@@ -32,6 +32,7 @@ class SWPydonHive( object ):
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
     self.hive.set_ignore_unknown( ignoreUnknown )
+    self.hive.set_check_xbee_error( checkXbeeError )
     
     self.datanetwork.setHive( self.hive )
 

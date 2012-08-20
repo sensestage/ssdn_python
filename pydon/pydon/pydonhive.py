@@ -63,7 +63,7 @@ def find_key(dic, val):
 # beginning of MiniHive:
 
 class MiniHive(object):
-  def __init__(self, serial_port, baudrate = 57600, apiMode = False,
+  def __init__(self, serial_port, baudrate = 57600, apiMode = False
                poll = None ):
     #self.minibeeCount = 0
     self.name = ""
@@ -75,6 +75,7 @@ class MiniHive(object):
     self.newBeeAction = None
     self.verbose = False
     self.ignoreUnknown = False
+    self.checkXBeeError = False
     #self.redundancy = 10
     self.create_broadcast_bee()
     self.poll = poll
@@ -103,6 +104,10 @@ class MiniHive(object):
   def set_ignore_unknown( self, onoff ):
     self.ignoreUnknown = onoff
     print( "ignoring unknown minibees", self.ignoreUnknown )
+    
+  def set_check_xbee_error( self, onoff ):
+    self.checkXBeeError = onoff
+    print( "check for xbee errors", self.checkXBeeError )
 
   def set_verbose( self, onoff ):
     self.verbose = onoff
@@ -143,7 +148,7 @@ class MiniHive(object):
 	self.countSinceLastData = self.countSinceLastData + 1
 	if not self.apiMode:
 	  self.serial.read_data()
-	else:
+	else if self.checkXBeeError:
 	  # check whether thread alive, if not start it again
 	  if not self.serial.isRunning():
 	    if not self.serial.hasXBeeError():

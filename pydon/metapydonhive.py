@@ -75,7 +75,7 @@ from pydon import minihivejunxion
 # main program:
 if __name__ == "__main__":
   
-  defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': "True", 'verbose': "False", 'logdata': "False", 'config': "pydon/configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': "False" }
+  defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': "True", 'verbose': "False", 'logdata': "False", 'config': "configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': "False", 'xbeeerror': "False" }
   
   configParser = ConfigParser.SafeConfigParser( defaults )
   configParser.read( "pydondefaults.ini" )
@@ -127,6 +127,13 @@ if __name__ == "__main__":
 		  default = configParser.get( 'hive', 'ignore' ),
 		  #group="program", option="verbose",
 		  help='ignore unknown minibees [default:%s]'% False)
+  #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
+
+  parser.add_option('-x','--check-for-xbee-error', action='store_true', dest="xbeeerror",
+		  #default=False, 
+		  default = configParser.get( 'hive', 'xbeeerror' ),
+		  #group="program", option="verbose",
+		  help='check whether xbee-error occurred [default:%s]'% False)
   #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
   parser.add_option('-l','--logdata', action='store_true', dest="logdata",
@@ -200,7 +207,7 @@ if __name__ == "__main__":
   config.add_section( 'hive' )
   config.add_section( 'program' )
 
-  for key in [ 'mboffset', 'minibees', 'config', 'ignore' ]:
+  for key in [ 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror' ]:
     #print key, option_dict[ key ]
     config.set( 'hive', key, option_dict[ key ] )
 
@@ -235,7 +242,7 @@ if __name__ == "__main__":
   print( "--------------------------------------------------------------------------------------" )
   
   if options.program == 'datanetwork':
-    swhive = swpydonhive.SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode, options.ignore )
+    swhive = swpydonhive.SWPydonHive( options.host, options.port, options.ip, options.name, options.minibees, options.serial, options.baudrate, options.config, [options.mboffset,options.minibees], options.verbose, options.apimode, options.ignore, options.xbeeerror )
     if options.logdata:
       swhive.initializeLogger()
     #if haveGui:
