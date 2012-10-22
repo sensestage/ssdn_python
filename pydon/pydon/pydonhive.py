@@ -24,6 +24,8 @@ class QueueFifo:
     def __init__(self):
         self.in_stack = []
         self.out_stack = []
+    def size(self):
+      return ( len( self.out_stack ) + len( self.in_stack ) )
     def push(self, obj):
         self.in_stack.append(obj)
     def pop(self):
@@ -173,7 +175,7 @@ class MiniHive(object):
 		print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
 	      self.serial.send_me( bee.serial, 1 )
 	      self.seriallock.release()
-	      time.sleep( 0.005 )
+	      #time.sleep( 0.005 )
 	  else:
 	    bee.send_data( self.verbose )
 	    #self.seriallock.acquire()
@@ -209,7 +211,7 @@ class MiniHive(object):
       if self.poll:
 	self.poll()
       else:
-	time.sleep(0.005)
+	time.sleep(0.001)
 
   def exit( self ):
     if self.serial.isOpen():
@@ -1008,6 +1010,7 @@ class MiniBee(object):
     self.looprepeated = 0
     self.loopMessage = None
     #self.redundancy = 3
+    self.time_of_last_update = time.time()
     
   def set_nodeid( self, mid ):
     self.nodeid = mid
@@ -1041,6 +1044,9 @@ class MiniBee(object):
     self.dataScales.extend( self.config.dataScales )
     self.dataOffsets.extend( self.config.dataOffsets )
     self.redundancy = self.config.redundancy
+    self.measuredInterval = self.config.messageInterval
+    self.measuredSampleInterval = self.config.messageInterval / self.config.samplesPerMessage
+    self.currentMessageTime = time.time()
     #print( "set_config", self.dataScales, self.custom.dataInSizes, self.custom.dataScales )
 
   def set_custom(self, customconf ):
@@ -1090,14 +1096,18 @@ class MiniBee(object):
   def send_data( self, verbose = False ):
     if self.cid > 0:
       if self.config.samplesPerMessage > 1:
-	self.time_since_last_update = self.time_since_last_update + 1
+	nowtime = time.time()
+	#self.time_since_last_update = self.time_since_last_update + 1
 	#if time_since_last_message > self.messageInterval:
 	  # timeout on data
-	if self.time_since_last_update >= self.config.sampleInterval: # if time to send new sample:
+	if (nowtime - self.time_of_last_update) >= self.measuredSampleInterval: # if time to send new sample:
 	  newdata = self.dataQueue.pop()
+	  #if verbose:
+	  #print( nowtime, self.time_of_last_update, nowtime-self.time_of_last_update, self.measuredSampleInterval, newdata )
 	  if newdata != None:
 	    self.parse_single_data( newdata, verbose )
-	    self.time_since_last_update = 0
+	    #self.time_since_last_update = 0
+	    self.time_of_last_update = time.time()
 
   def repeat_output( self, serPort, lock ):
     if self.outMessage != None:
@@ -1213,11 +1223,17 @@ class MiniBee(object):
 	  self.parse_single_data( data, verbose )
 	else: # multiple samples per message:
 	  # TODO: adjust message interval to actually measured interval
+	  self.previousMessageTime = self.currentMessageTime
+	  self.currentMessageTime = time.time()
+	  self.measuredInterval = self.currentMessageTime - self.previousMessageTime
 	  # clump data into number of samples
 	  blocks = self.config.samplesPerMessage
 	  blocksize = len( data ) / blocks
 	  for i in range( blocks ):
 	    self.dataQueue.push( data[ i*blocksize: i*blocksize + blocksize ] )
+	    #if verbose:
+	  self.measuredSampleInterval = self.measuredInterval / max( self.dataQueue.size(), blocks )
+	  #print( self.measuredInterval, self.dataQueue.size(), self.dataQueue )
       elif verbose:
 	print( "no config defined for this minibee", self.nodeid, data )
 

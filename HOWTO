@@ -23,7 +23,7 @@ Install the dependencies:
 
 optparse_gui :
 
-NOTE: optparse_gui is depended on wxPython, so you will need that too, from http://www.wxpython.org/download.php.
+NOTE: optparse_gui is dependent on wxPython, so you will need that too, from http://www.wxpython.org/download.php.
 
 For Mac OSX 64bit there is unfortunately no package available at the moment, but you can change your system to use 32bit python instead for one session:
   $ export VERSIONER_PYTHON_PREFER_32_BIT=yes (see Apple's man 1 python)
