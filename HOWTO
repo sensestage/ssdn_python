@@ -48,7 +48,7 @@ pyOSC :
 
 extract archive and:
   $ cd pyosc
-  $ sudo ./setup.py install
+  $ sudo python setup.py install
 
 Go back to the main folder:
 $ cd ..
@@ -58,7 +58,7 @@ XBee-2.0.0 :
 
 extract archive and:
   $ cd XBee-2.0.0
-  $ sudo ./setup.py install
+  $ sudo python setup.py install
 
 Go back to the main folder:
 $ cd ..
