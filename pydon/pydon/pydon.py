@@ -563,8 +563,13 @@ class DataNetworkOSC(object):
     url += hostip
     url += "/SenseWorldDataNetwork"
     #print url
-    response = urllib2.urlopen(url)
-    self.hostPort = int( response.read() )
+    try:
+      response = urllib2.urlopen(url)
+      self.hostPort = int( response.read() )
+    except( urllib2.URLError ):
+      print( "could not retrieve port, using default port of 57120" )
+      self.hostPort = 57120
+      #TODO: make default port configurable!
     
 ## data!
   def data_for_node( self, nodeid, data ):
