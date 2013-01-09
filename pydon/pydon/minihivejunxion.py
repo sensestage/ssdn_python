@@ -304,6 +304,7 @@ class SWMiniHiveJunxion( object ):
     self.verbose = verbose
 
     self.hive.set_newBeeAction( self.hookBeeToOSC )
+    self.hive.start_serial()
 
   def exit( self ):
     self.osc.osc.close()
