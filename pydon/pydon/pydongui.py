@@ -6,6 +6,9 @@ import socket
 from Tkinter import *
 import tkFileDialog
 
+import metapydonhive
+import pydonlogger
+
 class StatusBar(Frame):
 
     def __init__(self, master):
@@ -109,27 +112,44 @@ class ConfigureMenu:
       
     def openXMLConfig(self):
       cfile = tkFileDialog.askopenfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='configs/example_hiveconfig.xml')
-      #print cfile
       self.config.delete(0, END)
       self.config.insert(0, cfile )
+    
+    def setTextEntry( self, entry, text ):
+      entry.delete(0, END)
+      entry.insert(0, text )
       
+    def setCheckBox( self, cb, value ):
+      if value == 'True': cb['box'].select()
+      else: cb['box'].deselect()
+      #print cb, text
+
+    #def setOptionMenuItem( self, menu, text ):
+      #print menu, text
+      #entry.delete(0, END)
+      #entry.insert(0, text )
+
     def setOptions( self, options ):
-      self.hostip.set( options.host )
-      self.hostport.set( options.hport )
-      self.myip.set( options.ip )
-      self.myport.set( options.port )
-      self.name.set( options.name )
-      self.minibees.set( options.minibees )
-      self.mboffset.set( options.mboffset )
-      self.serialentry.set( options.serial )
-      self.baudrate.set( options.baudrate )
-     
-      self.verbose.set( options.verbose )
-      self.api.set( options.apimode )
-      self.ignore.set( options.ignore )
-      self.xbeeerror.set( options.xbeeerror )
+      self.setTextEntry( self.hostip, options.host )
+      self.setTextEntry( self.hostport, options.hport )
+      self.myipvar.set( options.ip )
+      #self.setOptionMenuItem( self.myip, options.ip )
       
-      self.config.set( options.config )
+      self.setTextEntry( self.myport, options.port )
+      self.setTextEntry( self.name, options.name )
+      self.setTextEntry( self.minibees, options.minibees )
+      self.setTextEntry( self.mboffset, options.mboffset )
+      
+      self.serialportvar.set( options.serial )
+      self.baudvar.set( options.baudrate )
+      
+      self.setCheckBox( self.verbose, options.verbose )
+      self.setCheckBox( self.api, options.apimode )
+      self.setCheckBox( self.ignore, options.ignore )
+      self.setCheckBox( self.xbeeerror, options.xbeeerror )
+      self.setCheckBox( self.log, options.logdata )
+
+      self.setTextEntry( self.config, options.config )
       
     def getOptions( self, options ):
       options.host = self.hostip.get()
@@ -196,7 +216,7 @@ class ConfigureMenu:
       ips = [ '0.0.0.0', '127.0.0.1' ]
       exips = socket.gethostbyname_ex( socket.gethostname() )[2]
       ips.extend( exips )
-      print ips
+      #print ips
       self.myipvar = StringVar()
       self.myipvar.set( ips[0] ) # default value
       Label( frame, text="IP to listen on" ).grid( row=row, column=col, sticky=W)
@@ -333,10 +353,16 @@ class HiveApp:
 
       self.frame = Frame(master, height=512)
       self.frame.pack()
-      
+            
       self.status = StatusBar(master)
       self.status.pack(side=BOTTOM, fill=X)
-      
+    
+    def openMPD( self ):
+      self.mpd = metapydonhive.MetaPydonHive()
+      options = self.mpd.readOptions()
+      self.configure.setOptions( options )
+      print options
+
       
     def setAdvanced( self ):
       #print self.advanced.get()
@@ -345,7 +371,21 @@ class HiveApp:
       
     def openConfigMenu(self):
       self.configure = ConfigureMenu(self.frame)
+      self.openMPD()
       self.setAdvanced()
+      
+    def openLogWindow( self ):
+      self.logFrame = LabelFrame( self.frame, text="Output" )
+      self.logFrame.pack()
+      
+      self.logtext = Text( self.logFrame )
+      self.logtext.pack()
+      
+      logfile = LogFile( options, 'stdoutAndErr')
+      loghandler = WidgetHandler( self.logtext )
+      sys.stdout = logfile
+      sys.stderr = logfile
+
       
     def openDefaultsFile(self):
       tkFileDialog.askopenfilename(defaultextension="*.ini", filetypes=[('ini files', '.ini'), ('all files', '.*')],initialfile='pydondefaults.ini')
@@ -362,9 +402,13 @@ class HiveApp:
     def hello(self):
         print "hi there, everyone! - main window"
 
-root = Tk()
-root.title( "Sense/Stage MiniHive" )
-app = HiveApp(root)
-app.openConfigMenu()
 
-root.mainloop()
+if __name__ == "__main__":
+
+  root = Tk()
+  root.title( "Sense/Stage MiniHive" )
+  app = HiveApp(root)
+  app.openConfigMenu()
+  app.openLogWindow()
+
+  root.mainloop()
