@@ -21,6 +21,19 @@ import logging.handlers as handlers
 
 from optparse import OptionParser
 
+
+from Tkinter import INSERT
+
+class WidgetLogger(logging.Handler):
+    def __init__(self, widget):
+        logging.Handler.__init__(self)
+        self.widget = widget
+
+    def emit(self, record):
+        # Append message (record) to the widget
+        self.widget.insert(INSERT, record + '\n')
+
+
 class LogFile(object):
     """File-like object to log text using the `logging` module."""
 
@@ -43,6 +56,9 @@ class LogFile(object):
 	#hdlr2 = logging.FileHandler(logfile)
 	hdlr2.setFormatter(formatter)
 	self.logger.addHandler(hdlr2)
+	
+    def addWidgetHandler( self, whdlr):
+      self.logger.addHandler( whdlr )
 
     def write(self, msg, level=logging.INFO):
         self.logger.log(level, msg)
@@ -50,31 +66,6 @@ class LogFile(object):
     def flush(self):
         for handler in self.logger.handlers:
             handler.flush()
-
-def initialize_logging(options):
-    """ Log information based upon users options"""
-
-    logger = logging.getLogger('project')
-    formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
-    level = logging.__dict__.get(options.loglevel.upper(),logging.DEBUG)
-    logger.setLevel(level)
-
-    # Output logging information to screen
-    if not options.quiet:
-        hdlr = logging.StreamHandler(sys.stderr)
-        hdlr.setFormatter(formatter)
-        logger.addHandler(hdlr)
-
-    # Output logging information to file
-    logfile = os.path.join(options.logdir, "pydon.log")
-    if options.clean and os.path.isfile(logfile):
-        os.remove(logfile)
-        
-    hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=100, backupCount=5)
-    hdlr2.setFormatter(formatter)
-    logger.addHandler(hdlr2)
-
-    return logger
 
 def main(argv=None):
     if argv is None:
