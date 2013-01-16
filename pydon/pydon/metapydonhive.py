@@ -196,7 +196,9 @@ class MetaPydonHive:
 
     parser.add_option("-N", "--logname", dest="logname", default="pydon.log", help="log name (default pydon)")
     parser.add_option("-V", "--loglevel", dest="loglevel", default="debug", help="logging level (debug, info, error)")
-
+    parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", help="do not log to console")
+    parser.add_option("-L", "--logdir", dest="logdir", default=".", help="log DIRECTORY (default ./)")
+    parser.add_option("-C", "--clean", dest="clean", action="store_true", default=False, help="remove old log file")
 
     #cfgparser.add_optparse_help_option( parser )
     

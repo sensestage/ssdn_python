@@ -199,14 +199,6 @@ class ConfigureMenu:
         return returnval
 
     #def OnValidateIP(self, d, i, P, s, S, v, V, W):
-        #print "d='%s'" % d
-        #print "i='%s'" % i
-        #print "P='%s'" % P
-        #print "s='%s'" % s
-        #print "S='%s'" % S
-        #print "v='%s'" % v
-        #print "V='%s'" % V
-        #print "W='%s'" % W
 	#try: socket.inet_aton(S)
 	#except socket.error: return False
 	#else: return True
@@ -250,7 +242,7 @@ class ConfigureMenu:
       #return sports
     
     def startPydon( self ):
-      print "starting pydon"
+      print( "starting pydon" )
     
     def setMode( self ):
       #print self.mode.get()
@@ -315,7 +307,7 @@ class ConfigureMenu:
       return te
 
     def hello(self):
-        print "hi there, everyone!"
+        print( "hi there, everyone!" )
 
 
 class HiveApp:
@@ -359,9 +351,9 @@ class HiveApp:
     
     def openMPD( self ):
       self.mpd = metapydonhive.MetaPydonHive()
-      options = self.mpd.readOptions()
-      self.configure.setOptions( options )
-      print options
+      self.options = self.mpd.readOptions()
+      self.configure.setOptions( self.options )
+      #print self.options
 
       
     def setAdvanced( self ):
@@ -381,8 +373,9 @@ class HiveApp:
       self.logtext = Text( self.logFrame )
       self.logtext.pack()
       
-      logfile = LogFile( options, 'stdoutAndErr')
-      loghandler = WidgetHandler( self.logtext )
+      logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
+      loghandler = pydonlogger.WidgetLogger( self.logtext )
+      logfile.addWidgetHandler( loghandler )
       sys.stdout = logfile
       sys.stderr = logfile
 
@@ -400,7 +393,7 @@ class HiveApp:
       tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='example_hiveconfig.xml')
 
     def hello(self):
-        print "hi there, everyone! - main window"
+        print( "hi there, everyone! - main window" )
 
 
 if __name__ == "__main__":

@@ -22,16 +22,23 @@ import logging.handlers as handlers
 from optparse import OptionParser
 
 
-from Tkinter import INSERT
+from Tkinter import INSERT, LEFT
 
 class WidgetLogger(logging.Handler):
     def __init__(self, widget):
-        logging.Handler.__init__(self)
-        self.widget = widget
+      logging.Handler.__init__(self)
+      self.widget = widget
+      self.widget.mark_set("sentinel", INSERT)
+      self.widget.mark_gravity("sentinel", LEFT)
+      #print widget
 
     def emit(self, record):
-        # Append message (record) to the widget
-        self.widget.insert(INSERT, record + '\n')
+      r = self.format( record )
+      #print( r )
+      # Append message (record) to the widget
+      self.widget.insert(INSERT, r )
+      self.widget.mark_set(INSERT, "%d.%d" % (0,0) )
+      #self.widget.insert(o, r )
 
 
 class LogFile(object):
@@ -45,20 +52,23 @@ class LogFile(object):
 	 # Output logging information to screen
 	if not options.quiet:
 	  hdlr = logging.StreamHandler(sys.stderr)
-	  hdlr.setFormatter(formatter)
+	  #hdlr.setFormatter(formatter)
 	  self.logger.addHandler(hdlr)
 
 	# Output logging information to file
 	logfile = os.path.join(options.logdir, options.logname )
-	#if options.clean and os.path.isfile(logfile):
-	    #os.remove(logfile)
+	if options.clean and os.path.isfile(logfile):
+	    os.remove(logfile)
 	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=100, backupCount=5)       
 	#hdlr2 = logging.FileHandler(logfile)
 	hdlr2.setFormatter(formatter)
 	self.logger.addHandler(hdlr2)
 	
     def addWidgetHandler( self, whdlr):
+      #formatter = logging.Formatter('%(message)s')
+      #whdlr.setFormatter(formatter)
       self.logger.addHandler( whdlr )
+      #print whdlr
 
     def write(self, msg, level=logging.INFO):
         self.logger.log(level, msg)
