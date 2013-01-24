@@ -6,6 +6,8 @@ import socket
 from Tkinter import *
 import tkFileDialog
 
+import threading
+
 import metapydonhive
 import pydonlogger
 
@@ -26,8 +28,9 @@ class StatusBar(Frame):
         
 class ConfigureMenu:
 
-    def __init__(self, master):
+    def __init__(self, master, hiveapp):
       
+      self.hiveapp = hiveapp
       
       vcmd = (master.register(self.OnValidateInteger), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
       #vcmdip = (master.register(self.OnValidateIP), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
@@ -36,6 +39,7 @@ class ConfigureMenu:
       
       self.frame = Frame(master)
       self.frame.pack()
+      self.visible = True
       
       modeframe = LabelFrame( self.frame, text="Communication Mode", padx=5, pady=5, background="LightYellow" )
       modeframe.grid( row=0, column=0, columnspan=4, rowspan=1, sticky="W" )
@@ -43,19 +47,19 @@ class ConfigureMenu:
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
       MODES = [
-        ("datanetwork", "D"),
-        ("osc", "O"),
-        ("junxion", "J"),
-        ("libmapper", "M"),
+        "datanetwork",
+        "osc",
+        "junxion",
+        "libmapper"
       ]
     
       self.mode = StringVar()
-      self.mode.set("D") # initialize
+      self.mode.set("datanetwork") # initialize
       
       cl = 0
     
-      for text, mode in MODES:
-        b = Radiobutton( modeframe, text=text, variable=self.mode, value=mode, command = self.setMode )
+      for text in MODES:
+        b = Radiobutton( modeframe, text=text, variable=self.mode, value=text, command = self.setMode )
         b.grid( row=0, column = cl )
         cl = cl + 1
         
@@ -77,8 +81,8 @@ class ConfigureMenu:
       vbframe = LabelFrame( self.frame, text="Verbosity and logging", padx=5, pady=5 )
       vbframe.grid( row=2, column=2, columnspan=2, sticky="W" )
       
-      self.verbose = self.addCheckbox( vbframe, "verbose", self.hello, 0, 0 )
-      self.log = self.addCheckbox( vbframe, "log data", self.hello, 0, 1 )
+      self.verbose = self.addCheckbox( vbframe, "verbose", 0, 0 )
+      self.log = self.addCheckbox( vbframe, "log data", 0, 1 )
 
 
       oscframe = LabelFrame( self.frame, text="OpenSoundControl", padx=5, pady=5 )
@@ -101,9 +105,9 @@ class ConfigureMenu:
       xbframe = LabelFrame( self.frame, text="XBee communication", padx=5, pady=5 )
       xbframe.grid( row=6, column=0, columnspan=4, sticky="W" )
 
-      self.api = self.addCheckbox( xbframe, "api mode", self.hello, 8, 0 ) ## advanced setting
-      self.ignore = self.addCheckbox( xbframe, "ignore new minibees", self.hello, 8, 1 ) ## advanced setting
-      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", self.hello, 8, 2 ) ## advanced setting
+      self.api = self.addCheckbox( xbframe, "api mode", 8, 0 ) ## advanced setting
+      self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  8, 1 ) ## advanced setting
+      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 8, 2 ) ## advanced setting
       
       self.start = Button( self.frame, text="START", command = self.startPydon, background="Red", foreground="Black" )
       self.start.grid( row=9, column=0, columnspan=4 )
@@ -130,6 +134,8 @@ class ConfigureMenu:
       #entry.insert(0, text )
 
     def setOptions( self, options ):
+      self.mode.set( options.program )
+      
       self.setTextEntry( self.hostip, options.host )
       self.setTextEntry( self.hostport, options.hport )
       self.myipvar.set( options.ip )
@@ -152,20 +158,23 @@ class ConfigureMenu:
       self.setTextEntry( self.config, options.config )
       
     def getOptions( self, options ):
+      options.program = self.mode.get()      
       options.host = self.hostip.get()
-      options.hport = self.hostport.get()
-      options.ip = self.myip.get()
-      options.port = self.myport.get()
+      options.hport = int(self.hostport.get())
+      options.ip = self.myipvar.get()
+      options.port = int(self.myport.get())
       options.name = self.name.get()
-      options.minibees = self.minibees.get()
-      options.mboffset = self.mboffset.get()
-      options.serial = self.serialentry.get()
-      options.baudrate = self.baudrate.get()
-      options.verbose = self.verbose.get()
-      options.apimode = self.api.get()
-      options.ignore = self.ignore.get()
-      options.xbeeerror = self.xbeeerror.get()
+      options.minibees = int(self.minibees.get())
+      options.mboffset = int(self.mboffset.get())
+      options.serial = self.serialportvar.get()
+      options.baudrate = int(self.baudvar.get())
+      options.verbose = self.verbose['var'].get()
+      options.logdata = self.log['var'].get()
+      options.apimode = self.api['var'].get()      
+      options.ignore = self.ignore['var'].get()
+      options.xbeeerror = self.xbeeerror['var'].get()
       options.config = self.config.get()
+      #print options
       return options
       
     def OnValidateInteger(self, d, i, P, s, S, v, V, W):
@@ -242,20 +251,21 @@ class ConfigureMenu:
       #return sports
     
     def startPydon( self ):
-      print( "starting pydon" )
+      #print( "starting pydon" )
+      self.hiveapp.startMPD()
     
     def setMode( self ):
       #print self.mode.get()
       for widget in [ self.name, self.hostip, self.hostport, self.myip, self.myport ]:
 	widget.configure( state="disabled" )
-      if self.mode.get() == "D":
+      if self.mode.get() == "datanetwork":
 	#datanetwork
 	for widget in [ self.hostip, self.hostport ]:
 	  widget.configure( state="normal" )
 	if self.advanced == "advanced":
 	  for widget in [ self.name, self.myip, self.myport ]:
 	    widget.configure( state="normal" )
-      elif self.mode.get() == "M":
+      elif self.mode.get() == "libmapper":
 	for widget in [ self.hostip, self.hostport ]:
 	  widget.configure( state="normal" )
 	if self.advanced == "advanced":
@@ -265,7 +275,7 @@ class ConfigureMenu:
 	for widget in [ self.hostip, self.hostport ]:
 	  widget.configure( state="normal" )
 	if self.advanced == "advanced":
-	  for widget in [ self.hostip, self.myport ]:
+	  for widget in [ self.myip, self.myport ]:
 	    widget.configure( state="normal" )
     
     def setAdvanced( self, onoff ):
@@ -282,9 +292,10 @@ class ConfigureMenu:
       self.setMode()
 
     
-    def addCheckbox( self, frame, text, command, row, column ):
-      myvar = IntVar()
-      ch = Checkbutton( frame, text=text, variable=myvar, command=command)
+    def addCheckbox( self, frame, text, row, column ):
+      #myvar = IntVar()
+      myvar = BooleanVar()
+      ch = Checkbutton( frame, text=text, variable=myvar)
       ch.grid( row=row, column=column )
       return {'var':myvar, 'box':ch }
 
@@ -306,26 +317,39 @@ class ConfigureMenu:
       te.grid( row=row, column=col+1, columnspan=colspan )
       return te
 
-    def hello(self):
-        print( "hi there, everyone!" )
+    def toggleShow( self ):
+      if self.visible:
+        self.pi = self.frame.place_info()
+        self.frame.pack_forget()
+      else:
+        self.frame.pack(self.pi)
+      self.visible = not self.visible
+
+    #def hello(self):
+        #print( "hi there, everyone!" )
 
 
-class HiveApp:
+class HiveApp( Tk ):
 
-    def __init__(self, master):
+    def __init__(self):
       
-      menubar = Menu(master)
+      Tk.__init__(self)
+      self.title( "Sense/Stage MiniHive" )
+      
+      menubar = Menu(self)
 
       # create a pulldown menu, and add it to the menu bar
       filemenu = Menu(menubar, tearoff=0)
-      filemenu.add_command(label="Open Defaults", command=self.openDefaultsFile)
-      filemenu.add_command(label="Save Defaults", command=self.saveDefaultsFile)
-      filemenu.add_separator()
-      filemenu.add_command(label="Open Configuration", command=self.openXMLConfig)
-      filemenu.add_command(label="Save Configuration", command=self.saveXMLConfig)
-      filemenu.add_separator()
-      filemenu.add_command(label="Exit", command=master.quit)
+      #filemenu.add_command(label="Open Defaults", command=self.openDefaultsFile)
+      #filemenu.add_command(label="Save Defaults", command=self.saveDefaultsFile)
+      #filemenu.add_separator()
+      #filemenu.add_command(label="Open Configuration", command=self.openXMLConfig)
+      #filemenu.add_command(label="Save Configuration", command=self.saveXMLConfig)
+      #filemenu.add_separator()
+      filemenu.add_command(label="Quit", underline=0, command=self.quitProgram, accelerator='Ctrl+Q')
       menubar.add_cascade(label="File", menu=filemenu)
+      
+      self.bind_all("<Control-q>", self.quitEvent)
       
       optionsmenu = Menu(menubar, tearoff=0)
       self.advanced = StringVar()
@@ -335,19 +359,32 @@ class HiveApp:
       menubar.add_cascade(label="Options", menu=optionsmenu)
       
 
-      helpmenu = Menu(menubar, tearoff=0)
-      helpmenu.add_command(label="About", command=self.hello)
-      menubar.add_cascade(label="Help", menu=helpmenu)
+      #helpmenu = Menu(menubar, tearoff=0)
+      #helpmenu.add_command(label="About", command=self.hello)
+      #menubar.add_cascade(label="Help", menu=helpmenu)
 
       # display the menu
-      master.config(menu=menubar)
+      self.config(menu=menubar)
 
 
-      self.frame = Frame(master, height=512)
+      self.frame = Frame(self, height=400)
       self.frame.pack()
             
-      self.status = StatusBar(master)
+      self.status = StatusBar(self)
       self.status.pack(side=BOTTOM, fill=X)
+      
+      self.logOpen = False
+      self.logvisible = False
+      
+      self.pydonRunning = False
+
+    def quitEvent( self, event ):
+      self.quitProgram()
+    
+    def quitProgram( self ):
+      if self.pydonRunning:
+	self.stopMPD()
+      quit()
     
     def openMPD( self ):
       self.mpd = metapydonhive.MetaPydonHive()
@@ -355,6 +392,35 @@ class HiveApp:
       self.configure.setOptions( self.options )
       #print self.options
 
+    def startMPD( self ):
+      self.options = self.configure.getOptions( self.options )
+      self.mpd.setOptions( self.options )
+      self.mpd.writeOptions()
+
+      #self.openLogWindow()
+      self.toggleLog()
+      self.configure.toggleShow()
+      self.status.set( "pydon running in %s mode", self.options.program )
+      
+      self.pydonRunning = True
+      
+      # Set up the thread to do asynchronous I/O
+      # More can be made if necessary
+      #self.running = 1
+      self.mpdthread = threading.Thread( target=self.mpd.startHive )
+      self.mpdthread.start()
+      
+    
+    def stopMPD( self ):
+      #print "stopping mpd"
+      self.mpd.stopHive()
+      #print "mpd stopped"
+      self.mpdthread.join()
+      #print "mpdthread joined"
+      self.toggleLog()
+      self.configure.toggleShow()
+      self.setAdvanced()
+      self.pydonRunning = False
       
     def setAdvanced( self ):
       #print self.advanced.get()
@@ -362,13 +428,18 @@ class HiveApp:
       self.configure.setAdvanced( self.advanced.get() )
       
     def openConfigMenu(self):
-      self.configure = ConfigureMenu(self.frame)
+      self.configure = ConfigureMenu(self.frame, self )
       self.openMPD()
       self.setAdvanced()
       
     def openLogWindow( self ):
+      self.logOpen = True
+      self.logvisible = True
       self.logFrame = LabelFrame( self.frame, text="Output" )
       self.logFrame.pack()
+      
+      self.stopButton = Button( self.logFrame, text="STOP", command=self.stopMPD, background="Red", foreground="Black" )
+      self.stopButton.pack()
       
       self.logtext = Text( self.logFrame )
       self.logtext.pack()
@@ -379,6 +450,19 @@ class HiveApp:
       sys.stdout = logfile
       sys.stderr = logfile
 
+    def toggleLog( self ):
+      #print self.logOpen, self.logvisible
+      if self.logOpen:
+	if self.logvisible:
+	  self.logpi = self.logFrame.place_info()
+	  self.logFrame.pack_forget()
+	else:
+	  self.logtext.delete(1.0, END)
+	  self.logFrame.pack(self.logpi)
+	self.logvisible = not self.logvisible
+      else:
+	self.openLogWindow()
+      
       
     def openDefaultsFile(self):
       tkFileDialog.askopenfilename(defaultextension="*.ini", filetypes=[('ini files', '.ini'), ('all files', '.*')],initialfile='pydondefaults.ini')
@@ -392,16 +476,17 @@ class HiveApp:
     def saveXMLConfig(self):
       tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='example_hiveconfig.xml')
 
-    def hello(self):
-        print( "hi there, everyone! - main window" )
+    #def hello(self):
+        #print( "hi there, everyone! - main window" )
 
 
 if __name__ == "__main__":
 
-  root = Tk()
-  root.title( "Sense/Stage MiniHive" )
-  app = HiveApp(root)
+  #root = Tk()
+  #root.title( "Sense/Stage MiniHive" )
+  #app = HiveApp(root)
+  app = HiveApp()
   app.openConfigMenu()
-  app.openLogWindow()
+  #app.openLogWindow()
 
-  root.mainloop()
+  app.mainloop()

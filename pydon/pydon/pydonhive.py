@@ -214,6 +214,7 @@ class MiniHive(object):
 	time.sleep(0.001)
 
   def exit( self ):
+    self.running = False
     if self.serial.isOpen():
       self.seriallock.acquire()
       if self.verbose:

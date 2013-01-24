@@ -312,7 +312,7 @@ class SWMiniHiveJunxion( object ):
     self.osc.thread.join() ##!!!
     print( "Done; goodbye" )
     self.hive.exit()
-    sys.exit()
+    #sys.exit()
 
   def start( self ):
     try :

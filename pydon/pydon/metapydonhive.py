@@ -74,7 +74,8 @@ import minihivejunxion
 class MetaPydonHive:
   
   def __init__(self):
-    print( "created metapydonhive" )
+    #print( "created metapydonhive" )
+    self.swhive = None
     
   def readOptions( self ):
     defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'loglevel': "debug" }
@@ -196,8 +197,8 @@ class MetaPydonHive:
 
     parser.add_option("-N", "--logname", dest="logname", default="pydon.log", help="log name (default pydon)")
     parser.add_option("-V", "--loglevel", dest="loglevel", default="debug", help="logging level (debug, info, error)")
-    parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", help="do not log to console")
     parser.add_option("-L", "--logdir", dest="logdir", default=".", help="log DIRECTORY (default ./)")
+    parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", default=True, help="do not log to console")
     parser.add_option("-C", "--clean", dest="clean", action="store_true", default=False, help="remove old log file")
 
     #cfgparser.add_optparse_help_option( parser )
@@ -206,7 +207,9 @@ class MetaPydonHive:
     
     
     return self.options
-    
+  
+  def setOptions( self, options ):
+    self.options = options
     
   def writeOptions( self ):
     
@@ -216,9 +219,9 @@ class MetaPydonHive:
     config.add_section( 'osc' )
     config.add_section( 'serial' )
     config.add_section( 'hive' )
-    config.add_section( 'program' )
+    config.add_section( 'verbosity' )
 
-    for key in [ 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror' ]:
+    for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror' ]:
       #print key, option_dict[ key ]
       config.set( 'hive', key, self.option_dict[ key ] )
 
@@ -226,17 +229,21 @@ class MetaPydonHive:
       #print key, option_dict[ key ]
       config.set( 'serial', key, self.option_dict[ key ] )
 
-    for key in [ 'program', 'verbose', 'logdata', 'logname', 'loglevel' ]:
+    for key in [ 'verbose', 'logname', 'loglevel', 'loglevel', 'quiet', 'clean', 'logdir' ]:
       #print key, option_dict[ key ]
-      config.set( 'program', key, self.option_dict[ key ] )
+      config.set( 'verbosity', key, self.option_dict[ key ] )
 
-    for key in [ 'name', 'ip', 'port', 'host', 'hport' ]:
+    for key in [ 'program', 'name', 'ip', 'port', 'host', 'hport' ]:
       #print key, option_dict[ key ]
       config.set( 'osc', key, self.option_dict[ key ] )
     
     with open ('pydondefaults.ini', 'wb' ) as configfile:
       config.write( configfile )
-      
+  
+  def stopHive( self ):
+    if self.swhive != None:
+      self.swhive.exit()
+  
   def startHive( self ):
     #if haveGui:
       #app = wx.PySimpleApp(True)
@@ -263,7 +270,7 @@ class MetaPydonHive:
 	#print "starting swhive"
 	#swhive.start()
       #else:
-      swhive.start()
+      self.swhive.start()
 
     elif self.options.program == 'osc':
       self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode )

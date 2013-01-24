@@ -31,7 +31,7 @@ class WidgetLogger(logging.Handler):
       self.widget.mark_set("sentinel", INSERT)
       self.widget.mark_gravity("sentinel", LEFT)
       #print widget
-
+    
     def emit(self, record):
       r = self.format( record )
       #print( r )
@@ -59,7 +59,7 @@ class LogFile(object):
 	logfile = os.path.join(options.logdir, options.logname )
 	if options.clean and os.path.isfile(logfile):
 	    os.remove(logfile)
-	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=100, backupCount=5)       
+	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=5)  #max 5 megabytes per file
 	#hdlr2 = logging.FileHandler(logfile)
 	hdlr2.setFormatter(formatter)
 	self.logger.addHandler(hdlr2)

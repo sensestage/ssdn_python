@@ -63,16 +63,16 @@ class SWPydonHive( object ):
     self.datanetwork.osc.thread.join() ##!!!
     print( "Done; goodbye" )
     self.hive.exit()
-    sys.exit()
+    #sys.exit()
 
   def start( self ):
     print( "starting swpydonhive" )
     try :
-      while not self.datanetwork.osc.registered:
-        print( "waiting to be registered; is the DataNetwork host running?" )
-        #print time
-        print self.datanetwork.osc.registered
-        time.sleep( 1.0 )
+      #while not self.datanetwork.osc.registered:
+        #print( "waiting to be registered; is the DataNetwork host running?" )
+        ##print time
+        #print self.datanetwork.osc.registered
+        #time.sleep( 1.0 )
       print( "now running hive", self.hive.running )
       self.hive.run()
     except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
