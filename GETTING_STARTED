@@ -7,24 +7,11 @@ XBees
 If you did not buy the MiniBees in a kit, you will need to configure your XBees as described on:
 http://docs.sensestage.eu/xbee-choice-andconfiguration
 
-
 ========
 MiniBees
 ========
 
 These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check http://docs.sensestage.eu on how to configure your setup.
-
-
-===========
-DataNetwork
-===========
-Install the DataNetwork standalone host, or the packages within SuperCollider
-http://sensestage.hexagram.ca/downloads
-
-Start the Standalone, or within SuperCollider:
-
-x = SWDataNetwork.new.createHost;
-x.makeGui;
 
 =========
 PYDONHIVE
@@ -34,11 +21,24 @@ Pydonhive is a python client for the datanetwork that will talk to the MiniBees 
 You start it with:
 $ python metapydonhive.py
 
-See also the HOWTO file for more detailed information.
+See also the INSTALL file for more detailed information.
 
 ===========
-YOUR CLIENT
+DataNetwork
 ===========
+Install the the packages within SuperCollider
+http://docs.sensestage.eu/downloads
+
+Start the Standalone, or within SuperCollider:
+
+x = SWDataNetwork.new.createHost;
+x.makeGui;
+
+===========
+YOUR DATANETWORK CLIENT
+===========
+
+Get the client for your environment from: http://docs.sensestage.eu/downloads
 
 To get the data from the MiniBees in your environment, you have to subscribe to the data.
 If your MiniBee got id 1, e.g. in Pd or Max you would create a dn.node object that listens to id 1.
@@ -53,4 +53,3 @@ dn.node clientName 1
 To send data to a node, you use dn.mapnode
 dn.mapnode 500 3 2
 will make a node 500 with 3 slots, and tell the DataNetwork to map the data to the outputs of MiniBee with ID 2.
-
