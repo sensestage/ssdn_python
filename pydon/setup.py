@@ -1,8 +1,36 @@
 # -*- coding: utf-8 -*-
+
+#############################################################################
+#swpydonhive.py
+
+#Part of the Pydon package
+#interfacing with the Sense/Stage MiniBees and Sense/World DataNetwork
+#For more information: http://docs.sensestage.eu
+
+#created by Marije Baalman (c)2009-13
+
+
+ #This program is free software; you can redistribute it and/or modify
+ #it under the terms of the GNU General Public License as published by
+ #the Free Software Foundation; either version 3 of the License, or
+ #(at your option) any later version.
+
+ #This program is distributed in the hope that it will be useful,
+ #but WITHOUT ANY WARRANTY; without even the implied warranty of
+ #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #GNU General Public License for more details.
+
+ #You should have received a copy of the GNU General Public License
+ #along with this program; if not, write to the Free Software
+ #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+#############################################################################
+
+
 from setuptools import setup, find_packages
 
 setup(name='pydon',
-      version='0.24',
+      version='0.25',
       description='Python packages for the Sense/Stage DataNetwork',
       long_description="""The Sense/Stage DataNetwork can be used to communicate between programs,
       such as SuperCollider, Max/MSP, PureData, Processing, C++ and Python, as well as to communicate
