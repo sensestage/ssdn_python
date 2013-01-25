@@ -20,8 +20,8 @@ import pydon
 import pydonhive
 
 class SWPydonHive( object ):
-  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False ):
-    self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip )
+  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False, hostport=57120 ):
+    self.datanetwork = pydon.DataNetwork( hostip, myport, myname, 1, swarmSize, myip, hostport )
     self.datanetwork.setVerbose( verbose )
 
     self.verbose = verbose

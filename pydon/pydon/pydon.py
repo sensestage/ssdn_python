@@ -479,7 +479,7 @@ class DataNetworkOSC(object):
 
 # begin class DataNetworkOSC
 #class DataNetworkOSC(object):
-  def __init__(self, hostip, myport, myname, network, cltype=0, nonodes=0, myhost='0.0.0.0' ):
+  def __init__(self, hostip, myport, myname, network, cltype=0, nonodes=0, myhost='0.0.0.0', defaulthostport=57120 ):
     self.registered = False
     self.auto_register = True
     self.network = network
@@ -487,6 +487,7 @@ class DataNetworkOSC(object):
     self.verbose = False
     self.name = myname
     self.hostIP = hostip
+    self.defaulthostport = defaulthostport
     self.port = myport
     self.myIP = myhost
     self.cltype = cltype
@@ -567,9 +568,8 @@ class DataNetworkOSC(object):
       response = urllib2.urlopen(url)
       self.hostPort = int( response.read() )
     except( urllib2.URLError ):
-      print( "could not retrieve port, using default port of 57120" )
-      self.hostPort = 57120
-      #TODO: make default port configurable!
+      print( "Could not retrieve datanetwork host port, using default port of %s"%self.defaulthostport )
+      self.hostPort = self.defaulthostport
     
 ## data!
   def data_for_node( self, nodeid, data ):
@@ -1114,7 +1114,7 @@ class DataNode(object):
 
 # begin class DataNetwork
 class DataNetwork(object):
-  def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0' ):
+  def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0', defaulthostport=57120 ):
     self.nodes = {} # contains the nodes we are subscribed to
     self.expectednodes = set([]) # contains node ids that are expected and could be subscribed to
     self.setters = set([]) # contains the nodes we are the setters of
@@ -1129,7 +1129,7 @@ class DataNetwork(object):
     self.mapCustomAction = None
     self.unmapCustomAction = None
 
-    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost )
+    self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost, defaulthostport )
   
   def startOSC( self ):
     #self.osc.createOSC()
