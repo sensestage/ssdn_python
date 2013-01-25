@@ -244,6 +244,10 @@ class MetaPydonHive:
     if self.swhive != None:
       self.swhive.exit()
   
+  def saveConfiguration( self, filename ):
+    self.swhive.saveConfiguration( filename )
+
+  
   def startHive( self ):
     #if haveGui:
       #app = wx.PySimpleApp(True)

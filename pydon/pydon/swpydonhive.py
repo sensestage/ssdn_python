@@ -77,6 +77,9 @@ class SWPydonHive( object ):
       self.hive.run()
     except (SystemExit, RuntimeError, KeyboardInterrupt, IOError ) :
       self.exit()
+  
+  def saveConfiguration( self, filename ):
+    self.hive.write_to_file( filename )
 
 # mapping support
   def mapMiniBee( self, nodeid, mid ):

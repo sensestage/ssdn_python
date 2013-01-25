@@ -382,8 +382,8 @@ class HiveApp( Tk ):
       #filemenu.add_command(label="Save Defaults", command=self.saveDefaultsFile)
       #filemenu.add_separator()
       #filemenu.add_command(label="Open Configuration", command=self.openXMLConfig)
-      #filemenu.add_command(label="Save Configuration", command=self.saveXMLConfig)
-      #filemenu.add_separator()
+      filemenu.add_command(label="Save Configuration", command=self.saveXMLConfig)
+      filemenu.add_separator()
       filemenu.add_command(label="Quit", underline=0, command=self.quitProgram, accelerator='Ctrl+Q')
       menubar.add_cascade(label="File", menu=filemenu)
       
@@ -512,7 +512,9 @@ class HiveApp( Tk ):
       tkFileDialog.asksaveasfilename(defaultextension="*.ini", filetypes=[('ini files', '.ini'), ('all files', '.*')],initialfile='pydondefaults.ini')
 
     def saveXMLConfig(self):
-      tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='example_hiveconfig.xml')
+      filename = tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='example_hiveconfig.xml')
+      if filename:
+	self.mpd.saveConfiguration( filename )
 
     #def hello(self):
         #print( "hi there, everyone! - main window" )

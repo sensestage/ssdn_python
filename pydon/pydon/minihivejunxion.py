@@ -320,6 +320,8 @@ class SWMiniHiveJunxion( object ):
     except (SystemExit, RuntimeError,KeyboardInterrupt, IOError ) :
       self.exit()
 
+  def saveConfiguration( self, filename ):
+    self.hive.write_to_file( filename )
   
   #def setMapAction( self, nodeid, mid ):
     #self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
