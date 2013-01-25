@@ -1,19 +1,3 @@
-#import sys
-
-#class Logger(object):
-    #def __init__(self):
-        #self.terminal = sys.stdout
-        #self.log = open("log.dat", "a")
-
-    #def write(self, message):
-        #self.terminal.write(message)
-        #self.log.write(message)  
-
-#sys.stdout = Logger()
-
-## prints "1 2" to <stdout> AND log.dat
-#print "%d %d" % (1,2)
-
 import os
 import sys
 import logging
@@ -23,6 +7,35 @@ from optparse import OptionParser
 
 
 from Tkinter import INSERT, LEFT
+
+
+#def customEmit(self, record):
+    ## Monkey patch Emit function to avoid new lines between records
+    #try:
+        #msg = self.format(record)
+        #if not hasattr(types, "UnicodeType"): #if no unicode support...
+            #self.stream.write(msg)
+        #else:
+            #try:
+                #if getattr(self.stream, 'encoding', None) is not None:
+                    #self.stream.write(msg.encode(self.stream.encoding))
+                #else:
+                    #self.stream.write(msg)
+            #except UnicodeError:
+                #self.stream.write(msg.encode("UTF-8"))
+        #self.flush()
+    #except (KeyboardInterrupt, SystemExit):
+        #raise
+    #except:
+        #self.handleError(record)
+
+#class NoNewLineLogHandler(handlers.RotatingFileHandler):
+    #def __init__(self, filename, mode='a', maxBytes=0, backupCount=0, encoding=None, delay=0):
+
+        ## Monkey patch 'emit' method
+        #setattr(logging.StreamHandler, logging.StreamHandler.emit.__name__, customEmit)
+
+        #handlers.RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay )
 
 class WidgetLogger(logging.Handler):
     def __init__(self, widget):
@@ -46,7 +59,8 @@ class LogFile(object):
 
     def __init__(self, options, name=None):
         self.logger = logging.getLogger(name)
-	formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
+	#formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
+	#formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
 	level = logging.__dict__.get(options.loglevel.upper(),logging.DEBUG)
 	self.logger.setLevel(level)
 	 # Output logging information to screen
@@ -61,7 +75,7 @@ class LogFile(object):
 	    os.remove(logfile)
 	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=5)  #max 5 megabytes per file
 	#hdlr2 = logging.FileHandler(logfile)
-	hdlr2.setFormatter(formatter)
+	#hdlr2.setFormatter(formatter)
 	self.logger.addHandler(hdlr2)
 	
     def addWidgetHandler( self, whdlr):
