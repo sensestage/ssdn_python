@@ -512,7 +512,7 @@ class HiveApp( Tk ):
       tkFileDialog.asksaveasfilename(defaultextension="*.ini", filetypes=[('ini files', '.ini'), ('all files', '.*')],initialfile='pydondefaults.ini')
 
     def saveXMLConfig(self):
-      filename = tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile='example_hiveconfig.xml')
+      filename = tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile=self.options.config)
       if filename:
 	self.mpd.saveConfiguration( filename )
 
