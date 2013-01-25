@@ -105,12 +105,23 @@ class ConfigureMenu:
       xbframe = LabelFrame( self.frame, text="XBee communication", padx=5, pady=5 )
       xbframe.grid( row=6, column=0, columnspan=4, sticky="W" )
 
-      self.api = self.addCheckbox( xbframe, "api mode", 8, 0 ) ## advanced setting
-      self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  8, 1 ) ## advanced setting
-      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 8, 2 ) ## advanced setting
+      self.api = self.addCheckbox( xbframe, "api mode", 0, 0 ) ## advanced setting
+      self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  0, 1 ) ## advanced setting
+      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 0, 2 ) ## advanced setting
+      
+      lgframe = LabelFrame( self.frame, text="Output logging", padx=5, pady=5 )
+      lgframe.grid( row=7, column=0, columnspan=5,  sticky="W" )
+      
+      self.logfile =  self.addTextEntry( lgframe, "log filename", 0, 0, 3, 60 )
+      self.logdir =  self.addTextEntry( lgframe, "log directory", 1, 0, 3, 60 )
+      openLogDir = Button( lgframe, text="...", command = self.openLogDirDialog )
+      openLogDir.grid( row=1, column=4  )
+      self.logclean = self.addCheckbox( lgframe, "delete old log files", 2, 2 ) ## advanced setting
+      self.logquiet = self.addCheckbox( lgframe, "no output to console",  2, 3 ) ## advanced setting
+      self.loglevel = self.createLogLevelBox( lgframe, 2, 0 )
       
       self.start = Button( self.frame, text="START", command = self.startPydon, background="Red", foreground="Black" )
-      self.start.grid( row=9, column=0, columnspan=4 )
+      self.start.grid( row=8, column=0, columnspan=4 )
       
       self.updateSerialPorts()
       
@@ -119,12 +130,17 @@ class ConfigureMenu:
       self.config.delete(0, END)
       self.config.insert(0, cfile )
     
+    def openLogDirDialog(self):
+      cdir = tkFileDialog.askdirectory(initialdir='.', title="choose directory for logfiles")
+      self.config.delete(0, END)
+      self.config.insert(0, cdir )
+    
     def setTextEntry( self, entry, text ):
       entry.delete(0, END)
       entry.insert(0, text )
       
     def setCheckBox( self, cb, value ):
-      if value == 'True': cb['box'].select()
+      if value == 'True' or value == True: cb['box'].select()
       else: cb['box'].deselect()
       #print cb, text
 
@@ -157,6 +173,12 @@ class ConfigureMenu:
 
       self.setTextEntry( self.config, options.config )
       
+      self.loglevelvar.set( options.loglevel )
+      self.setCheckBox( self.logclean, options.clean )
+      self.setCheckBox( self.logquiet, options.quiet )
+      self.setTextEntry( self.logfile, options.logname )
+      self.setTextEntry( self.logdir, options.logdir )
+      
     def getOptions( self, options ):
       options.program = self.mode.get()      
       options.host = self.hostip.get()
@@ -174,6 +196,12 @@ class ConfigureMenu:
       options.ignore = self.ignore['var'].get()
       options.xbeeerror = self.xbeeerror['var'].get()
       options.config = self.config.get()
+      
+      options.clean = self.logclean['var'].get()
+      options.quiet = self.logquiet['var'].get()
+      options.logdir = self.logdir.get()
+      options.logname = self.logfile.get()
+      options.loglevel = self.loglevelvar.get()
       #print options
       return options
       
@@ -212,6 +240,16 @@ class ConfigureMenu:
 	#except socket.error: return False
 	#else: return True
 	##else: return S.count('.') == 3
+
+    def createLogLevelBox( self, frame, row, col ):
+      logleveloptions = [ 'error', 'info', 'debug' ]
+      self.loglevelvar = StringVar()
+      self.loglevelvar.set( logleveloptions[0] ) # default value
+      Label( frame, text="loglevel" ).grid( row=row, column=col, sticky=W)
+      w = OptionMenu( frame, self.loglevelvar, *logleveloptions )
+      w.grid( row=row, column=col+1 )
+      return w
+
 
     def createMyIPBox( self, frame, row, col ):
       ips = [ '0.0.0.0', '127.0.0.1' ]
@@ -283,11 +321,11 @@ class ConfigureMenu:
       #print self.advanced
       if self.advanced == "basic":
 	#print "basic mode"
-	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'] ]:
+	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
 	  widget.configure(state="disabled")
       else:
 	#print "advanced mode"
-	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'] ]:
+	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
 	  widget.configure(state="normal")
       self.setMode()
 
