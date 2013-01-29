@@ -83,13 +83,13 @@ class SWPydonHive( object ):
 
   def exit( self ):
     self.hive.osclock.acquire()
-    print( "osc lock acquired by thread ", threading.current_thread().name, "exit" )
+    #print( "osc lock acquired by thread ", threading.current_thread().name, "exit" )
     self.datanetwork.osc.unregister()
     print( "\nClosing OSCServer." )
     self.datanetwork.osc.osc.close()
     print( "Waiting for Server-thread to finish" )
     self.hive.osclock.release()
-    print( "osc lock released by thread ", threading.current_thread().name, "exit" )
+    #print( "osc lock released by thread ", threading.current_thread().name, "exit" )
     self.datanetwork.osc.thread.join() ##!!!
     print( "Done; goodbye" )
     self.hive.exit()
