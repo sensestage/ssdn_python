@@ -481,6 +481,7 @@ class HiveApp( Tk ):
       
     
     def stopMPD( self ):
+      self.logfile.removeWidgetHandler( self.loghandler )
       #print "stopping mpd"
       self.mpd.stopHive()
       #print "mpd stopped"
@@ -513,24 +514,25 @@ class HiveApp( Tk ):
       self.logtext = Text( self.logFrame )
       self.logtext.pack()
       
-      logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
-      loghandler = pydonlogger.WidgetLogger( self.logtext )
-      logfile.addWidgetHandler( loghandler )
-      sys.stdout = logfile
-      sys.stderr = logfile
+      self.logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
+      self.loghandler = pydonlogger.WidgetLogger( self.logtext )
+      self.logfile.addWidgetHandler( self.loghandler )
+      sys.stdout = self.logfile
+      sys.stderr = self.logfile
 
     def toggleLog( self ):
       #print self.logOpen, self.logvisible
       if self.logOpen:
-	if self.logvisible:
-	  self.logpi = self.logFrame.place_info()
-	  self.logFrame.pack_forget()
-	else:
-	  self.logtext.delete(1.0, END)
-	  self.logFrame.pack(self.logpi)
-	self.logvisible = not self.logvisible
+          if self.logvisible:
+              self.logpi = self.logFrame.place_info()
+              self.logFrame.pack_forget()
+          else:
+              self.logfile.addWidgetHandler( self.loghandler )
+              self.logtext.delete(1.0, END)
+              self.logFrame.pack(self.logpi)
+          self.logvisible = not self.logvisible
       else:
-	self.openLogWindow()
+          self.openLogWindow()
       
       
     def openDefaultsFile(self):
