@@ -6,10 +6,12 @@ INSTALLATION
 
 Dependencies are:
 * python (version 2.6 or higher) - e.g. http://www.python.org/download/releases/2.7.1/
+* pyserial (version 2.5 or higher) - http://pyserial.sourceforge.net/ (will be automatically installed when installing pydon)
 * pyOSC - http://gitorious.org/pyosc (checkout included in the packaged version)
-* pyserial (version 2.5 or higher) - http://pyserial.sourceforge.net/ - download: http://sourceforge.net/projects/pyserial/files/pyserial/2.5/pyserial-2.5.tar.gz/download, to use the XBee Xplorer coordinator board, you will also need an FTDI driver for your platform.
-* python-xbee-api (version 2.0.0 or higher) - (included in the packaged version)
+* python-xbee-api (version 2.0.1 or higher) - (included in the packaged version)
 * python libmapper, see: http://www.idmil.org/software/libmapper/downloads ; will be gracefully skipped if not needed
+
+To use the XBee Xplorer coordinator board, you will also need an FTDI driver for your platform: http://www.ftdichip.com/Drivers/VCP.htm
 
 python :
 check which version you have:
@@ -32,10 +34,10 @@ Go back to the main folder:
   $ cd ..
 
 =======
-XBee-2.0.0 :
+XBee-2.0.1 :
 
 extract archive and:
-  $ cd XBee-2.0.0
+  $ cd XBee-2.0.1
   $ sudo python setup.py install
 
 Go back to the main folder:
@@ -54,8 +56,9 @@ pyserial will be installed automatically if it is not yet installed.
 go to the pydon directory
   $ cd pydon
 
-start:
-  $ python metapydonhive.py
+-------------------------------------------------------------------  
+Start the GUI interface:
+  $ python pydongui.py
   will pop up a gui where you can set the options
   the default options are saved to a file named "pydondefaults.ini", so that next time you open the program, you'll have the same defaults
 
@@ -66,13 +69,17 @@ From metapydonhive you can choose which kind of client to use:
   - junXion: send osc messages that STEIM's JunXion can deal with
 
 Serial port:
-/dev/ttyUSB0 is the address of your serial port, it will be different on a mac (something like: /dev/tty-ASSFADF0002332).
+/dev/ttyUSB0 is the address of your serial port, it will be different on a mac (something like: /dev/tty-ASSFADF0002332), you can select it from a dropdown menu
 
-start:
+-------------------------------------------------------------------
+Command line start:
   $ python metapydonhive.py -h
+  this will print the help (see below)
   
-this will print the help:
+  $ python metapydonhive
+  will take the defaults found in the pydondefaults.ini file in the same folder, settings that need to be changed can be changed with the command line arguments
 
+-------------------------------------------------------------------
 Usage: metapydonhive.py [options]
 
 MetaPydonHive - Create a client to communicate with the minibee network.
@@ -87,9 +94,13 @@ Options:
   -a, --apimode         use API mode for communication with the minibees
                         [default:False]
   -v, --verbose         verbose printing [default:False]
+  -u, --ignore-unknown  ignore unknown minibees [default:False]
+  -x, --check-for-xbee-error
+                        check whether xbee-error occurred [default:False]
+  -l, --logdata         log data to file [default:False]
   -c CONFIG, --config=CONFIG
                         the name of the configuration file for the minibees
-                        [default:pydon/configs/hiveconfig.xml]
+                        [default:../configs/example_hiveconfig.xml]
   -n NAME, --name=NAME  the name of the client in the datanetwork
                         [default:pydonhive] (needed for datanetwork or
                         libmapper)
@@ -101,13 +112,21 @@ Options:
                         the offset of the number range for the minibees in the
                         network [default:1]
   -d HOST, --host_ip=HOST
-                        the ip address of the datanetwork host
-                        [default:127.0.0.1]
+                        the ip address of the datanetwork host or osc/junxion
+                        receiver [default:127.0.0.1]
   -t HPORT, --host_port=HPORT
                         the port on which the application that has to receive
                         the OSC messages will listen [default:57120] (needed
-                        for osc or junxion)
+                        for osc or junxion or default for datanetwork)
   -i IP, --ip=IP        the ip on which the client will listen
                         [default:0.0.0.0]
   -p PORT, --port=PORT  the port on which the client will listen
                         [default:57600]
+  -N LOGNAME, --logname=LOGNAME
+                        log name (default pydon)
+  -V LOGLEVEL, --loglevel=LOGLEVEL
+                        logging level (debug, info, error)
+  -L LOGDIR, --logdir=LOGDIR
+                        log DIRECTORY (default ./)
+  -Q, --quiet           do not log to console
+  -C, --clean           remove old log file
