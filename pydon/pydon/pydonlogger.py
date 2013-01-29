@@ -77,10 +77,12 @@ class WidgetLogger(logging.Handler):
     def emit(self, record):
       r = self.format( record )
       #print( r )
+      self.acquire()
       # Append message (record) to the widget
       self.widget.insert(INSERT, r )
       self.widget.mark_set(INSERT, "%d.%d" % (0,0) )
       #self.widget.insert(o, r )
+      self.release()
 
 
 class LogFile(object):
@@ -111,7 +113,10 @@ class LogFile(object):
       #formatter = logging.Formatter('%(message)s')
       #whdlr.setFormatter(formatter)
       self.logger.addHandler( whdlr )
-      #print whdlr
+#      print whdlr
+
+    def removeWidgetHandler(self,  whdlr ):
+        self.logger.removeHandler( whdlr )
 
     def write(self, msg, level=logging.INFO):
         self.logger.log(level, msg)
