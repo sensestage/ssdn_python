@@ -313,7 +313,11 @@ class ConfigureMenu:
       
     
     def updateSerialPorts( self ):
-      sports = list_ports.comports()
+      if os.name == 'nt': #sys.platform == 'win32':
+	from windows.pydon_list_ports_windows import *
+	sports = comports()
+      else:
+	sports = list_ports.comports()
       #print sports
       a = [x[0] for x in sports ]
       return a
