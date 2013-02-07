@@ -26,8 +26,14 @@
 
 #############################################################################
 
+import os
 
-from serial.tools import list_ports
+if os.name == 'nt': #sys.platform == 'win32':
+	#from pydon.windows.pydon_list_ports_windows import *
+	import pydon_list_ports_windows
+else:
+	from serial.tools import list_ports
+
 import socket
 import sys
 import threading
@@ -313,15 +319,14 @@ class ConfigureMenu:
       
     
     def updateSerialPorts( self ):
-      if os.name == 'nt': #sys.platform == 'win32':
-	from windows.pydon_list_ports_windows import *
-	sports = comports()
-      else:
-	sports = list_ports.comports()
-      #print sports
-      a = [x[0] for x in sports ]
-      return a
-      #return sports
+	if os.name == 'nt': #sys.platform == 'win32':
+		sports = pydon_list_ports_windows.comports()
+	else:
+	      	sports = list_ports.comports()
+      	#print sports
+      	a = [x[0] for x in sports ]
+      	return a
+      	#return sports
     
     def startPydon( self ):
       #print( "starting pydon" )
