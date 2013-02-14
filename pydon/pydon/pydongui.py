@@ -466,7 +466,7 @@ class HiveApp( Tk ):
     
     def openMPD( self ):
       self.mpd = metapydonhive.MetaPydonHive()
-      self.options = self.mpd.readOptions()
+      self.options = self.mpd.readOptions( False )
       self.configure.setOptions( self.options )
       #print self.options
 
