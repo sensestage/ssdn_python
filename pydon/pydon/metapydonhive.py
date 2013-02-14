@@ -291,8 +291,13 @@ class MetaPydonHive:
     
     if self.options.program == 'datanetwork':
       self.swhive = swpydonhive.SWPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.hport )
-      if ast.literal_eval(self.options.logdata):
-	self.swhive.initializeLogger()
+      print self.options.logdata
+      try:
+	if ast.literal_eval(self.options.logdata):
+	  self.swhive.initializeLogger()
+      except ValueError:
+	if self.options.logdata:
+	  self.swhive.initializeLogger()
       #if haveGui:
 	#print "start main loop"
 	#frame.setHive( swhive )
