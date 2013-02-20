@@ -136,34 +136,34 @@ class MetaPydonHive:
 		    #group="serial", option = "serial",
 		    help='the serial port [default:%s]'% '/dev/ttyUSB0')
 		    
-    parser.add_option('-a','--apimode', action='store_true', dest="apimode", 
+    parser.add_option('-a','--apimode', action='store', dest="apimode", 
 		    #group="serial", option = "apimode",
 		    #default=True,
 		    default = configParser.get( 'serial', 'apimode' ),
 		    help='use API mode for communication with the minibees [default:%s]'% False)
 		    
-    parser.add_option('-v','--verbose', action='store_true', dest="verbose",
+    parser.add_option('-v','--verbose', action='store', dest="verbose",
 		    #default=False, 
 		    default = configParser.get( 'program', 'verbose' ),
 		    #group="program", option="verbose",
 		    help='verbose printing [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
-    parser.add_option('-u','--ignore-unknown', action='store_true', dest="ignore",
+    parser.add_option('-u','--ignore-unknown', action='store', dest="ignore",
 		    #default=False, 
 		    default = configParser.get( 'hive', 'ignore' ),
 		    #group="program", option="verbose",
 		    help='ignore unknown minibees [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
-    parser.add_option('-x','--check-for-xbee-error', action='store_true', dest="xbeeerror",
+    parser.add_option('-x','--check-for-xbee-error', action='store', dest="xbeeerror",
 		    #default=False, 
 		    default = configParser.get( 'hive', 'xbeeerror' ),
 		    #group="program", option="verbose",
 		    help='check whether xbee-error occurred [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
-    parser.add_option('-l','--logdata', action='store_true', dest="logdata",
+    parser.add_option('-l','--logdata', action='store', dest="logdata",
 		    #default=False, 
 		    default = configParser.get( 'program', 'logdata' ),
 		    #group="program", option="verbose",
@@ -233,7 +233,7 @@ class MetaPydonHive:
       (self.options,args) = parser.parse_args( )
     else:
       (self.options,args) = parser.parse_args( [] )
-    
+	
     return self.options
   
   def setOptions( self, options ):
