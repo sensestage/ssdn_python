@@ -478,9 +478,6 @@ class HiveApp( Tk ):
     def openMPD( self ):
       self.mpd = metapydonhive.MetaPydonHive()
       self.options = self.mpd.readOptions( False )
-      self.configure.setOptions( self.options )
-      if self.options.autostart == 'True' or self.options.autostart == True:
-	self.startMPD()
       #print self.options
 
     def startMPD( self ):
@@ -522,7 +519,10 @@ class HiveApp( Tk ):
     def openConfigMenu(self):
       self.configure = ConfigureMenu(self.frame, self )
       self.openMPD()
+      self.configure.setOptions( self.options )
       self.setAdvanced()
+      if self.options.autostart == 'True' or self.options.autostart == True:
+	self.startMPD()
       
     def openLogWindow( self ):
       self.logOpen = True
