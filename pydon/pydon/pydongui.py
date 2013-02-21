@@ -77,9 +77,17 @@ class ConfigureMenu:
       self.frame = Frame(master)
       self.frame.pack()
       self.visible = True
+
+
+      autoframe = LabelFrame( self.frame, text="Autostart", padx=5, pady=5, background="LightBlue" )
+      autoframe.grid( row=0, column=3, columnspan=1, rowspan=1, sticky="W" )
+
+      self.autostart = self.addCheckbox( autoframe, "Start automatically next time", 0, 0 )
+      #self.autostart[ 'box' ].grid( row=0, column=5, sticky="E" )
+
       
       modeframe = LabelFrame( self.frame, text="Communication Mode", padx=5, pady=5, background="LightYellow" )
-      modeframe.grid( row=0, column=0, columnspan=4, rowspan=1, sticky="W" )
+      modeframe.grid( row=0, column=0, columnspan=2, rowspan=1, sticky="W" )
             
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
@@ -201,6 +209,8 @@ class ConfigureMenu:
       
       self.serialportvar.set( options.serial )
       self.baudvar.set( options.baudrate )
+
+      self.setCheckBox( self.autostart, options.autostart )
       
       self.setCheckBox( self.verbose, options.verbose )
       self.setCheckBox( self.api, options.apimode )
@@ -227,6 +237,7 @@ class ConfigureMenu:
       options.mboffset = int(self.mboffset.get())
       options.serial = self.serialportvar.get()
       options.baudrate = int(self.baudvar.get())
+      options.autostart = self.autostart[ 'var' ].get()
       options.verbose = self.verbose['var'].get()
       options.logdata = self.log['var'].get()
       options.apimode = self.api['var'].get()      
@@ -468,6 +479,8 @@ class HiveApp( Tk ):
       self.mpd = metapydonhive.MetaPydonHive()
       self.options = self.mpd.readOptions( False )
       self.configure.setOptions( self.options )
+      if self.options.autostart == 'True' or self.options.autostart == True:
+	self.startMPD()
       #print self.options
 
     def startMPD( self ):

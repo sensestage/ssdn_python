@@ -105,7 +105,7 @@ class MetaPydonHive:
     self.swhive = None
     
   def readOptions( self, fromcommandLine = True ):
-    defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'loglevel': "debug" }
+    defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'loglevel': "info", 'autostart': 'False' }
     
     configParser = ConfigParser.SafeConfigParser( defaults )
     configParser.read( "pydondefaults.ini" )
@@ -161,6 +161,13 @@ class MetaPydonHive:
 		    default = configParser.get( 'hive', 'xbeeerror' ),
 		    #group="program", option="verbose",
 		    help='check whether xbee-error occurred [default:%s]'% False)
+    #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
+
+    parser.add_option('--auto', action='store', dest="autostart",
+		    #default=False, 
+		    default = configParser.get( 'hive', 'autostart' ),
+		    #group="program", option="verbose",
+		    help='autostart [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('-l','--logdata', action='store', dest="logdata",
@@ -249,7 +256,7 @@ class MetaPydonHive:
     config.add_section( 'hive' )
     config.add_section( 'verbosity' )
 
-    for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror' ]:
+    for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror', 'autostart' ]:
       #print key, option_dict[ key ]
       config.set( 'hive', key, self.option_dict[ key ] )
 
