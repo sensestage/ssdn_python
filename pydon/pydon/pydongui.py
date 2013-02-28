@@ -100,6 +100,7 @@ class ConfigureMenu:
     
       self.mode = StringVar()
       self.mode.set("datanetwork") # initialize
+      #print "initialisation", self.mode.get()
       
       cl = 0
     
@@ -196,6 +197,8 @@ class ConfigureMenu:
 
     def setOptions( self, options ):
       self.mode.set( options.program )
+      #print "set options", self.mode.get(), options.program
+      #self.setMode( options.program )
       
       self.setTextEntry( self.hostip, options.host )
       self.setTextEntry( self.hostport, options.hport )
@@ -227,7 +230,10 @@ class ConfigureMenu:
       self.setTextEntry( self.logdir, options.logdir )
       
     def getOptions( self, options ):
-      options.program = self.mode.get()      
+      options.program = self.mode.get()
+      
+      #print "get options", self.mode.get()
+
       options.host = self.hostip.get()
       options.hport = int(self.hostport.get())
       options.ip = self.myipvar.get()
@@ -482,6 +488,7 @@ class HiveApp( Tk ):
 
     def startMPD( self ):
       self.options = self.configure.getOptions( self.options )
+      #print "start MPD", self.options
       self.mpd.setOptions( self.options )
       self.mpd.writeOptions()
 

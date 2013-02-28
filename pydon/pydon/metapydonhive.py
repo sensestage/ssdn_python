@@ -115,8 +115,8 @@ class MetaPydonHive:
       configParser.add_section( 'serial' )
     if not configParser.has_section( 'hive' ):
       configParser.add_section( 'hive' )
-    if not configParser.has_section( 'program' ):
-      configParser.add_section( 'program' )
+    if not configParser.has_section( 'verbosity' ):
+      configParser.add_section( 'verbosity' )
     
     option_parser_class = optparse.OptionParser
     
@@ -125,7 +125,7 @@ class MetaPydonHive:
     parser.add_option( "-P", "--program", 
 			help='Which program/infrastructure do you want to use? options: datanetwork, osc, libmapper, junxion',
 			dest="program",
-			default = configParser.get( 'program', 'program' ),
+			default = configParser.get( 'osc', 'program' ),
 			#group="program", option = "program",
 			#choices = ['datanetwork', 'osc', 'libmapper', 'junxion' ],
 			choices = programchoices
@@ -144,7 +144,7 @@ class MetaPydonHive:
 		    
     parser.add_option('-v','--verbose', action='store', dest="verbose",
 		    #default=False, 
-		    default = configParser.get( 'program', 'verbose' ),
+		    default = configParser.get( 'verbosity', 'verbose' ),
 		    #group="program", option="verbose",
 		    help='verbose printing [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
@@ -172,7 +172,7 @@ class MetaPydonHive:
 
     parser.add_option('-l','--logdata', action='store', dest="logdata",
 		    #default=False, 
-		    default = configParser.get( 'program', 'logdata' ),
+		    default = configParser.get( 'hive', 'logdata' ),
 		    #group="program", option="verbose",
 		    help='log data to file [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
@@ -229,22 +229,23 @@ class MetaPydonHive:
 		    #group="osc", option="myport",
 		    help='the port on which the client will listen [default:%i]'% 57600 )
 
-    parser.add_option("-N", "--logname", dest="logname", default="pydon.log", help="log name (default pydon.log)")
-    parser.add_option("-V", "--loglevel", dest="loglevel", default="debug", help="logging level (debug, info, error)")
-    parser.add_option("-L", "--logdir", dest="logdir", default=".", help="log DIRECTORY (default ./)")
-    parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", default=True, help="do not log to console")
-    parser.add_option("-C", "--clean", dest="clean", action="store_true", default=False, help="remove old log file")
+    parser.add_option("-N", "--logname", dest="logname", default=configParser.get( 'verbosity', 'logname' ), help="log name (default pydon.log)")
+    parser.add_option("-V", "--loglevel", dest="loglevel", default=configParser.get( 'verbosity', 'loglevel' ), help="logging level (debug, info, error)")
+    parser.add_option("-L", "--logdir", dest="logdir", default=configParser.get( 'verbosity', 'logdir' ), help="log DIRECTORY (default ./)")
+    parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", default=configParser.get( 'verbosity', 'quiet' ), help="do not log to console")
+    parser.add_option("-C", "--clean", dest="clean", action="store_true", default=configParser.get( 'verbosity', 'clean' ), help="remove old log file")
 
     #cfgparser.add_optparse_help_option( parser )
     if fromcommandLine:
       (self.options,args) = parser.parse_args( )
     else:
       (self.options,args) = parser.parse_args( [] )
-	
+    #print "mpd readOptions", self.options
     return self.options
   
   def setOptions( self, options ):
     self.options = options
+    #print "mpd setOptions", self.options
     
   def writeOptions( self ):
     
@@ -300,7 +301,7 @@ class MetaPydonHive:
     
     if self.options.program == 'datanetwork':
       self.swhive = swpydonhive.SWPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.hport )
-      print self.options.logdata
+      #print self.options.logdata
       try:
 	if ast.literal_eval(self.options.logdata):
 	  self.swhive.initializeLogger()
