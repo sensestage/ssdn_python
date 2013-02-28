@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 #############################################################################
 #swpydonhive.py
@@ -10,23 +10,24 @@
 #created by Marije Baalman (c)2009-13
 
 
- #This program is free software; you can redistribute it and/or modify
- #it under the terms of the GNU General Public License as published by
- #the Free Software Foundation; either version 3 of the License, or
- #(at your option) any later version.
+#This program is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the License, or
+#(at your option) any later version.
 
- #This program is distributed in the hope that it will be useful,
- #but WITHOUT ANY WARRANTY; without even the implied warranty of
- #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- #GNU General Public License for more details.
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
 
- #You should have received a copy of the GNU General Public License
- #along with this program; if not, write to the Free Software
- #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #############################################################################
 
 import os
+import serial
 
 if os.name == 'nt': #sys.platform == 'win32':
 	#from pydon.windows.pydon_list_ports_windows import *
@@ -62,7 +63,7 @@ class StatusBar(Frame):
     def clear(self):
         self.label.config(text="")
         self.label.update_idletasks()
-        
+
 class ConfigureMenu:
 
     def __init__(self, master, hiveapp):
@@ -88,7 +89,6 @@ class ConfigureMenu:
       
       modeframe = LabelFrame( self.frame, text="Communication Mode", padx=5, pady=5, background="LightYellow" )
       modeframe.grid( row=0, column=0, columnspan=2, rowspan=1, sticky="W" )
-            
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
       MODES = [
@@ -96,7 +96,7 @@ class ConfigureMenu:
         "osc",
         "junxion",
         "libmapper"
-      ]
+        ]
     
       self.mode = StringVar()
       self.mode.set("datanetwork") # initialize
@@ -105,13 +105,13 @@ class ConfigureMenu:
       cl = 0
     
       for text in MODES:
-        b = Radiobutton( modeframe, text=text, variable=self.mode, value=text, command = self.setMode )
-        b.grid( row=0, column = cl )
-        cl = cl + 1
-        
+            b = Radiobutton( modeframe, text=text, variable=self.mode, value=text, command = self.setMode )
+            b.grid( row=0, column = cl )
+            cl = cl + 1
+
       cfframe = LabelFrame( self.frame, text="MiniBee Configuration File", padx=5, pady=5, background="LightYellow" )
       cfframe.grid( row=1, column=0, columnspan=4, sticky="W" )
-        
+
       self.config =      self.addTextEntry( cfframe, "path", 0, 0, 2, 60 )
       openConfig = Button( cfframe, text="...", command = self.openXMLConfig )
       openConfig.grid( row=0, column=3, columnspan=4 )
@@ -260,33 +260,14 @@ class ConfigureMenu:
       return options
       
     def OnValidateInteger(self, d, i, P, s, S, v, V, W):
-	# valid percent substitutions (from the Tk entry man page)
-        # %d = Type of action (1=insert, 0=delete, -1 for others)
-        # %i = index of char string to be inserted/deleted, or -1
-        # %P = value of the entry if the edit is allowed
-        # %s = value of entry prior to editing
-        # %S = the text string being inserted or deleted, if any
-        # %v = the type of validation that is currently set
-        # %V = the type of validation that triggered the callback
-        #      (key, focusin, focusout, forced)
-        # %W = the tk name of the widget        print "OnValidate:"
-        #print "d='%s'" % d
-        #print "i='%s'" % i
-        #print "P='%s'" % P
-        #print "s='%s'" % s
-        #print "S='%s'" % S
-        #print "v='%s'" % v
-        #print "V='%s'" % V
-        #print "W='%s'" % W
-        # only allow if the string is translatable to an integer
-	try:
-	  if S:
-	    S = int(S)
-	    returnval = True
-	  else:
-	    returnval = False
-	except ValueError:
-	  returnval = False 
+        try:
+            if S:
+              S = int(S)
+              returnval = True
+            else:
+              returnval = False
+        except ValueError:
+            returnval = False 
         return returnval
 
     #def OnValidateIP(self, d, i, P, s, S, v, V, W):
@@ -336,55 +317,55 @@ class ConfigureMenu:
       
     
     def updateSerialPorts( self ):
-	if os.name == 'nt': #sys.platform == 'win32':
-		sports = pydon_list_ports_windows.comports()
-	else:
-	      	sports = list_ports.comports()
-      	#print sports
-      	a = [x[0] for x in sports ]
-      	return a
-      	#return sports
-    
+        if os.name == 'nt': #sys.platform == 'win32':
+            sports = pydon_list_ports_windows.comports()
+        else:
+            sports = list_ports.comports()
+        #print sports
+        a = [x[0] for x in sports ]
+        return a
+        #return sports
+
     def startPydon( self ):
       #print( "starting pydon" )
       self.hiveapp.startMPD()
     
     def setMode( self ):
       #print self.mode.get()
-      for widget in [ self.name, self.hostip, self.hostport, self.myip, self.myport ]:
-	widget.configure( state="disabled" )
-      if self.mode.get() == "datanetwork":
-	#datanetwork
-	for widget in [ self.hostip, self.hostport ]:
-	  widget.configure( state="normal" )
-	if self.advanced == "advanced":
-	  for widget in [ self.name, self.myip, self.myport ]:
-	    widget.configure( state="normal" )
-      elif self.mode.get() == "libmapper":
-	for widget in [ self.hostip, self.hostport ]:
-	  widget.configure( state="normal" )
-	if self.advanced == "advanced":
-	  for widget in [ self.name, self.myip ]:
-	    widget.configure( state="normal" )
-      else:
-	for widget in [ self.hostip, self.hostport ]:
-	  widget.configure( state="normal" )
-	if self.advanced == "advanced":
-	  for widget in [ self.myip, self.myport ]:
-	    widget.configure( state="normal" )
+        for widget in [ self.name, self.hostip, self.hostport, self.myip, self.myport ]:
+            widget.configure( state="disabled" )
+        if self.mode.get() == "datanetwork":
+        #datanetwork
+            for widget in [ self.hostip, self.hostport ]:
+                widget.configure( state="normal" )
+            if self.advanced == "advanced":
+                for widget in [ self.name, self.myip, self.myport ]:
+                    widget.configure( state="normal" )
+        elif self.mode.get() == "libmapper":
+            for widget in [ self.hostip, self.hostport ]:
+                widget.configure( state="normal" )
+            if self.advanced == "advanced":
+                for widget in [ self.name, self.myip ]:
+                    widget.configure( state="normal" )
+        else:
+            for widget in [ self.hostip, self.hostport ]:
+                widget.configure( state="normal" )
+            if self.advanced == "advanced":
+                for widget in [ self.myip, self.myport ]:
+                    widget.configure( state="normal" )
     
     def setAdvanced( self, onoff ):
-      self.advanced = onoff
-      #print self.advanced
-      if self.advanced == "basic":
-	#print "basic mode"
-	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
-	  widget.configure(state="disabled")
-      else:
-	#print "advanced mode"
-	for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
-	  widget.configure(state="normal")
-      self.setMode()
+        self.advanced = onoff
+        #print self.advanced
+        if self.advanced == "basic":
+            #print "basic mode"
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
+                widget.configure(state="disabled")
+        else:
+            #print "advanced mode"
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
+                widget.configure(state="normal")
+        self.setMode()
 
     
     def addCheckbox( self, frame, text, row, column ):
@@ -413,15 +394,15 @@ class ConfigureMenu:
       return te
 
     def toggleShow( self ):
-      if self.visible:
-        self.pi = self.frame.place_info()
-        self.frame.pack_forget()
-      else:
-        self.frame.pack(self.pi)
-      self.visible = not self.visible
+        if self.visible:
+            self.pi = self.frame.place_info()
+            self.frame.pack_forget()
+        else:
+            self.frame.pack(self.pi)
+        self.visible = not self.visible
 
     #def hello(self):
-        #print( "hi there, everyone!" )
+	#print( "hi there, everyone!" )
 
 
 class HiveApp( Tk ):
@@ -464,7 +445,7 @@ class HiveApp( Tk ):
 
       self.frame = Frame(self, height=400)
       self.frame.pack()
-            
+    
       self.status = StatusBar(self)
       self.status.pack(side=BOTTOM, fill=X)
       
@@ -478,7 +459,7 @@ class HiveApp( Tk ):
     
     def quitProgram( self ):
       if self.pydonRunning:
-	self.stopMPD()
+        self.stopMPD()
       quit()
     
     def openMPD( self ):
@@ -507,16 +488,16 @@ class HiveApp( Tk ):
       
     
     def stopMPD( self ):
-      self.logfile.removeWidgetHandler( self.loghandler )
-      #print "stopping mpd"
-      self.mpd.stopHive()
-      #print "mpd stopped"
-      self.mpdthread.join()
-      #print "mpdthread joined"
-      self.toggleLog()
-      self.configure.toggleShow()
-      self.setAdvanced()
-      self.pydonRunning = False
+        self.logfile.removeWidgetHandler( self.loghandler )
+        #print "stopping mpd"
+        self.mpd.stopHive()
+        #print "mpd stopped"
+        self.mpdthread.join()
+        #print "mpdthread joined"
+        self.toggleLog()
+        self.configure.toggleShow()
+        self.setAdvanced()
+        self.pydonRunning = False
       
     def setAdvanced( self ):
       #print self.advanced.get()
@@ -529,7 +510,7 @@ class HiveApp( Tk ):
       self.configure.setOptions( self.options )
       self.setAdvanced()
       if self.options.autostart == 'True' or self.options.autostart == True:
-	self.startMPD()
+        self.startMPD()
       
     def openLogWindow( self ):
       self.logOpen = True
@@ -550,18 +531,18 @@ class HiveApp( Tk ):
       sys.stderr = self.logfile
 
     def toggleLog( self ):
-      #print self.logOpen, self.logvisible
-      if self.logOpen:
-          if self.logvisible:
-              self.logpi = self.logFrame.place_info()
-              self.logFrame.pack_forget()
-          else:
-              self.logfile.addWidgetHandler( self.loghandler )
-              self.logtext.delete(1.0, END)
-              self.logFrame.pack(self.logpi)
-          self.logvisible = not self.logvisible
-      else:
-          self.openLogWindow()
+        #print self.logOpen, s   elf.logvisible
+        if self.logOpen:
+            if self.logvisible:
+                self.logpi = self.logFrame.place_info()
+                self.logFrame.pack_forget()
+            else:
+                self.logfile.addWidgetHandler( self.loghandler )
+                self.logtext.delete(1.0, END)
+                self.logFrame.pack(self.logpi)
+            self.logvisible = not self.logvisible
+        else:
+            self.openLogWindow()
       
       
     def openDefaultsFile(self):
@@ -576,10 +557,10 @@ class HiveApp( Tk ):
     def saveXMLConfig(self):
       filename = tkFileDialog.asksaveasfilename(defaultextension="*.xml", filetypes=[('xml files', '.xml'),('all files', '.*')],initialfile=self.options.config)
       if filename:
-	self.mpd.saveConfiguration( filename )
+        self.mpd.saveConfiguration( filename )
 
     #def hello(self):
-        #print( "hi there, everyone! - main window" )
+        #p rint( "hi there, everyone! - main window" )
 
 
 if __name__ == "__main__":
