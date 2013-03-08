@@ -105,7 +105,8 @@ class MetaPydonHive:
     self.swhive = None
     
   def readOptions( self, fromcommandLine = True ):
-    defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'loglevel': "info", 'autostart': 'False' }
+    defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".",
+                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False' }
     
     configParser = ConfigParser.SafeConfigParser( defaults )
     configParser.read( "pydondefaults.ini" )
