@@ -29,11 +29,13 @@
 import os
 import serial
 
-if os.name == 'nt': #sys.platform == 'win32':
-	#from pydon.windows.pydon_list_ports_windows import *
-	import pydon_list_ports_windows
-else:
-	from serial.tools import list_ports
+#if os.name == 'nt': #sys.platform == 'win32':
+#	#from pydon.windows.pydon_list_ports_windows import *
+#	import pydon_list_ports_windows
+#else:
+
+from serial.tools import list_ports
+import os
 
 import socket
 import sys
@@ -48,6 +50,23 @@ except ImportError:
 
 import metapydonhive
 import pydonlogger
+
+def list_serial_ports():
+    # Windows
+    if os.name == 'nt':
+        # Scan for available ports.
+        available = []
+        for i in range(256):
+            try:
+                s = serial.Serial(i)
+                available.append('COM'+str(i + 1))
+                s.close()
+            except serial.SerialException:
+                pass
+        return available
+    else:
+        # Mac / Linux
+        return [port[0] for port in list_ports.comports()]
 
 class StatusBar(Frame):
 
@@ -317,12 +336,13 @@ class ConfigureMenu:
       
     
     def updateSerialPorts( self ):
-        if os.name == 'nt': #sys.platform == 'win32':
-            sports = pydon_list_ports_windows.comports()
-        else:
-            sports = list_ports.comports()
+        #if os.name == 'nt': #sys.platform == 'win32':
+        #    sports = pydon_list_ports_windows.comports()
+        #else:
+        #    sports = list_ports.comports()
         #print sports
-        a = [x[0] for x in sports ]
+        #a = [x[0] for x in sports ]
+        a = list_serial_ports()
         return a
         #return sports
 
