@@ -48,8 +48,9 @@ except ImportError:
     sys.exit("Tkinter not found")
 
 
-import metapydonhive
-import pydonlogger
+import pydon 
+#import metapydonhive
+#import pydonlogger
 
 def list_serial_ports():
     # Windows
@@ -483,7 +484,8 @@ class HiveApp( Tk ):
       quit()
     
     def openMPD( self ):
-      self.mpd = metapydonhive.MetaPydonHive()
+      #self.mpd = metapydonhive.MetaPydonHive()
+      self.mpd = pydon.metapydonhive.MetaPydonHive()
       self.options = self.mpd.readOptions( False )
       #print self.options
 
@@ -544,8 +546,8 @@ class HiveApp( Tk ):
       self.logtext = Text( self.logFrame )
       self.logtext.pack()
       
-      self.logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
-      self.loghandler = pydonlogger.WidgetLogger( self.logtext )
+      self.logfile = pydon.LogFile( self.options, 'stdoutAndErr')
+      self.loghandler = pydon.WidgetLogger( self.logtext )
       self.logfile.addWidgetHandler( self.loghandler )
       sys.stdout = self.logfile
       sys.stderr = self.logfile

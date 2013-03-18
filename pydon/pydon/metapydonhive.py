@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #############################################################################
-#swpydonhive.py
+#metapydonhive.py
 
 #Part of the Pydon package
 #interfacing with the Sense/Stage MiniBees and Sense/World DataNetwork
@@ -42,12 +42,18 @@ import ConfigParser
 
 programchoices = ['datanetwork', 'osc', 'junxion' ]
 
+#import pydon
+
+#if pydon.pydon_have_libmapper:
+  #programchoices.append( 'libmapper' )
 try:
   import lmpydonhive
   programchoices.append( 'libmapper' )
   haveLibmapper = True
+  print "libmapper found"
 except:
   haveLibmapper = False
+  print "libmapper not found"
 
 import swpydonhive
 import minihiveosc
@@ -238,7 +244,9 @@ class MetaPydonHive:
 
     #cfgparser.add_optparse_help_option( parser )
     if fromcommandLine:
+      #try:
       (self.options,args) = parser.parse_args( )
+      #except optparse.OptionValueError:
     else:
       (self.options,args) = parser.parse_args( [] )
     #print "mpd readOptions", self.options

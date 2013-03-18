@@ -44,7 +44,7 @@ import threading
 
 import pydonhive
 
-class MiniHiveOSC(object):
+class MiniHiveJunxion(object):
   #def __init__(self, port, dnosc ):
     #ServerThread.__init__(self, port)
     #self.dnosc = dnosc
@@ -324,7 +324,7 @@ class SWMiniHiveJunxion( object ):
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
 
-    self.osc = MiniHiveOSC( hostip, hostport, myip, myport, self )
+    self.osc = MiniHiveJunxion( hostip, hostport, myip, myport, self )
     self.osc.setVerbose( verbose )
     
     self.verbose = verbose
