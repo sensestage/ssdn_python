@@ -55,6 +55,8 @@ except:
   haveLibmapper = False
   print "libmapper not found"
 
+#import pydon
+#from pydon import *
 import swpydonhive
 import minihiveosc
 import minihivejunxion
