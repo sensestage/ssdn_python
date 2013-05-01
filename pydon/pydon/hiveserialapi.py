@@ -416,7 +416,7 @@ class HiveSerialAPI(object):
   def send_msg( self, datalistin, rmmy ):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
-      if self.framecnt == 256:
+      if self.framecnt == 16:
 	self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
@@ -436,7 +436,7 @@ class HiveSerialAPI(object):
   def send_msg_inc( self, rmmy, msgtype, datalistin ):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
-      if self.framecnt == 256:
+      if self.framecnt == 16:
 	self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
@@ -458,7 +458,7 @@ class HiveSerialAPI(object):
   def send_msg64( self, ser, msgtype, datalistin ):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
-      if self.framecnt == 256:
+      if self.framecnt == 16:
 	self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
