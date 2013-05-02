@@ -311,8 +311,8 @@ class ConfigureMenu:
       try:
 	  exips = socket.gethostbyname_ex( socket.gethostname() )[2]
 	  ips.extend( exips )
-      except: socket.gaierror, e
-	  print e, repr(e) 
+      except socket.gaierror as e:
+	  print e
       #print ips
       self.myipvar = StringVar()
       self.myipvar.set( ips[0] ) # default value
