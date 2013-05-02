@@ -3,6 +3,7 @@ import metapydonhive
 import swpydonhive
 import minihiveosc
 import minihivejunxion
+import pydonguifront
 
 try:
   import lmpydonhive
