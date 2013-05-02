@@ -549,8 +549,8 @@ class HiveApp( Tk ):
       self.logtext = Text( self.logFrame )
       self.logtext.pack()
       
-      self.logfile = pydon.LogFile( self.options, 'stdoutAndErr')
-      self.loghandler = pydon.WidgetLogger( self.logtext )
+      self.logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
+      self.loghandler = pydonlogger.WidgetLogger( self.logtext )
       self.logfile.addWidgetHandler( self.loghandler )
       sys.stdout = self.logfile
       sys.stderr = self.logfile
