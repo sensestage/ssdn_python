@@ -308,8 +308,11 @@ class ConfigureMenu:
 
     def createMyIPBox( self, frame, row, col ):
       ips = [ '0.0.0.0', '127.0.0.1' ]
-      exips = socket.gethostbyname_ex( socket.gethostname() )[2]
-      ips.extend( exips )
+      try:
+	  exips = socket.gethostbyname_ex( socket.gethostname() )[2]
+	  ips.extend( exips )
+      except: socket.gaierror, e
+	  print e, repr(e) 
       #print ips
       self.myipvar = StringVar()
       self.myipvar.set( ips[0] ) # default value
