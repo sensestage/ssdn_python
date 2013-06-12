@@ -51,18 +51,18 @@ pydon:
 
 pyserial will be installed automatically if it is not yet installed.
 
-==========
+Go back to the main folder:
+  $ cd ..
 
-go to the pydon directory
-  $ cd pydon
+==========
 
 -------------------------------------------------------------------  
 Start the GUI interface:
-  $ python pydongui.py
+  $ pydongui.py
   will pop up a gui where you can set the options
   the default options are saved to a file named "pydondefaults.ini", so that next time you open the program, you'll have the same defaults
 
-From metapydonhive you can choose which kind of client to use:
+Now you can choose which kind of client to use:
   - datanetwork: integrate with the SenseWorld DataNetwork
   - libmapper: integrate with the libmapper world (from IDMIL)
   - osc: send osc messages to a certain destination (MiniHiveOSC)
@@ -73,14 +73,14 @@ Serial port:
 
 -------------------------------------------------------------------
 Command line start:
-  $ python metapydonhive.py -h
+  $ pydoncli.py -h
   this will print the help (see below)
   
-  $ python metapydonhive
+  $ pydoncli.py
   will take the defaults found in the pydondefaults.ini file in the same folder, settings that need to be changed can be changed with the command line arguments
 
 -------------------------------------------------------------------
-Usage: metapydonhive.py [options]
+Usage: pydoncli.py [options]
 
 MetaPydonHive - Create a client to communicate with the minibee network.
 
@@ -91,13 +91,18 @@ Options:
                         options: datanetwork, osc, libmapper, junxion
   -s SERIAL, --serial=SERIAL
                         the serial port [default:/dev/ttyUSB0]
-  -a, --apimode         use API mode for communication with the minibees
+  -a APIMODE, --apimode=APIMODE
+                        use API mode for communication with the minibees
                         [default:False]
-  -v, --verbose         verbose printing [default:False]
-  -u, --ignore-unknown  ignore unknown minibees [default:False]
-  -x, --check-for-xbee-error
+  -v VERBOSE, --verbose=VERBOSE
+                        verbose printing [default:False]
+  -u IGNORE, --ignore-unknown=IGNORE
+                        ignore unknown minibees [default:False]
+  -x XBEEERROR, --check-for-xbee-error=XBEEERROR
                         check whether xbee-error occurred [default:False]
-  -l, --logdata         log data to file [default:False]
+  --auto=AUTOSTART      autostart [default:False]
+  -l LOGDATA, --logdata=LOGDATA
+                        log data to file [default:False]
   -c CONFIG, --config=CONFIG
                         the name of the configuration file for the minibees
                         [default:../configs/example_hiveconfig.xml]
@@ -123,7 +128,7 @@ Options:
   -p PORT, --port=PORT  the port on which the client will listen
                         [default:57600]
   -N LOGNAME, --logname=LOGNAME
-                        log name (default pydon)
+                        log name (default pydon.log)
   -V LOGLEVEL, --loglevel=LOGLEVEL
                         logging level (debug, info, error)
   -L LOGDIR, --logdir=LOGDIR
