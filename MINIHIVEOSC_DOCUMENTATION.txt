@@ -8,11 +8,19 @@ OSC messages it sends:
 
 /minibee/info   - siii   - serial number, id, number of inputs, number of outputs
 /minibee/data   - iff..f - id, and as many floats as inputs
+/minibee/status - i
 
 OSC messages it listens to:
 
 /minibee/output - iii..i - id, and as many 8bit integers as outputs (first PWM's then digital)
 /minibee/custom - iii..i - id, and as many 8bit integers as the custom message requires
+
+--- pausing a minibee:
+/minibee/run - ii - id, and 0 (for pausing) or 1 (for running)
+
+--- debugging a minibee:
+/minibee/loopback - ii - id, and 0 (for not sending messages back) or 1 (for sending each message back)
+
 
 and see below for on the fly configuration.
 
@@ -26,6 +34,7 @@ and see below for on the fly configuration.
 possible return messages:
 /minibee/configuration/done node id, config id, serial number (optional)
 /minibee/configuration/error node id, config id, serial number (optional)
+
 
 --- load and save config ---
 /minihive/configuration/save filename
@@ -56,7 +65,20 @@ then M times:
 /minihive/configuration/pin config id, pinid, pinconfig
 /minihive/configuration/twi config id, twiid, twiconfig
 
+--- query configuration ---
+/minihive/configuration/query config id
+
+/minihive/configuration/pin/query config id, pinid
+/minihive/configuration/twi/query config id, twiid
+
+
+
+--- delete a configuration
 /minihive/configuration/delete config id
+
+  possible return messages:
+    /minihive/configuration/error config id
+    /minihive/configuration/delete/done config id
 
 -----------------------------
      TESTING WITH SC
@@ -64,37 +86,6 @@ then M times:
 An example of sending the right messages with SuperCollider is given in:
 testminihiveosc.scd
 
+An examples for PureData is given in:
+minihiveosc.pd
 
----------------------------------
-     COMMAND LINE OPTIONS
----------------------------------
-Usage: minihiveosc.py [options]
-
-Create a program that speaks OSC to communicate with the minibee network.
-
-Options:
-  -h, --help            show this help message and exit
-  -p PORT, --port=PORT  the port on which the minihiveosc will listen
-                        [default:57600]
-  -i IP, --ip=IP        the ip on which the client will listen
-                        [default:0.0.0.0]
-  -c CONFIG, --config=CONFIG
-                        the name of the configuration file for the minibees
-                        [default:pydon/configs/hiveconfig.xml]
-  -m MINIBEES, --nr_of_minibees=MINIBEES
-                        the number of minibees in the network [default:10]
-  -d HOST, --host_ip=HOST
-                        the ip address of the application that has to receive
-                        the OSC messages [default:127.0.0.1]
-  -t HPORT, --host_port=HPORT
-                        the port on which the application that has to receive
-                        the OSC messages will listen [default:57120]
-  -v VERBOSE, --verbose=VERBOSE
-                        verbose printing [default:0]
-  -s SERIAL, --serial=SERIAL
-                        the serial port [default:/dev/ttyUSB0]
-  -b BAUDRATE, --baudrate=BAUDRATE
-                        the serial port [default:57600]
-  -a APIMODE, --apimode=APIMODE
-                        use API mode for communication with the minibees
-                        [default:False]
