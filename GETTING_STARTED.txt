@@ -11,7 +11,11 @@ http://docs.sensestage.eu/xbee-choice-andconfiguration
 MiniBees
 ========
 
-These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check http://docs.sensestage.eu on how to configure your setup.
+These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check the pages below on how to configure your setup.
+
+http://docs.sensestage.eu/preparing-the-arduino-ide-for-use-with-sensestage
+http://docs.sensestage.eu/using-your-own-arduino-xbee-combination
+
 
 =========
 PYDONHIVE
@@ -19,7 +23,7 @@ PYDONHIVE
 Pydonhive is a python client for the datanetwork that will talk to the MiniBees and send data to the datanetwork, or send data from the datanetwork to the MiniBees.
 
 You start it with:
-$ python metapydonhive.py
+$ pydongui.py
 
 See also the INSTALL file for more detailed information.
 

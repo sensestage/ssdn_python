@@ -53,7 +53,7 @@ try:
   print "libmapper found"
 except:
   haveLibmapper = False
-  print "libmapper not found"
+  print "libmapper not found - don't worry if you don't plan on using it"
 
 #import pydon
 #from pydon import *
