@@ -678,7 +678,7 @@ class MiniBeeConfig(object):
   analogPins = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7']
   digitalPins = [ 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13' ]
   #pinNames =  
-  miniBeePinConfig = { 'NotUsed': 0, 'DigitalIn': 1, 'DigitalOut': 2, 'AnalogIn': 3, 'AnalogOut': 4, 'AnalogIn10bit': 5, 'SHTClock': 6, 'SHTData': 7, 'TWIClock': 8, 'TWIData': 9, 'Ping': 10, 'Custom': 100, 'Me': 150, 'UnConfigured': 200 };
+  miniBeePinConfig = { 'NotUsed': 0, 'DigitalIn': 1, 'DigitalOut': 2, 'AnalogIn': 3, 'AnalogOut': 4, 'AnalogIn10bit': 5, 'SHTClock': 6, 'SHTData': 7, 'TWIClock': 8, 'TWIData': 9, 'Ping': 10, 'DigitalInPullup': 11, 'Custom': 100, 'Me': 150, 'UnConfigured': 200 };
 
   miniBeeTwiConfig = { 'ADXL345': 10, 'LIS302DL': 11, 'BMP085': 20, 'TMP102': 30, 'HMC58X3': 40 };
   miniBeeTwiDataSize = { 'ADXL345': [2,2,2], 'LIS302DL': [1,1,1], 'BMP085': [2,3,3], 'TMP102': [2], 'HMC58X3': [2,2,2] };
@@ -863,6 +863,13 @@ class MiniBeeConfig(object):
       for pinname in digpins + anapins: # iterate over all pins
 	if pinname in self.pins:
 	  if self.pins[ pinname ] == 'DigitalIn':
+	    self.digitalIns = self.digitalIns + 1
+	    #self.dataInSizes.append( 1 )
+	    self.dataScales.append( 1 )
+	    self.dataOffsets.append( 0 )
+	    self.logDataFormat.append( 1 )
+	    self.logDataLabels.append( self.pinlabels[ pinname ] )
+	  elif self.pins[ pinname ] == 'DigitalInPullup':
 	    self.digitalIns = self.digitalIns + 1
 	    #self.dataInSizes.append( 1 )
 	    self.dataScales.append( 1 )
