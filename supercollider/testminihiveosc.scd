@@ -8,10 +8,12 @@ NetAddr.langPort;
 // in 3.4:
 ~o1 = OSCresponderNode( nil, "/minibee/data", { |t,r,msg| msg.postln; } ).add;
 ~o2 = OSCresponderNode( nil, "/minibee/info", { |t,r,msg| msg.postln; } ).add;
+~o3 = OSCresponderNode( nil, "/minibee/status", { |t,r,msg| msg.postln; } ).add;
 
 // in 3.5.~dev:
 OSCdef( \minibeedata, { |data,time,src|  data.postln; }, '/minibee/data' );
 OSCdef( \minibeeinfo, { |data,time,src| [data,time,src].postln; }, '/minibee/info' );
+OSCdef( \minibeestatus, { |data,time,src| [data,time,src].postln; }, '/minibee/status' );
 
 
 n = NetAddr.new( "127.0.0.1" , 57600 );
@@ -55,8 +57,7 @@ n.sendMsg( "/minihive/configuration/twi", 1, 2, 1, 'Versnelling');
 
 
 // mini hive junxion:
-
-~o3 = OSCresponderNode( nil, "/minibee/data/1", { |t,r,msg| msg.postln; } ).add;
+~o4 = OSCresponderNode( nil, "/minibee/data/1", { |t,r,msg| msg.postln; } ).add;
 
 Tdef( \x,{ loop{
 	n.sendMsg( "/jXcontrol/1", 0.54);
