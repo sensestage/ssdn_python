@@ -252,6 +252,16 @@ class MetaPydonHive:
     else:
       (self.options,args) = parser.parse_args( [] )
     #print "mpd readOptions", self.options
+    
+    self.options.verbose = self.options.verbose == 'True'
+    self.options.apimode = self.options.apimode == 'True'
+    self.options.xbeeerror = self.options.xbeeerror == 'True'
+    self.options.logdata = self.options.logdata == 'True'
+    self.options.autostart = self.options.autostart == 'True'
+    self.options.quiet = self.options.quiet == 'True'
+    self.options.ignore = self.options.ignore == 'True'
+    self.options.clean = self.options.clean == 'True'
+    
     return self.options
   
   def setOptions( self, options ):
@@ -309,6 +319,8 @@ class MetaPydonHive:
     #print( parser )
     print( self.options )
     print( "--------------------------------------------------------------------------------------" )
+    
+    #print( self.options )
     
     if self.options.program == 'datanetwork':
       self.swhive = swpydonhive.SWPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.hport )
