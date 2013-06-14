@@ -21,6 +21,21 @@ OSC messages it listens to:
 --- debugging a minibee:
 /minibee/loopback - ii - id, and 0 (for not sending messages back) or 1 (for sending each message back)
 
+--- resetting a minibee:
+/minibee/reset - i - id
+-- all:
+/minihive/reset
+
+--- save id on xbee:
+/minibee/saveid - i - id
+-- all:
+/minihive/ids/save
+
+--- send announce message (re-init):
+/minibee/announce - i - id
+
+
+
 
 and see below for on the fly configuration.
 
@@ -41,7 +56,7 @@ possible return messages:
 /minihive/configuration/load filename
 
 --- set configuration ---
-/minihive/configuration
+/minihive/configuration/create
 
 Format:
 i config id

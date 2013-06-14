@@ -425,6 +425,7 @@ class MiniHive(object):
       self.seriallock.acquire()
       #if self.verbose:
 	#print( "lock acquired by thread ", threading.current_thread().name )
+      #FIXME: this needs a cleaner solution
       self.serial.closePort()
       self.hadXBeeError = True
       self.seriallock.release()

@@ -21,6 +21,12 @@ n = NetAddr.new( "127.0.0.1" , 57600 );
 // set output to the minibee:
 n.sendMsg( "/minibee/output", 1, 0 );
 
+// turn minibee data sending off:
+n.sendMsg( "/minibee/run", 1, 0 );
+// turn minibee data sending on:
+n.sendMsg( "/minibee/run", 1, 1 );
+
+
 // set configuration to a minibee:
 n.sendMsg( "/minibee/configuration", 1, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 2, 1 ); // minibee id, config id
@@ -29,7 +35,7 @@ n.sendMsg( "/minibee/configuration", 4, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 5, 1 ); // minibee id, config id
 
 // define configuration:
-n.sendMsg( "/minihive/configuration", 10, "testconfig", 1, 25, 2, 1, 'A1', 'AnalogIn', 'licht', 'D11', 'DigitalIn', 'beweging', 1, 'ADXL345', 'versnelling' );
+n.sendMsg( "/minihive/configuration/create", 10, "testconfig", 1, 25, 2, 1, 'A1', 'AnalogIn', 'licht', 'D11', 'DigitalIn', 'beweging', 1, 'ADXL345', 'versnelling' );
 
 // set configuration to a minibee:
 n.sendMsg( "/minibee/configuration", 1, 10 ); // minibee id, config id
@@ -54,6 +60,23 @@ n.sendMsg( "/minihive/configuration/twi", 1, 2, 'ADXL345', 'Versnelling');
 n.sendMsg( "/minihive/configuration/pin", 1, 'A1', 1, 'Light');
 n.sendMsg( "/minihive/configuration/twi", 1, 2, 1, 'Versnelling');
 
+
+///---- advanced functions:
+
+// reset minibee:
+n.sendMsg( "/minibee/reset", 1 );
+
+// send announce to minibee:
+n.sendMsg( "/minibee/announce", 1 );
+
+// save id of minibee in xbee:
+n.sendMsg( "/minibee/saveid", 1 );
+
+// save all ids of active minibees in the network in xbee:
+n.sendMsg( "/minihive/ids/save" );
+
+// reset all active minibees in the network:
+n.sendMsg( "/minihive/reset" );
 
 
 // mini hive junxion:

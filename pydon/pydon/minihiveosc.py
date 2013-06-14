@@ -52,6 +52,14 @@ class MiniHiveOSC(object):
     self.osc.print_tracebacks = onoff
     
   def add_handlers( self ):
+    
+    self.osc.addMsgHandler( "/minihive/reset", self.handler_reset_hive )
+    self.osc.addMsgHandler( "/minihive/ids/save", self.handler_saveids )
+
+    self.osc.addMsgHandler( "/minibee/reset", self.handler_reset_minibee )
+    self.osc.addMsgHandler( "/minibee/saveid", self.handler_mbsaveid )
+    self.osc.addMsgHandler( "/minibee/announce", self.handler_mbannounce )
+
     #self.osc.addMsgHandler( "/minibee", self.handler_output )
     self.osc.addMsgHandler( "/minibee/output", self.handler_output )
     self.osc.addMsgHandler( "/minibee/custom", self.handler_custom )
@@ -64,7 +72,7 @@ class MiniHiveOSC(object):
     self.osc.addMsgHandler( "/minihive/configuration/save", self.handler_cfsave )
     self.osc.addMsgHandler( "/minihive/configuration/load", self.handler_cfload )
     
-    self.osc.addMsgHandler( "/minihive/configuration", self.handler_config )
+    self.osc.addMsgHandler( "/minihive/configuration/create", self.handler_config )
     self.osc.addMsgHandler( "/minihive/configuration/delete", self.handler_config_delete )    
     self.osc.addMsgHandler( "/minihive/configuration/query", self.handler_config_query )
     
@@ -86,6 +94,30 @@ class MiniHiveOSC(object):
 
   #@make_method('/datanetwork/announce', 'si')
   #def announced( self, path, args, types ):
+
+  def handler_mbsaveid( self, path, types, args, source ):    
+    self.minibeeSaveID( args[0] )
+    if self.verbose:
+      print( "MiniBee save id:", args )
+
+  def handler_mbannounce( self, path, types, args, source ):    
+    self.minibeeAnnounce( args[0] )
+    if self.verbose:
+      print( "MiniBee announce:", args )
+
+  def handler_saveids( self, path, types, args, source ):    
+    self.saveIDs()
+    if self.verbose:
+      print( "MiniHive save ids:", args )  
+  
+  def handler_reset_hive( self, path, types, args, source ):
+    self.reset_hive()
+    print( "Reset hive:", args )
+
+  def handler_reset_minibee( self, path, types, args, source ):
+    self.reset_minibee( args[0] )
+    print( "Reset minibee:", args )
+
   def handler_run( self, path, types, args, source ):    
     self.setRun( args[0], args[1] )
     if self.verbose:
@@ -213,7 +245,22 @@ class MiniHiveOSC(object):
   def setLoopback( self, mid, data ):
     #print( self.hive, mid, data )
     self.hive.oscLoopbackToMiniBee( mid, data )
+    
+  def reset_hive( self ):
+    self.hive.oscResetToHive()
 
+  def reset_minibee( self, mid ):
+    self.hive.oscResetToMiniBee( mid )
+
+  def minibeeAnnounce( self, mid ):
+    self.hive.oscAnnounceToMiniBee( mid )
+
+  def minibeeSaveID( self, mid ):
+    self.hive.oscStoreToMinibee( mid )
+
+  def saveIDs( self ):
+    self.hive.oscStoreToHive()
+    
   def setMiniBeeConfiguration( self, config ):
     if len( config ) == 3:
       # set minibee with serial number to given id
@@ -226,15 +273,19 @@ class MiniHiveOSC(object):
     self.sendMessage( "/minibee/configuration/done", config )
 
   def queryMiniBeeConfiguration( self, mid ):
+    #FIXME: implement this
     print( "Query MiniBee configuration %i"%mid )
 
   def queryConfiguration( self, cid ):
+    #FIXME: implement this
     print( "Query configuration %i"%cid )
 
   def queryPinConfiguration( self, cid, pid ):
+    #FIXME: implement this
     print( "Query configuration %i, pin %s"%(cid,pid) )
 
   def queryTwiConfiguration( self, cid, tid ):
+    #FIXME: implement this
     print( "Query configuration %i, twi %i"%(cid,tid) )
 
   def deleteConfiguration( self, cid ):
@@ -346,6 +397,21 @@ class SWMiniHiveOSC( object ):
     self.osc.dataMiniBee( nid, data )
     if self.verbose:
       print( nid,  data )
+
+  def oscResetToHive( self ):
+    self.hive.reset_hive()
+
+  def oscStoreToHive( self ):
+    self.hive.store_ids()
+
+  def oscResetToMiniBee( self, nid ):
+    self.hive.reset_bee( nid )
+
+  def oscAnnounceToMiniBee( self, nid ):
+    self.hive.announce_minibee_id( nid )
+
+  def oscStoreToMinibee( self, nid ):
+    self.hive.store_minibee_id( nid )
 
   def oscRunToMiniBee( self, nid, status ):
     self.hive.bees[ nid ].send_run( self.hive.serial, status )
