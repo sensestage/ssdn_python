@@ -30,7 +30,7 @@
 from setuptools import setup, find_packages
 
 setup(name='pydon',
-      version='0.30',
+      version='0.31',
       description='Python packages for the Sense/Stage DataNetwork',
       long_description="""The Sense/Stage DataNetwork can be used to communicate between programs,
       such as SuperCollider, Max/MSP, PureData, Processing, C++ and Python, as well as to communicate
