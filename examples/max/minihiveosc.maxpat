@@ -7,7 +7,7 @@
 			"revision" : 7
 		}
 ,
-		"rect" : [ 82.0, 44.0, 1331.0, 559.0 ],
+		"rect" : [ 75.0, 235.0, 1334.0, 593.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -48,8 +48,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 677.0, 483.0, 295.0, 18.0 ],
-					"text" : "send /minibee/output $1 $2 $3 $4 $5 $6 $7 $8 $9 $10"
+					"patching_rect" : [ 677.0, 483.0, 266.0, 18.0 ],
+					"text" : "/minibee/output $1 $2 $3 $4 $5 $6 $7 $8 $9 $10"
 				}
 
 			}
@@ -301,8 +301,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1069.0, 131.0, 220.0, 18.0 ],
-					"text" : "send /minihive/configuration/save $1"
+					"patching_rect" : [ 1069.0, 131.0, 175.0, 18.0 ],
+					"text" : "/minihive/configuration/save $1"
 				}
 
 			}
@@ -328,8 +328,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 818.0, 131.0, 191.0, 18.0 ],
-					"text" : "send /minibee/configuration $1 $2"
+					"patching_rect" : [ 818.0, 131.0, 161.0, 18.0 ],
+					"text" : "/minibee/configuration $1 $2"
 				}
 
 			}
@@ -489,15 +489,17 @@
 					"patching_rect" : [ 131.0, 292.0, 260.0, 105.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_longname" : "multislider",
-							"parameter_type" : 1,
+							"parameter_mmax" : 1.0,
+							"parameter_initial" : [ 0.0 ],
+							"parameter_type" : 0,
 							"parameter_invisible" : 1,
-							"parameter_shortname" : "multislider"
+							"parameter_shortname" : "multislider",
+							"parameter_longname" : "multislider"
 						}
 
 					}
 ,
-					"setminmax" : [ 0.0, 255.0 ],
+					"setminmax" : [ 0.0, 1.0 ],
 					"setstyle" : 3,
 					"spacing" : 4,
 					"thickness" : 1,
@@ -507,6 +509,7 @@
 			}
 , 			{
 				"box" : 				{
+					"floatoutput" : 1,
 					"id" : "obj-58",
 					"maxclass" : "slider",
 					"numinlets" : 1,
@@ -514,7 +517,7 @@
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
 					"patching_rect" : [ 94.0, 260.0, 20.0, 140.0 ],
-					"size" : 255.0
+					"size" : 1.0
 				}
 
 			}
@@ -528,7 +531,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 131.0, 260.0, 150.0, 20.0 ],
-					"text" : "data from minibee1"
+					"text" : "first data from minibee1"
 				}
 
 			}
@@ -804,8 +807,8 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 530.833313, 526.0, 144.0, 20.0 ],
-					"text" : "udpsend localhost 57600"
+					"patching_rect" : [ 530.833313, 526.0, 173.0, 20.0 ],
+					"text" : "udpsend 172.16.10.178 57600"
 				}
 
 			}
@@ -1212,6 +1215,15 @@
 					"disabled" : 0,
 					"hidden" : 0,
 					"source" : [ "obj-83", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"disabled" : 0,
+					"hidden" : 0,
+					"source" : [ "obj-86", 0 ]
 				}
 
 			}
