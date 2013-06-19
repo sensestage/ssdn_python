@@ -508,7 +508,7 @@ class MiniHive(object):
       print( "received new data", beeid, msgid, data )
     # find minibee, set data to it
     if beeid in self.bees:
-      self.bees[beeid].parse_data( msgid, data, self.verbose )
+      self.bees[beeid].parse_data( msgid, data, self.verbose, rssi )
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
@@ -592,6 +592,7 @@ class MiniHive(object):
 	#print cid, config
 	self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
 	self.configs[ int( cid ) ].setRedundancy( config['redundancy' ] );
+	self.configs[ int( cid ) ].setRSSI( config['rssi' ] );
 	#print config[ 'pins' ]
 	self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
 	self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
@@ -706,6 +707,7 @@ class MiniBeeConfig(object):
     self.logDataLabels = []
     self.digitalIns = 0
     self.redundancy = 3
+    self.rssi = False
     self.hasCustom = False
     self.custom = MiniBeeCustomConfig()
 
@@ -726,6 +728,10 @@ class MiniBeeConfig(object):
   
   def setRedundancy( self, redun ):
     self.redundancy = redun
+    #print self.redundancy
+
+  def setRSSI( self, rssi ):
+    self.rssi = rssi
     #print self.redundancy
   
   def setPins( self, filepins ):
@@ -782,6 +788,9 @@ class MiniBeeConfig(object):
     configInfo.append( self.name )
     configInfo.append( self.samplesPerMessage )
     configInfo.append( self.messageInterval )
+    #FIXME: these should be added, but check where this might cause problems
+    #configInfo.append( self.redundancy )
+    #configInfo.append( self.rssi )
 
     configInfo.append( len( self.pins ) )
     configInfo.append( len( self.twis ) )
@@ -859,6 +868,9 @@ class MiniBeeConfig(object):
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
     #print( digpins, anapins )
+
+    #if self.rssi:
+      
 
     if libv >= 4:
       for pinname in digpins + anapins: # iterate over all pins
@@ -1249,7 +1261,7 @@ class MiniBee(object):
     if verbose:
       print( "minibee status changed: ", self.nodeid, self.status ) 
 
-  def parse_data( self, msgid, data, verbose = False ):
+  def parse_data( self, msgid, data, verbose = False, rssi = 0 ):
     # to do: add msgid check
     if verbose:
       print( "msg ids", msgid, self.lastRecvMsgID )
@@ -1258,6 +1270,8 @@ class MiniBee(object):
       #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
 	if self.config.samplesPerMessage == 1:
+	  if self.config.rssi:
+	    data.append( rssi )
 	  self.parse_single_data( data, verbose )
 	else: # multiple samples per message:
 	  # TODO: adjust message interval to actually measured interval
@@ -1268,7 +1282,10 @@ class MiniBee(object):
 	  blocks = self.config.samplesPerMessage
 	  blocksize = len( data ) / blocks
 	  for i in range( blocks ):
-	    self.dataQueue.push( data[ i*blocksize: i*blocksize + blocksize ] )
+	    blockdata = data[ i*blocksize: i*blocksize + blocksize ]
+	    if self.config.rssi:
+	      blockdata.append( rssi )
+	    self.dataQueue.push( blockdata )
 	    #if verbose:
 	  self.measuredSampleInterval = self.measuredInterval / max( self.dataQueue.size(), blocks )
 	  #print( self.measuredInterval, self.dataQueue.size(), self.dataQueue )
@@ -1312,7 +1329,11 @@ class MiniBee(object):
       if len( dat ) == 1 :
 	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
     self.data = scaledData
+    
     if len(self.data) == ( len( self.config.dataScales ) + len( self.custom.dataInSizes ) ):
+      if self.config.rssi:
+	self.data.append( data[ idx ]/255. )
+
       if self.status != 'receiving':
 	if self.infoAction != None:
 	  self.infoAction( self )
@@ -1352,7 +1373,10 @@ class MiniBee(object):
 
   def getInputSize( self ):
     if self.cid > 0:
-      return len( self.dataScales )
+      size = len( self.dataScales )
+      if self.config.rssi:
+	size = size + 1
+      return size
     return 0
 
   def getOutputSize( self ):

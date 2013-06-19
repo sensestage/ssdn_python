@@ -79,6 +79,7 @@ class HiveConfigFile():
       el_cfg.set( "redundancy", str( cfg.redundancy ) )
       el_cfg.set( "message_interval", str( cfg.messageInterval ) )
       el_cfg.set( "samples_per_message", str( cfg.samplesPerMessage ) )
+      el_cfg.set( "rssi", str( cfg.rssi ) )
       for pinkey, pincfg in cfg.pins.items():
 	el_pin = ET.SubElement( el_cfg, "pin" )
 	el_pin.set( "id", pinkey )
@@ -169,6 +170,11 @@ class HiveConfigFile():
 	    hiveconfig['configs'][ configs.get( "id" ) ]["redundancy"] = int( configs.get( "redundancy" ) )
 	  else :
 	    hiveconfig['configs'][ configs.get( "id" ) ]["redundancy"] = 3
+	  if configs.get( "rssi" ) != None:
+	    hiveconfig['configs'][ configs.get( "id" ) ]["rssi"] = bool( configs.get( "rssi" ) == 'True' )
+	  else :
+	    hiveconfig['configs'][ configs.get( "id" ) ]["rssi"] = False
+	    
 	  hiveconfig['configs'][ configs.get( "id" ) ]["name"] = configs.get( "name" )
 	  hiveconfig['configs'][ configs.get( "id" ) ]["samples_per_message"] = int( configs.get( "samples_per_message" ) )
 	  hiveconfig['configs'][ configs.get( "id" ) ]["message_interval"] = int( configs.get( "message_interval" ) )
