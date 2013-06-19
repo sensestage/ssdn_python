@@ -18,8 +18,28 @@ OSCdef( \minibeestatus, { |data,time,src| [data,time,src].postln; }, '/minibee/s
 
 n = NetAddr.new( "127.0.0.1" , 57600 );
 
+
 // set output to the minibee:
-n.sendMsg( "/minibee/output", 1, 0 );
+n.sendMsg( "/minibee/output", 1, 255 ); // arguments: minibee ID, value of the led output
+// number of values you send needs to match the number of outputs you defined:
+// the order of the values:
+// first PWM / AnalogOut pins (D9)
+// first DigitalOut pins (D3)
+
+
+
+// set output to the minibee:
+n.sendMsg( "/minibee/output", 1, 255, 255, 255 );
+n.sendMsg( "/minibee/output", 1, 0,0,0 );
+
+n.sendMsg( "/minibee/output", 1, 255,255,0 );
+n.sendMsg( "/minibee/output", 1, 255,0,255 );
+n.sendMsg( "/minibee/output", 1, 0,255,255 );
+
+n.sendMsg( "/minibee/output", 1, 255,0,0 );
+
+n.sendMsg( "/minibee/output", 1, 200,255,0 );
+
 
 // turn minibee data sending off:
 n.sendMsg( "/minibee/run", 1, 0 );
@@ -35,7 +55,23 @@ n.sendMsg( "/minibee/configuration", 4, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 5, 1 ); // minibee id, config id
 
 // define configuration:
+
+// (10) id for configuration
+// ("testconfig") name/label for configuration
+// (1) samples per message
+// (25) message interval in ms
+// (2) number of pins that I will define in this configuration
+// (1) number of twi devices that I will define in this configuration
+// (A1) pin id
+// (AnalogIn) pin function (analog input)
+// (licht) label for the pin
+// (D11) pin id
+// (DigitalIn) pin function (digital input)
+// (beweging) label for the pin
+// (ADXL345) first TWI device
+// (versnelling) label for the twi device
 n.sendMsg( "/minihive/configuration/create", 10, "testconfig", 1, 25, 2, 1, 'A1', 'AnalogIn', 'licht', 'D11', 'DigitalIn', 'beweging', 1, 'ADXL345', 'versnelling' );
+
 
 // set configuration to a minibee:
 n.sendMsg( "/minibee/configuration", 1, 10 ); // minibee id, config id
