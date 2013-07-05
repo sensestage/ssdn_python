@@ -27,8 +27,18 @@
 
 #############################################################################
 
-import pydon
+from pydon import pydonguifront, pydonlogger
+#from pydonlogger import *
 
-app = pydon.pydonguifront.HiveApp()
+from pydon import metapydonhive, swpydonhive, minihiveosc, minihivejunxion
+try:
+  from pydon import lmpydonhive
+  ##from lmpydonhive import *
+except:
+  pydon_have_libmapper = False
+  ##print( "libmapper not available" )
+
+
+app = pydonguifront.HiveApp()
 app.openConfigMenu()
 app.mainloop()
