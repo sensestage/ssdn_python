@@ -27,9 +27,16 @@
 
 #############################################################################
 
-import pydon
+from pydon import metapydonhive, swpydonhive, minihiveosc, minihivejunxion
+#try:
+  #from pydon import lmpydonhive
+  ##from lmpydonhive import *
+#except:
+pydon_have_libmapper = False
+  ##print( "libmapper not available" )
 
-mpd = pydon.metapydonhive.MetaPydonHive()
+#mpd = pydon.metapydonhive.MetaPydonHive()
+mpd = metapydonhive.MetaPydonHive()
 mpd.readOptions()
 mpd.writeOptions()
 mpd.startHive()
