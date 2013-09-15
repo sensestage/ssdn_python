@@ -47,7 +47,7 @@ setup(name='pydon',
       packages=find_packages(),
       install_requires=[
          #'pyOSC>=0.3',
-         'pyserial>=2.5',
+         'pyserial>=2.6',
          #'xbee>=2.0.1'
     ]
 )
