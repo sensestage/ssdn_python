@@ -67,7 +67,9 @@ def list_serial_ports():
         return available
     else:
         # Mac / Linux
-        return [port[0] for port in list_ports.comports()]
+        avaliable = [port[0] for port in list_ports.comports()]
+        avaliable.append( '/dev/ttyAMA0' ) # raspberry pi
+        return available
 
 class StatusBar(Frame):
 
@@ -333,6 +335,8 @@ class ConfigureMenu:
     def createSerialBox( self, frame, row, col ):
       serialoptions = self.updateSerialPorts()      
       self.serialportvar = StringVar()
+      if len( serialoptions ) == 0:
+	serialoptions.append( '' )
       self.serialportvar.set( serialoptions[0] ) # default value
       w = OptionMenu( frame, self.serialportvar, *serialoptions )
       w.grid( row=row, column=col )
