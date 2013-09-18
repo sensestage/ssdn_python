@@ -67,8 +67,8 @@ def list_serial_ports():
         return available
     else:
         # Mac / Linux
-        avaliable = [port[0] for port in list_ports.comports()]
-        avaliable.append( '/dev/ttyAMA0' ) # raspberry pi
+        available = [port[0] for port in list_ports.comports()]
+        available.append( '/dev/ttyAMA0' ) # raspberry pi
         return available
 
 class StatusBar(Frame):
