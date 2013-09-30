@@ -49,11 +49,5 @@ setup(name='pydon',
          'pyserial>=2.6',
     ]
 )
-<<<<<<< HEAD
          #'pyOSC>=0.3',
          #'xbee>=2.0.1'
-=======
-
-#'xbee>=2.0.1'
-#'pyOSC>=0.3',
->>>>>>> bump version number
