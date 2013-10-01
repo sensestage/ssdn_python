@@ -113,12 +113,11 @@ class ConfigureMenu:
       modeframe.grid( row=0, column=0, columnspan=2, rowspan=1, sticky="W" )
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
-      MODES = [
-        "datanetwork",
-        "osc",
-        "junxion",
-        "libmapper"
-        ]
+      if self.hiveapp.mpd.haveLibmapper:
+	MODES = [ "datanetwork", "osc", "junxion", "libmapper" ]
+      else:
+	MODES = [ "datanetwork", "osc", "junxion" ]
+    
     
       self.mode = StringVar()
       self.mode.set("datanetwork") # initialize
@@ -534,8 +533,8 @@ class HiveApp( Tk ):
       self.configure.setAdvanced( self.advanced.get() )
       
     def openConfigMenu(self):
-      self.configure = ConfigureMenu(self.frame, self )
       self.openMPD()
+      self.configure = ConfigureMenu(self.frame, self )
       self.configure.setOptions( self.options )
       self.setAdvanced()
       if self.options.autostart == 'True' or self.options.autostart == True:

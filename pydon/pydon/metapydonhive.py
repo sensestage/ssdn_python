@@ -111,6 +111,7 @@ class MetaPydonHive:
   def __init__(self):
     #print( "created metapydonhive" )
     self.swhive = None
+    self.haveLibmapper = haveLibmapper
     
   def readOptions( self, fromcommandLine = True ):
     defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".",
