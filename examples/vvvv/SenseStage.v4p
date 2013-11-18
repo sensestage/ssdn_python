@@ -1,0 +1,1263 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta31.dtd" >
+   <PATCH nodename="C:\dev\vvvv\sensestage\vvvv-Message\SenseStage.v4p" systemname="test" filename="C:\dev\vvvv\sensestage\test.v4p">
+   <BOUNDS type="Window" left="0" top="0" width="14400" height="15480">
+   </BOUNDS>
+   <NODE systemname="UDP (Network Server)" nodename="UDP (Network Server)" componentmode="Hidden" id="0">
+   <BOUNDS type="Node" left="3396" top="1932" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Queue Count" visible="1">
+   </PIN>
+   <PIN pinname="Queue Mode" slicecount="1" values="Spread">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="1" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3480" top="948" width="792" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3480" top="948" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="57120">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Local Port|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="1" srcpinname="Y Output Value" dstnodeid="0" dstpinname="Local Port">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="2" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="2712" top="984" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="2712" top="984" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="2" srcpinname="Y Output Value" dstnodeid="0" dstpinname="Enable">
+   </LINK>
+   <NODE systemname="S+H (Raw)" nodename="S+H (Raw)" componentmode="Hidden" id="4">
+   <BOUNDS type="Node" left="3396" top="2688" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="0" srcpinname="Output" dstnodeid="4" dstpinname="Input">
+   </LINK>
+   <NODE systemname="GT (Value)" nodename="GT (Value)" componentmode="Hidden" id="5">
+   <BOUNDS type="Node" left="3732" top="2292" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="0" srcpinname="Queue Count" dstnodeid="5" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="5" srcpinname="Output" dstnodeid="4" dstpinname="Set">
+   </LINK>
+   <NODE systemname="AsString (Raw)" nodename="AsString (Raw)" componentmode="Hidden" id="6">
+   <BOUNDS type="Node" left="1308" top="3552" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Output" dstnodeid="6" dstpinname="Input">
+   </LINK>
+   <NODE id="7" nodename="IOBox (String)" componentmode="InABox" systemname="IOBox (String)">
+   <PIN pinname="Input String">
+   </PIN>
+   <BOUNDS type="Box" left="1308" top="3972" width="4032" height="312">
+   </BOUNDS>
+   <BOUNDS type="Node" left="1308" top="3972" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="6" srcpinname="Output" dstnodeid="7" dstpinname="Input String">
+   </LINK>
+   <NODE systemname="OSCDecoder (Network)" nodename="OSCDecoder (Network)" componentmode="Hidden" id="19">
+   <BOUNDS type="Node" left="3420" top="3516" width="1656" height="276">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Arguments" visible="1">
+   </PIN>
+   <PIN pinname="OnReceive" visible="1">
+   </PIN>
+   <PIN pinname="TypeTags" visible="1">
+   </PIN>
+   <PIN pinname="Match Rule" slicecount="1" values="All">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="18" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="5028" top="3108" width="1128" height="264">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5028" top="3108" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="/minibee/data">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="18" srcpinname="Output String" dstnodeid="19" dstpinname="Address">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="17" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="3420" top="5688" width="1236" height="1092">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3420" top="5688" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="16" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="4680" top="5688" width="348" height="1116">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4680" top="5688" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Output" dstnodeid="19" dstpinname="Input">
+   </LINK>
+   <NODE systemname="S+H (String)" nodename="S+H (String)" componentmode="Hidden" id="20">
+   <BOUNDS type="Node" left="3420" top="4596" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="19" srcpinname="Arguments" dstnodeid="20" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="20" srcpinname="Output" dstnodeid="17" dstpinname="Input String">
+   </LINK>
+   <LINK srcnodeid="19" srcpinname="OnReceive" dstnodeid="20" dstpinname="Set">
+   </LINK>
+   <NODE systemname="S+H (String)" nodename="S+H (String)" componentmode="Hidden" id="21">
+   <BOUNDS type="Node" left="4680" top="4596" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="19" srcpinname="TypeTags" dstnodeid="21" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="19" srcpinname="OnReceive" dstnodeid="21" dstpinname="Set">
+   </LINK>
+   <LINK srcnodeid="21" srcpinname="Output" dstnodeid="16" dstpinname="Input String">
+   </LINK>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="24">
+   <BOUNDS type="Node" left="6312" top="6552" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="25">
+   <BOUNDS type="Node" left="3444" top="8532" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="3444" top="8532" width="3396" height="2184">
+   </BOUNDS>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Show Connections" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="S+H (Animation)" nodename="S+H (Animation)" componentmode="Hidden" id="26">
+   <BOUNDS type="Node" left="4980" top="7344" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="24" srcpinname="Output" dstnodeid="26" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="6312" y="7074">
+   </LINKPOINT>
+   <LINKPOINT x="5040" y="7074">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="CAR (String)" nodename="CAR (String)" componentmode="Hidden" id="28">
+   <BOUNDS type="Node" left="5316" top="5688" width="1056" height="276">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="First Slice" visible="1">
+   </PIN>
+   <PIN pinname="Remainder" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="20" srcpinname="Output" dstnodeid="28" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="3480" y="5280">
+   </LINKPOINT>
+   <LINKPOINT x="5316" y="5280">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="EQ (String)" nodename="EQ (String)" componentmode="Hidden" id="27">
+   <BOUNDS type="Node" left="5316" top="6564" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="28" srcpinname="First Slice" dstnodeid="27" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="27" srcpinname="Output" dstnodeid="26" dstpinname="Set">
+   </LINK>
+   <LINK srcnodeid="28" srcpinname="Remainder" dstnodeid="24" dstpinname="Input" linkstyle="PolyLine">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="29">
+   <BOUNDS type="Node" left="6912" top="8532" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="6912" top="8532" width="3396" height="2184">
+   </BOUNDS>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Show Connections" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="3" values="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="S+H (Animation)" nodename="S+H (Animation)" componentmode="Hidden" id="30">
+   <BOUNDS type="Node" left="5448" top="7344" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Set" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="24" srcpinname="Output" dstnodeid="30" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="6312" y="7080">
+   </LINKPOINT>
+   <LINKPOINT x="5508" y="7080">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="EQ (String)" nodename="EQ (String)" componentmode="Hidden" id="31">
+   <BOUNDS type="Node" left="5784" top="6564" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="28" srcpinname="First Slice" dstnodeid="31" dstpinname="Input 1" linkstyle="VHV">
+   <LINKPOINT x="5364" y="6264">
+   </LINKPOINT>
+   <LINKPOINT x="5772" y="6264">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="31" srcpinname="Output" dstnodeid="30" dstpinname="Set" linkstyle="PolyLine">
+   </LINK>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="32" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="4224" top="3108" width="576" height="192">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4224" top="3108" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" values="Last">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="32" srcpinname="Output Enum" dstnodeid="19" dstpinname="Match Rule">
+   </LINK>
+   <NODE systemname="Queue (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Queue (Spreads)" componentmode="Hidden" id="33">
+   <BOUNDS type="Node" left="9960" top="13944" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Frame Count" visible="1">
+   </PIN>
+   <PIN pinname="Reset" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="9960" top="13944">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Y Output Value" dstnodeid="33" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="5544" y="12348">
+   </LINKPOINT>
+   <LINKPOINT x="11388" y="12312">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="34" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="10104" top="11232" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="10104" top="11232" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Insert">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Y Output Value" dstnodeid="33" dstpinname="Insert" hiddenwhenlocked="1">
+   </LINK>
+   <NODE systemname="Counter (Animation)" nodename="Counter (Animation)" componentmode="Hidden" id="35">
+   <BOUNDS type="Node" left="10272" top="12792" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Up" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Mode" slicecount="1" values="Unlimited">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Y Output Value" dstnodeid="35" dstpinname="Up" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="35" srcpinname="Output" dstnodeid="33" dstpinname="Frame Count">
+   </LINK>
+   <NODE systemname="Queue (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Queue (Spreads)" componentmode="Hidden" id="36">
+   <BOUNDS type="Node" left="8760" top="13944" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Frame Count" visible="1" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Insert" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="8760" top="13944">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="25" srcpinname="Y Output Value" dstnodeid="36" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="2076" y="12348">
+   </LINKPOINT>
+   <LINKPOINT x="10188" y="12312">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="34" srcpinname="Y Output Value" dstnodeid="36" dstpinname="Insert" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="35" srcpinname="Output" dstnodeid="36" dstpinname="Frame Count" linkstyle="VHV">
+   <LINKPOINT x="10272" y="13494">
+   </LINKPOINT>
+   <LINKPOINT x="9144" y="13494">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="37" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="10452" top="13404" width="384" height="264">
+   </BOUNDS>
+   <BOUNDS type="Node" left="10452" top="13404" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Reset">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="37" srcpinname="Y Output Value" dstnodeid="36" dstpinname="Reset" linkstyle="VHV">
+   <LINKPOINT x="10452" y="13800">
+   </LINKPOINT>
+   <LINKPOINT x="9300" y="13800">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="37" srcpinname="Y Output Value" dstnodeid="33" dstpinname="Reset">
+   </LINK>
+   <NODE systemname="TogEdge (Animation)" nodename="TogEdge (Animation)" componentmode="Hidden" id="38">
+   <BOUNDS type="Node" left="11328" top="12792" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Up Edge" visible="1">
+   </PIN>
+   <PIN pinname="Down Edge" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Y Output Value" dstnodeid="38" dstpinname="Input" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="38" srcpinname="Up Edge" dstnodeid="37" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="40">
+   <BOUNDS type="Node" left="8760" top="14280" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="36" srcpinname="Output" dstnodeid="40" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (String Spectral)" nodename="Add (String Spectral)" componentmode="Hidden" id="41">
+   <BOUNDS type="Node" left="8748" top="14748" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Bin Size" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Intersperse" slicecount="1" values="CommaPlusSpace">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="40" srcpinname="Output" dstnodeid="41" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (String Spectral)" nodename="Add (String Spectral)" componentmode="Hidden" id="42">
+   <BOUNDS type="Node" left="8760" top="15252" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="text">
+   </PIN>
+   <PIN pinname="Bin Size" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Intersperse" slicecount="1" values="CarriageReturnLineFeed">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="41" srcpinname="Output" dstnodeid="42" dstpinname="Input">
+   </LINK>
+   <NODE systemname="CurrentTime (Astronomy)" nodename="CurrentTime (Astronomy)" componentmode="Hidden" id="43">
+   <BOUNDS type="Node" left="13620" top="13608" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="GMT" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="46" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="13620" top="15072" width="1356" height="384">
+   </BOUNDS>
+   <BOUNDS type="Node" left="13620" top="15072" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Input String" slicecount="1" values="|forty one thousand five hundred ninety seven|" visible="1">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="FormatValue (String)" nodename="FormatValue (String)" componentmode="Hidden" id="45">
+   <BOUNDS type="Node" left="13620" top="14088" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Characters after Comma" slicecount="1" values="11">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="43" srcpinname="GMT" dstnodeid="45" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="47">
+   <BOUNDS type="Node" left="8940" top="15876" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input Count" slicecount="1" values="5">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Input 3" slicecount="1" values="_">
+   </PIN>
+   <PIN pinname="Input 1" slicecount="1" values="sensor0">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Input 4" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Input 5" slicecount="1" values=".csv">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="46" srcpinname="Output String" dstnodeid="47" dstpinname="Input 2" linkstyle="VHV">
+   <LINKPOINT x="13500" y="15666">
+   </LINKPOINT>
+   <LINKPOINT x="9252" y="15654">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="Writer (String)" filename="%VVVV%\lib\nodes\modules\String\Writer (String).v4p" nodename="Writer (String)" componentmode="Hidden" id="39">
+   <BOUNDS type="Node" left="8772" top="17868" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Filename" visible="1">
+   </PIN>
+   <PIN pinname="Append" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Write" visible="1">
+   </PIN>
+   <PIN pinname="Content" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="8772" top="17868">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="38" srcpinname="Down Edge" dstnodeid="39" dstpinname="Write" linkstyle="Bezier">
+   <LINKPOINT x="11976" y="15468">
+   </LINKPOINT>
+   <LINKPOINT x="9408" y="15468">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="42" srcpinname="Output" dstnodeid="39" dstpinname="Content">
+   </LINK>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="52">
+   <BOUNDS type="Node" left="9972" top="14280" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Add (String Spectral)" nodename="Add (String Spectral)" componentmode="Hidden" id="51">
+   <BOUNDS type="Node" left="9972" top="14748" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Bin Size" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Intersperse" slicecount="1" values="CommaPlusSpace">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="52" srcpinname="Output" dstnodeid="51" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (String Spectral)" nodename="Add (String Spectral)" componentmode="Hidden" id="50">
+   <BOUNDS type="Node" left="9972" top="15252" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Bin Size" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Intersperse" slicecount="1" values="CarriageReturnLineFeed">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="51" srcpinname="Output" dstnodeid="50" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="49">
+   <BOUNDS type="Node" left="10092" top="15876" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input Count" slicecount="1" values="5">
+   </PIN>
+   <PIN pinname="Input 2" visible="1" slicecount="1" values="|0.0000, 0.0000, 0.0000|">
+   </PIN>
+   <PIN pinname="Input 3" slicecount="1" values="_">
+   </PIN>
+   <PIN pinname="Input 1" slicecount="1" values="sensor1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Input 5" slicecount="1" values=".csv">
+   </PIN>
+   <PIN pinname="Input 4" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Writer (String)" filename="%VVVV%\lib\nodes\modules\String\Writer (String).v4p" nodename="Writer (String)" componentmode="Hidden" id="53">
+   <BOUNDS type="Node" left="9948" top="17868" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Filename" visible="1" slicecount="1" values="..\..\..\..\apps\code\vvvv_45beta31_x64\lib\nodes\modules\String\file.txt">
+   </PIN>
+   <PIN pinname="Append" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Write" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Content" visible="1" slicecount="1" values="|sensor10.0000, 0.0000, 0.0000.csv|">
+   </PIN>
+   <BOUNDS type="Box" left="9948" top="17868">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="46" srcpinname="Output String" dstnodeid="49" dstpinname="Input 2" linkstyle="VHV">
+   <LINKPOINT x="13436" y="15666">
+   </LINKPOINT>
+   <LINKPOINT x="10468" y="15654">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="50" srcpinname="Output" dstnodeid="53" dstpinname="Content">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="54" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="11772" top="15036" width="1680" height="408">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11772" top="15036" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="arm_raised">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="text">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="54" srcpinname="Output String" dstnodeid="47" dstpinname="Input 4" linkstyle="VHV">
+   <LINKPOINT x="11652" y="15654">
+   </LINKPOINT>
+   <LINKPOINT x="9516" y="15654">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="54" srcpinname="Output String" dstnodeid="49" dstpinname="Input 4" linkstyle="VHV">
+   <LINKPOINT x="11588" y="15654">
+   </LINKPOINT>
+   <LINKPOINT x="10732" y="15654">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="33" srcpinname="Output" dstnodeid="52" dstpinname="Input">
+   </LINK>
+   <NODE systemname="AbsolutePath (File)" nodename="AbsolutePath (File)" componentmode="Hidden" id="56">
+   <BOUNDS type="Node" left="10092" top="16368" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Relative Path" visible="1">
+   </PIN>
+   <PIN pinname="Absolute Path" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="49" srcpinname="Output" dstnodeid="56" dstpinname="Relative Path">
+   </LINK>
+   <LINK srcnodeid="56" srcpinname="Absolute Path" dstnodeid="53" dstpinname="Filename">
+   </LINK>
+   <NODE systemname="AbsolutePath (File)" nodename="AbsolutePath (File)" componentmode="Hidden" id="57">
+   <BOUNDS type="Node" left="8940" top="16368" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Relative Path" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Absolute Path" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="47" srcpinname="Output" dstnodeid="57" dstpinname="Relative Path">
+   </LINK>
+   <LINK srcnodeid="57" srcpinname="Absolute Path" dstnodeid="39" dstpinname="Filename">
+   </LINK>
+   <LINK srcnodeid="38" srcpinname="Down Edge" dstnodeid="53" dstpinname="Write" linkstyle="Bezier">
+   <LINKPOINT x="11988" y="15468">
+   </LINKPOINT>
+   <LINKPOINT x="10572" y="15468">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="Vector (3d Join)" nodename="Vector (3d Join)" componentmode="Hidden" id="66">
+   <BOUNDS type="Node" left="3012" top="15096" width="3024" height="276">
+   </BOUNDS>
+   <PIN pinname="X" visible="1">
+   </PIN>
+   <PIN pinname="Y" visible="1">
+   </PIN>
+   <PIN pinname="Z" visible="1">
+   </PIN>
+   <PIN pinname="XYZ" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="LinearSpread (Spreads)" nodename="LinearSpread (Spreads)" componentmode="Hidden" id="65">
+   <BOUNDS type="Node" left="2136" top="14376" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Spread Count" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Width" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="65" srcpinname="Output" dstnodeid="66" dstpinname="X" linkstyle="Bezier">
+   <LINKPOINT x="2196" y="14868">
+   </LINKPOINT>
+   <LINKPOINT x="3012" y="14868">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="Vector (3d Split)" nodename="Vector (3d Split)" componentmode="Hidden" id="64">
+   <BOUNDS type="Node" left="3444" top="14376" width="2580" height="276">
+   </BOUNDS>
+   <PIN pinname="XYZ" visible="1">
+   </PIN>
+   <PIN pinname="X" visible="1">
+   </PIN>
+   <PIN pinname="Y" visible="1">
+   </PIN>
+   <PIN pinname="Z" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Map (Value)" nodename="Map (Value)" componentmode="Hidden" id="62">
+   <BOUNDS type="Node" left="3456" top="13740" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="0.6469">
+   </PIN>
+   <PIN pinname="Destination Minimum" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="62" srcpinname="Output" dstnodeid="64" dstpinname="XYZ">
+   </LINK>
+   <NODE nodename="IOBox (Color)" componentmode="InABox" id="61" systemname="IOBox (Color)">
+   <BOUNDS type="Box" left="6336" top="13332" width="504" height="1560">
+   </BOUNDS>
+   <BOUNDS type="Node" left="6336" top="13332" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Color Input" slicecount="2" values="|0.00000,0.66290,0.77015,1.00000|,|0.76087,0.43778,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Color Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Select (Color)" nodename="Select (Color)" componentmode="Hidden" id="60">
+   <BOUNDS type="Node" left="6336" top="15108" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Select" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="61" srcpinname="Color Output" dstnodeid="60" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Divide (Value)" nodename="Divide (Value)" componentmode="Hidden" id="59">
+   <BOUNDS type="Node" left="2364" top="13728" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 2" visible="1" slicecount="1" values="25">
+   </PIN>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="59" srcpinname="Output" dstnodeid="65" dstpinname="Width">
+   </LINK>
+   <LINK srcnodeid="64" srcpinname="X" dstnodeid="66" dstpinname="Y">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="58" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="1776" top="10248" width="792" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="1776" top="10248" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Count">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="400">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="59" dstpinname="Input" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="60" dstpinname="Select" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="65" dstpinname="Spread Count" hiddenwhenlocked="1">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="73" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3924" top="11376" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3924" top="11376" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Set">
+   </PIN>
+   </NODE>
+   <NODE systemname="Cons (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Cons (Spreads)" componentmode="Hidden" id="74">
+   <BOUNDS type="Node" left="3444" top="13068" width="1020" height="264">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1" slicecount="1200" values="0.503967761993408,0.479428648948669,0.479306548833847,0.503845691680908,0.479428648948669,0.479062378406525,0.503845691680908,0.479428648948669,0.479062378406525,0.503845691680908,0.479428648948669,0.479062378406525,0.503845691680908,0.479428648948669,0.479062378406525,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.504211962223053,0.478818207979202,0.479916989803314,0.504211962223053,0.478818207979202,0.479916989803314,0.504211962223053,0.478818207979202,0.479916989803314,0.504211962223053,0.478818207979202,0.479916989803314,0.504211962223053,0.478818207979202,0.479916989803314,0.504211962223053,0.479428648948669,0.479184478521347,0.504211962223053,0.479428648948669,0.479184478521347,0.503967761993408,0.479306548833847,0.479184478521347,0.503967761993408,0.479306548833847,0.479184478521347,0.503967761993408,0.479306548833847,0.479184478521347,0.503967761993408,0.479306548833847,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.503967761993408,0.479916989803314,0.479794889688492,0.503967761993408,0.479916989803314,0.479794889688492,0.503967761993408,0.479916989803314,0.479794889688492,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.504211962223053,0.479306548833847,0.479428648948669,0.504211962223053,0.479306548833847,0.479428648948669,0.504211962223053,0.479306548833847,0.479428648948669,0.504211962223053,0.479306548833847,0.479428648948669,0.504089832305908,0.479306548833847,0.479306548833847,0.504089832305908,0.479306548833847,0.479306548833847,0.504089832305908,0.479306548833847,0.479306548833847,0.504089832305908,0.479306548833847,0.479306548833847,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503723621368408,0.479672819375992,0.479428648948669,0.503723621368408,0.479672819375992,0.479428648948669,0.503723621368408,0.479672819375992,0.479428648948669,0.503723621368408,0.479672819375992,0.479428648948669,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479306548833847,0.479672819375992,0.503845691680908,0.479306548833847,0.479672819375992,0.503845691680908,0.479306548833847,0.479672819375992,0.503845691680908,0.479306548833847,0.479672819375992,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.503967761993408,0.479184478521347,0.479062378406525,0.503967761993408,0.479184478521347,0.479062378406525,0.503967761993408,0.479184478521347,0.479062378406525,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.503845691680908,0.479672819375992,0.479062378406525,0.503845691680908,0.479672819375992,0.479062378406525,0.503845691680908,0.479672819375992,0.479062378406525,0.503845691680908,0.479672819375992,0.479062378406525,0.503845691680908,0.479672819375992,0.479062378406525,0.503967761993408,0.479428648948669,0.479062378406525,0.503967761993408,0.479428648948669,0.479062378406525,0.503967761993408,0.479428648948669,0.479062378406525,0.503967761993408,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.503967761993408,0.479672819375992,0.479184478521347,0.503967761993408,0.479672819375992,0.479184478521347,0.504211962223053,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479428648948669,0.479672819375992,0.503967761993408,0.479428648948669,0.479672819375992,0.503967761993408,0.479428648948669,0.479672819375992,0.503967761993408,0.479428648948669,0.479672819375992,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479550719261169,0.479306548833847,0.503845691680908,0.479550719261169,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479306548833847,0.503845691680908,0.479428648948669,0.479306548833847,0.503845691680908,0.479428648948669,0.479306548833847,0.503845691680908,0.479428648948669,0.479306548833847,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.503845691680908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503723621368408,0.479428648948669,0.479306548833847,0.503723621368408,0.479428648948669,0.479306548833847,0.503723621368408,0.479428648948669,0.479306548833847,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.503967761993408,0.479794889688492,0.478818207979202,0.503967761993408,0.479794889688492,0.478818207979202,0.503967761993408,0.479794889688492,0.478818207979202,0.504089832305908,0.479306548833847,0.479062378406525,0.504089832305908,0.479306548833847,0.479062378406525,0.504089832305908,0.479306548833847,0.479062378406525,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.503967761993408,0.479428648948669,0.479306548833847,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.503845691680908,0.479550719261169,0.479062378406525,0.503845691680908,0.479550719261169,0.479062378406525,0.503845691680908,0.479550719261169,0.479062378406525,0.503845691680908,0.479550719261169,0.479062378406525,0.504334032535553,0.479794889688492,0.479062378406525,0.504334032535553,0.479794889688492,0.479062378406525,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479184478521347,0.504211962223053,0.479428648948669,0.479428648948669,0.504211962223053,0.479428648948669,0.479428648948669,0.504211962223053,0.479428648948669,0.479428648948669,0.504211962223053,0.479428648948669,0.479428648948669,0.504211962223053,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504089832305908,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.504211962223053,0.479428648948669,0.479306548833847,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504211962223053,0.479428648948669,0.479184478521347,0.504211962223053,0.479428648948669,0.479184478521347,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479550719261169,0.479062378406525,0.504089832305908,0.479550719261169,0.479062378406525,0.504089832305908,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.503967761993408,0.479550719261169,0.479428648948669,0.504211962223053,0.479306548833847,0.479306548833847,0.504211962223053,0.479306548833847,0.479306548833847,0.504211962223053,0.479306548833847,0.479306548833847,0.504211962223053,0.479306548833847,0.479306548833847,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.504089832305908,0.479428648948669,0.479062378406525,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.503967761993408,0.479550719261169,0.479306548833847,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479428648948669,0.479184478521347,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.504089832305908,0.479550719261169,0.479184478521347,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479550719261169,0.479062378406525,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.503967761993408,0.479428648948669,0.479184478521347,0.504089832305908,0.479306548833847,0.479428648948669,0.504089832305908,0.479306548833847,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504211962223053,0.479672819375992,0.479184478521347,0.504211962223053,0.479672819375992,0.479184478521347,0.504211962223053,0.479672819375992,0.479184478521347,0.503845691680908,0.479428648948669,0.479550719261169,0.503845691680908,0.479428648948669,0.479550719261169,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479306548833847,0.479184478521347,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.504089832305908,0.479550719261169,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.503967761993408,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479428648948669,0.479428648948669,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847,0.504089832305908,0.479550719261169,0.479306548833847">
+   </PIN>
+   <PIN pinname="Input 2" visible="1" slicecount="1200" values="0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.47845196723938,0.52240264415741,0.496642649173737,0.47845196723938,0.52240264415741,0.496642649173737,0.47845196723938,0.52240264415741,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.523135125637054,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.479184478521347,0.52264678478241,0.496764749288559,0.479184478521347,0.52264678478241,0.496764749288559,0.479184478521347,0.52264678478241,0.496764749288559,0.479184478521347,0.52264678478241,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496520578861237,0.479062378406525,0.52252471446991,0.496520578861237,0.479062378406525,0.52252471446991,0.496520578861237,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496886819601059,0.478940308094025,0.52264678478241,0.496886819601059,0.478940308094025,0.52264678478241,0.496520578861237,0.479062378406525,0.52252471446991,0.496520578861237,0.479062378406525,0.52252471446991,0.496520578861237,0.479062378406525,0.52252471446991,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496886819601059,0.478940308094025,0.522890985012054,0.496886819601059,0.478940308094025,0.522890985012054,0.496886819601059,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496886819601059,0.479062378406525,0.52240264415741,0.496886819601059,0.479062378406525,0.52240264415741,0.496886819601059,0.479062378406525,0.52240264415741,0.496886819601059,0.479062378406525,0.52240264415741,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479184478521347,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.478940308094025,0.52252471446991,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496642649173737,0.479184478521347,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496886819601059,0.478818207979202,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.52252471446991,0.496642649173737,0.479062378406525,0.522890985012054,0.496642649173737,0.479062378406525,0.522890985012054,0.496642649173737,0.479062378406525,0.522890985012054,0.496642649173737,0.479062378406525,0.522890985012054,0.496642649173737,0.479062378406525,0.522890985012054,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496520578861237,0.478940308094025,0.52264678478241,0.496520578861237,0.478940308094025,0.52264678478241,0.496520578861237,0.478940308094025,0.52264678478241,0.496520578861237,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.522890985012054,0.496642649173737,0.478940308094025,0.522890985012054,0.496642649173737,0.478940308094025,0.522890985012054,0.496642649173737,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.478940308094025,0.522768914699554,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.52252471446991,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52240264415741,0.496764749288559,0.479062378406525,0.52240264415741,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496642649173737,0.478940308094025,0.52252471446991,0.496520578861237,0.479184478521347,0.52264678478241,0.496520578861237,0.479184478521347,0.52264678478241,0.496520578861237,0.479184478521347,0.52264678478241,0.496886819601059,0.479062378406525,0.522890985012054,0.496886819601059,0.479062378406525,0.522890985012054,0.496642649173737,0.479184478521347,0.52252471446991,0.496642649173737,0.479184478521347,0.52252471446991,0.496642649173737,0.479184478521347,0.52252471446991,0.496642649173737,0.479184478521347,0.52252471446991,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496642649173737,0.478940308094025,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478818207979202,0.522768914699554,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.479062378406525,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496642649173737,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496764749288559,0.478940308094025,0.52264678478241,0.496520578861237,0.479062378406525,0.52264678478241,0.496520578861237,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496886819601059,0.478940308094025,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496886819601059,0.478940308094025,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496642649173737,0.479062378406525,0.522768914699554,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496764749288559,0.478940308094025,0.522890985012054,0.496886819601059,0.478940308094025,0.52252471446991,0.496886819601059,0.478940308094025,0.52252471446991,0.496886819601059,0.478940308094025,0.52252471446991,0.496886819601059,0.478940308094025,0.52252471446991,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.522768914699554,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52264678478241,0.496764749288559,0.479062378406525,0.52252471446991">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="74" srcpinname="Output" dstnodeid="62" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Camera (Transform Softimage)" filename="%VVVV%\lib\nodes\modules\Transform\Camera (Transform Softimage).v4p" nodename="Camera (Transform Softimage)" componentmode="Hidden" id="76">
+   <BOUNDS type="Node" left="1644" top="17820" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Inital Distance" slicecount="1" values="12">
+   </PIN>
+   <PIN pinname="View" visible="1">
+   </PIN>
+   <PIN pinname="Projection" visible="1">
+   </PIN>
+   <PIN pinname="Initial Pitch" slicecount="1" visible="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="77" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="4584" top="11376" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4584" top="11376" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Reset">
+   </PIN>
+   </NODE>
+   <NODE systemname="Translate (Transform)" nodename="Translate (Transform)" componentmode="Hidden" id="78">
+   <BOUNDS type="Node" left="792" top="15096" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="79" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="1020" top="14364" width="504" height="468">
+   </BOUNDS>
+   <BOUNDS type="Node" left="1020" top="14364" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="2" values="0.5,-0.5">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Vector Size" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="|0, 0|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="79" srcpinname="Y Output Value" dstnodeid="78" dstpinname="Y">
+   </LINK>
+   <NODE systemname="LFO (Animation)" nodename="LFO (Animation)" componentmode="Hidden" id="80">
+   <BOUNDS type="Node" left="1968" top="17304" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Reset" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Phase" slicecount="1" values="0.03">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="80" srcpinname="Output" dstnodeid="76" dstpinname="Initial Pitch">
+   </LINK>
+   <NODE systemname="RingBuffer (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="RingBuffer (Spreads)" componentmode="Hidden" id="72">
+   <BOUNDS type="Node" left="4392" top="12612" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Reset" visible="1">
+   </PIN>
+   <PIN pinname="Frame Count" visible="1">
+   </PIN>
+   <PIN pinname="Insert" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Y Output Value" dstnodeid="72" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="72" srcpinname="Output" dstnodeid="74" dstpinname="Input 2">
+   </LINK>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="72" dstpinname="Frame Count" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="77" srcpinname="Y Output Value" dstnodeid="72" dstpinname="Reset">
+   </LINK>
+   <NODE systemname="RingBuffer (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="RingBuffer (Spreads)" componentmode="Hidden" id="70">
+   <BOUNDS type="Node" left="3444" top="12588" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Reset" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Frame Count" visible="1">
+   </PIN>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="25" srcpinname="Y Output Value" dstnodeid="70" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="70" srcpinname="Output" dstnodeid="74" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="70" dstpinname="Frame Count" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="73" srcpinname="Y Output Value" dstnodeid="70" dstpinname="Set">
+   </LINK>
+   <LINK srcnodeid="64" srcpinname="Z" dstnodeid="66" dstpinname="Z">
+   </LINK>
+   <NODE systemname="Damper (Animation)" nodename="Damper (Animation)" componentmode="Hidden" id="81">
+   <BOUNDS type="Node" left="6912" top="8052" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Go To Position" visible="1">
+   </PIN>
+   <PIN pinname="Position Out" visible="1">
+   </PIN>
+   <PIN pinname="FilterTime" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="30" srcpinname="Output" dstnodeid="81" dstpinname="Go To Position" linkstyle="Bezier">
+   <LINKPOINT x="5828" y="7842">
+   </LINKPOINT>
+   <LINKPOINT x="6640" y="7842">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="81" srcpinname="Position Out" dstnodeid="29" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="Damper (Animation)" nodename="Damper (Animation)" componentmode="Hidden" id="82">
+   <BOUNDS type="Node" left="3444" top="8052" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Go To Position" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Position Out" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="26" srcpinname="Output" dstnodeid="82" dstpinname="Go To Position" linkstyle="Bezier">
+   <LINKPOINT x="4980" y="7830">
+   </LINKPOINT>
+   <LINKPOINT x="3504" y="7830">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="Position Out" dstnodeid="25" dstpinname="Y Input Value">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="83" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3444" top="7512" width="792" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3444" top="7512" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.16">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="s">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="83" srcpinname="Y Output Value" dstnodeid="82" dstpinname="FilterTime" linkstyle="VHV">
+   <LINKPOINT x="3480" y="7896">
+   </LINKPOINT>
+   <LINKPOINT x="3624" y="7896">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="83" srcpinname="Y Output Value" dstnodeid="81" dstpinname="FilterTime" linkstyle="VHV">
+   <LINKPOINT x="3504" y="7896">
+   </LINKPOINT>
+   <LINKPOINT x="7092" y="7896">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="84" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="2112" top="16560" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="2112" top="16560" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="84" srcpinname="Y Output Value" dstnodeid="80" dstpinname="Pause">
+   </LINK>
+   <LINK srcnodeid="77" srcpinname="Y Output Value" dstnodeid="70" dstpinname="Reset">
+   </LINK>
+   <LINK srcnodeid="73" srcpinname="Y Output Value" dstnodeid="72" dstpinname="Set">
+   </LINK>
+   <NODE systemname="S+H (String)" nodename="S+H (String)" componentmode="Hidden" id="85">
+   <BOUNDS type="Node" left="13620" top="14604" width="396" height="276">
+   </BOUNDS>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="38" srcpinname="Up Edge" dstnodeid="85" dstpinname="Set" linkstyle="Bezier">
+   <LINKPOINT x="11388" y="13830">
+   </LINKPOINT>
+   <LINKPOINT x="13956" y="13830">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="45" srcpinname="Output" dstnodeid="85" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="85" srcpinname="Output" dstnodeid="46" dstpinname="Input String">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="86" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="10716" top="11196" width="819" height="240">
+   </BOUNDS>
+   <BOUNDS type="Box" left="10716" top="11196" width="1140" height="708">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|start to record, stop to save to file|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="87" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="12" top="12" width="891" height="240">
+   </BOUNDS>
+   <BOUNDS type="Box" left="12" top="12" width="3240" height="804">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="Sense/Stage">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="26">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="88" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="6264" top="96" width="891" height="240">
+   </BOUNDS>
+   <BOUNDS type="Box" left="6264" top="96" width="4356" height="2340">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|this small patch allows you to test your sense/stage network containing two minibees&cr;&lf;&cr;&lf;if you receive no data, make sure Sense/Stage MiniHive is running correctly (pydongui.py)|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="89" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="6264" top="2448" width="891" height="240">
+   </BOUNDS>
+   <BOUNDS type="Box" left="6264" top="2448" width="4356" height="756">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|2013, velcrome&cr;&lf;marko@intolight.de|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="90" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="4404" top="15468" width="3267" height="240">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4404" top="15468" width="2076" height="696">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|pick any two directions, the third one will be time|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <NODE systemname="Line (EX9)" filename="%VVVV%\lib\nodes\modules\EX9\Line (EX9).v4p" nodename="Line (EX9)" componentmode="Hidden" id="68">
+   <BOUNDS type="Node" left="1164" top="16104" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="VerticesXYZ" visible="1">
+   </PIN>
+   <PIN pinname="Single Input" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="BinSize" visible="1">
+   </PIN>
+   <PIN pinname="Transform Each Bin" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   <PIN pinname="Color" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="66" srcpinname="XYZ" dstnodeid="68" dstpinname="VerticesXYZ" linkstyle="Bezier">
+   <LINKPOINT x="3012" y="15732">
+   </LINKPOINT>
+   <LINKPOINT x="1728" y="15732">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="60" srcpinname="Output" dstnodeid="68" dstpinname="Color">
+   </LINK>
+   <LINK srcnodeid="58" srcpinname="Y Output Value" dstnodeid="68" dstpinname="BinSize" hiddenwhenlocked="1">
+   </LINK>
+   <LINK srcnodeid="78" srcpinname="Transform Out" dstnodeid="68" dstpinname="Transform">
+   </LINK>
+   <NODE systemname="Group (EX9)" filename="" nodename="Group (EX9)" componentmode="Hidden" id="67">
+   <BOUNDS type="Node" left="864" top="16992" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer 2" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Layer Out" visible="1">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Layer 1" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Renderer (EX9)" filename="" nodename="Renderer (EX9)" componentmode="InAWindow" id="75">
+   <BOUNDS type="Node" left="756" top="18552" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="756" top="18552" width="4800" height="3600">
+   </BOUNDS>
+   <BOUNDS type="Window" left="14400" top="0" width="14400" height="15480">
+   </BOUNDS>
+   <PIN pinname="Layers" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="View" visible="1">
+   </PIN>
+   <PIN pinname="Projection" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="76" srcpinname="View" dstnodeid="75" dstpinname="View">
+   </LINK>
+   <LINK srcnodeid="76" srcpinname="Projection" dstnodeid="75" dstpinname="Projection">
+   </LINK>
+   <LINK srcnodeid="67" srcpinname="Layer" dstnodeid="75" dstpinname="Layers">
+   </LINK>
+   <LINK srcnodeid="68" srcpinname="Layer" dstnodeid="67" dstpinname="Layer 2">
+   </LINK>
+   <NODE systemname="AxisAndGrid (DX9)" filename="%VVVV%\lib\nodes\modules\EX9\AxisAndGrid (DX9).v4p" nodename="AxisAndGrid (DX9)" componentmode="Hidden" id="91">
+   <BOUNDS type="Node" left="216" top="15720" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="91" srcpinname="Layer" dstnodeid="67" dstpinname="Layer 1">
+   </LINK>
+   </PATCH>
