@@ -183,12 +183,16 @@ class MiniHive(object):
 	    if not self.serial.hasXBeeError():
 	      self.serial.start()
 	    else:
+	      print "xbee serial error, opening serial port again"
+	      self.serial.halt()
 	      self.serial.closePort()
 	      self.hadXBeeError = True
 	  elif self.countSinceLastData > 2000: # we did not receive any data for about 10 seconds, something's up, let's close and reopen the serial port
+	    print "no data for 10 seconds, opening serial port again"
+	    self.serial.halt()
 	    self.serial.closePort()
 	    self.countSinceLastData = 0
-	    self.hadXBeeError = True    
+	    self.hadXBeeError = True
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
@@ -503,11 +507,12 @@ class MiniHive(object):
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
   
-  def new_data( self, beeid, msgid, data, rssi = 0 ):
+  def new_data( self, beeid, msgid, data, rssi = 0 ):    
     if self.verbose:
       print( "received new data", beeid, msgid, data )
     # find minibee, set data to it
     if beeid in self.bees:
+      self.gotData()
       self.bees[beeid].parse_data( msgid, data, self.verbose, rssi )
     else:
       print( "received data from unknown minibee", beeid, msgid, data )

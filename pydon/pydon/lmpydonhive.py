@@ -14,7 +14,7 @@ import pydon
 import pydonhive
 
 class LMPydonHive( object ):
-  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):
+  def __init__(self, hostip, myport, myip, myname, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False ):
 
     self.device = mapper.device("hive", 9000)
     self.output_signals = []
@@ -24,6 +24,9 @@ class LMPydonHive( object ):
     self.hive.set_id_range( idrange[0], idrange[1] )
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
+    self.hive.set_ignore_unknown( ignoreUnknown )
+    self.hive.set_check_xbee_error( checkXbeeError )    
+    
 
     self.hive.set_newBeeAction( self.hookBeeToMapper )
     self.labelbase = "minibee"
