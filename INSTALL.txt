@@ -6,7 +6,7 @@ INSTALLATION
 
 Dependencies are:
 * python (version 2.6 or higher) - e.g. http://www.python.org/download/releases/2.7.1/
-* pyserial (version 2.5 or higher) - http://pyserial.sourceforge.net/ (will be automatically installed when installing pydon)
+* pyserial (version 2.6 with mods from Jakob Leben) - https://github.com/jleben/python-serial/ (included in the packaged version)
 * pyOSC - http://gitorious.org/pyosc (checkout included in the packaged version)
 * python-xbee-api (version 2.0.1 or higher) - (included in the packaged version)
 * python libmapper, see: http://www.idmil.org/software/libmapper/downloads ; will be gracefully skipped if not needed
@@ -28,6 +28,17 @@ pyOSC :
 
 extract archive and:
   $ cd pyosc
+  $ sudo python setup.py install
+
+Go back to the main folder:
+  $ cd ..
+
+=======
+
+pyserial :
+
+extract archive and:
+  $ cd python-serial
   $ sudo python setup.py install
 
 Go back to the main folder:
