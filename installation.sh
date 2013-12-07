@@ -5,8 +5,9 @@ cd pyosc
 python setup.py install
 cd ..
 
-tar xzvf pyserial_leben.tar.gz
-cd pyosc
+mkdir pyserial
+tar xzvf pyserial_leben.tar.gz -C pyserial
+cd pyserial
 python setup.py install
 cd ..
 
@@ -22,3 +23,4 @@ cd ..
 
 cd pydon
 python setup.py install
+cd ..
