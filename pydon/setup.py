@@ -30,7 +30,7 @@
 #from setuptools import setup, find_packages
 from distutils.core import setup
 
-files = ["pydon/*"]
+files = ["pydon/*.py"]
 
 setup(name='pydon',
       version='0.36',
@@ -40,15 +40,15 @@ setup(name='pydon',
       to the wireless Sense/Stage MiniBees. This package provides the python client for the datanetwork,
       as well as the bridge between the datanetwork and the MiniBee network, as well as an osc sending
       application as a simple bridge to the MiniBee network""",
-      scripts=['scripts/pydongui.py','scripts/pydoncli.py'],
       author='Marije Baalman',
       author_email='sensestage@nescivi.nl',
       url='http://www.sensestage.eu',
       download_url='https://github.com/sensestage/ssdn_python',
       license='GNU Lesser General Public License',
       keywords=['XBee', 'OpenSoundControl', 'OSC', 'SenseStage', 'DataNetwork', 'MiniBee'],
-      py_modules=['pydon']
-      package_dir = {'pydon': files }
+      packages=['pydon'],
+      package_data = {'pydon': files },
+      scripts=['scripts/pydongui.py','scripts/pydoncli.py']
       #packages=find_packages(),
       #install_requires=[
          #'pyserial>=2.6',
