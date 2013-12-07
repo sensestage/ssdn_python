@@ -46,6 +46,7 @@ setup(name='pydon',
       license='GNU Lesser General Public License',
       keywords=['XBee', 'OpenSoundControl', 'OSC', 'SenseStage', 'DataNetwork', 'MiniBee'],
       py_modules=['pydon'],
+      package_dir = {'pydon': 'pydon'}
       #packages=find_packages(),
       #install_requires=[
          #'pyserial>=2.6',
