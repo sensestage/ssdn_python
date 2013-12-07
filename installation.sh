@@ -22,3 +22,4 @@ cd ..
 
 cd pydon
 python setup.py install
+cd ..
