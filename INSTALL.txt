@@ -4,6 +4,26 @@ Installing
 
 INSTALLATION
 
+On Linux you should be able to just execute the installation.sh script, so open a terminal, navigate to the folder where you put the pydon download, and execute:
+$ ./installation.sh
+You may need to do this as the superuser (root), which on most systems can be done with:
+$ sudo ./installation.sh
+
+On OSX, the script should also work, but that still needs to be tested.
+
+For Windows, you will have to do this manually.
+(
+links for getting to an installer, still on the TODO list
+http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/
+http://docs.python-guide.org/en/latest/starting/install/win/
+http://docs.python.org/2/distutils/builtdist.html
+)
+
+
+The instructions below are for more detailed steps, if the installation script is not working.
+
+==========
+
 Dependencies are:
 * python (version 2.6 or higher) - e.g. http://www.python.org/download/releases/2.7.1/
 * pyserial (version 2.6 with mods from Jakob Leben) - https://github.com/jleben/python-serial/ (included in the packaged version)
