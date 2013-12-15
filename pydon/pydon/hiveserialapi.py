@@ -143,6 +143,9 @@ class HiveSerialAPI(object):
   def start( self ):
     self.xbee.start()
 
+  def halt( self ):
+    self.xbee.halt()
+
   def hasXBeeError( self ):
     return self.xbee.hasXBeeError
 

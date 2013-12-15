@@ -317,12 +317,14 @@ class MiniHiveJunxion(object):
 
 
 class SWMiniHiveJunxion( object ):
-  def __init__(self, hostip, hostport, myip, myport, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode ):
+  def __init__(self, hostip, hostport, myip, myport, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False ):
     
     self.hive = pydonhive.MiniHive( serialPort, serialRate, apiMode )
     self.hive.set_id_range( idrange[0], idrange[1] )
     self.hive.load_from_file( config )
     self.hive.set_verbose( verbose )
+    self.hive.set_ignore_unknown( ignoreUnknown )
+    self.hive.set_check_xbee_error( checkXbeeError )    
 
     self.osc = MiniHiveJunxion( hostip, hostport, myip, myport, self )
     self.osc.setVerbose( verbose )
