@@ -54,6 +54,7 @@ class DataNetworkOSC(object):
       self.osc.print_tracebacks = onoff
     
   def add_handlers( self ):
+    self.osc.addMsgHandler( "/client/quit", self.handler_clientquit )
     self.osc.addMsgHandler( "/datanetwork/announce", self.handler_announced )
     self.osc.addMsgHandler( "/datanetwork/quit", self.handler_hasQuit )
     self.osc.addMsgHandler( "/registered", self.handler_registered )
@@ -494,6 +495,11 @@ class DataNetworkOSC(object):
       print( "MiniHive save ids:", args )
 
 # end minibee management
+
+  def handler_clientquit( self, path, types, args, source ):    
+    self.quit()
+    if self.verbose:
+      print( "MiniHive quit:", args )
 
   #@make_method(None, None)
   def fallback(self, path, args, types, src):
@@ -1154,8 +1160,13 @@ class DataNetwork(object):
     self.unmapAction = None
     self.mapCustomAction = None
     self.unmapCustomAction = None
+    self.quitAction = None
 
     self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost, defaulthostport )
+  
+  def quit( self ):
+    if self.quitAction != None
+	self.quitAction()
   
   def startOSC( self ):
     #self.osc.createOSC()
@@ -1195,6 +1206,9 @@ class DataNetwork(object):
 
   def set_unmapCustomAction( self, action ):
     self.unmapCustomAction = action
+
+  def set_quitAction( self, action ):
+    self.quitAction = action
 
   def addExpectedNode( self, nodeid ):
     self.expectednodes.add( nodeid )
