@@ -211,10 +211,11 @@ class SWPydonHive( object ):
     self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
 #    if self.verbose:
 #      print( "osc lock released by thread ", threading.current_thread().name, "add and subscribe" )
-    self.hive.osclock.release()
     self.datanetwork.createNode( nid, mybee.getInputSize(), mybee.name, 0 )
     #self.datanetwork.osc.subscribeNode( nid )
+    self.hive.osclock.release()
     self.sendBeeLabels( mybee )
+
     
   def sendBeeLabels( self, mybee ):
     if mybee.cid > 0:
