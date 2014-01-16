@@ -497,7 +497,7 @@ class DataNetworkOSC(object):
 # end minibee management
 
   def handler_clientquit( self, path, types, args, source ):    
-    self.quit()
+    self.network.quit()
     if self.verbose:
       print( "MiniHive quit:", args )
 
@@ -1165,7 +1165,7 @@ class DataNetwork(object):
     self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost, defaulthostport )
   
   def quit( self ):
-    if self.quitAction != None
+    if self.quitAction != None:
 	self.quitAction()
   
   def startOSC( self ):
