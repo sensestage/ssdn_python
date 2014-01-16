@@ -212,10 +212,10 @@ class MiniHive(object):
 	    bee.send_data( self.verbose )
 	    #self.seriallock.acquire()
 	    #print( "lock acquired by thread ", threading.current_thread().name, "sending output data" )
-	    bee.repeat_output( self.serial, self.seriallock )
-	    bee.repeat_custom( self.serial, self.seriallock )
-	    bee.repeat_run( self.serial, self.seriallock )
-	    bee.repeat_loop( self.serial, self.seriallock )
+	    bee.repeat_output( self.serial, self.seriallock, self.verbose )
+	    bee.repeat_custom( self.serial, self.seriallock, self.verbose )
+	    bee.repeat_run( self.serial, self.seriallock, self.verbose )
+	    bee.repeat_loop( self.serial, self.seriallock, self.verbose )
 	    #self.seriallock.release()
 	    #if bee.status == 'receiving':
 	      #bee.count = bee.count + 1
@@ -1180,7 +1180,7 @@ class MiniBee(object):
 	    #self.time_since_last_update = 0
 	    self.time_of_last_update = time.time()
 
-  def repeat_output( self, serPort, lock ):
+  def repeat_output( self, serPort, lock, verbose = False ):
     if self.outMessage != None:
       if self.outrepeated < self.redundancy :
 	self.outrepeated = self.outrepeated + 1
@@ -1188,8 +1188,10 @@ class MiniBee(object):
 	#if serPort.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name, "repeat output", self.nodeid )
 	serPort.send_msg( self.outMessage, self.nodeid )
+	if verbose:
+	  print( "sending output message", self.nodeid, self.outMessage );
 	lock.release()
-	time.sleep( 0.005 ) #TODO: why are we waiting here
+	time.sleep( 0.001 ) #TODO: why are we waiting here
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_output( self, serPort, data ):
@@ -1208,7 +1210,7 @@ class MiniBee(object):
       #DONT SEND UNTIL CALLED IN THE QUEUE
       #serPort.send_msg( self.outMessage, self.nodeid )
 
-  def repeat_custom( self, serPort, lock ):
+  def repeat_custom( self, serPort, lock, verbose = False ):
     if self.customMessage != None:
       if self.customrepeated < self.redundancy :
 	self.customrepeated = self.customrepeated + 1
@@ -1216,8 +1218,10 @@ class MiniBee(object):
 	#if serPort.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name, "repeat custom", self.nodeid )
 	serPort.send_msg( self.customMessage, self.nodeid )
+	if verbose:
+	  print( "sending custom message", self.nodeid, self.customMessage );
 	lock.release()
-	time.sleep( 0.005 )#TODO: why are we waiting here
+	time.sleep( 0.001 )#TODO: why are we waiting here
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   def send_custom( self, serPort, data ):
@@ -1241,7 +1245,7 @@ class MiniBee(object):
     #DONT SEND UNTIL CALLED IN THE QUEUE
     #serPort.send_msg( self.loopMessage, self.nodeid )
 
-  def repeat_run( self, serPort, lock ):
+  def repeat_run( self, serPort, lock, verbose = False ):
     if self.runMessage != None:
       if self.runrepeated < self.redundancy :
 	self.runrepeated = self.runrepeated + 1
@@ -1249,11 +1253,13 @@ class MiniBee(object):
 	#if serPort.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name, "repeat run", self.nodeid )
 	serPort.send_msg( self.runMessage, self.nodeid )
+	if verbose:
+	  print( "sending run message", self.nodeid, self.runMessage );
 	lock.release()
-	time.sleep( 0.005 )#TODO: why are we waiting here
+	time.sleep( 0.001 )#TODO: why are we waiting here
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
-  def repeat_loop( self, serPort, lock ):
+  def repeat_loop( self, serPort, lock, verbose = False ):
     if self.loopMessage != None:
       if self.looprepeated < self.redundancy :
 	self.looprepeated = self.looprepeated + 1
@@ -1261,8 +1267,10 @@ class MiniBee(object):
 	#if serPort.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name, "repeat loop", self.nodeid )
 	serPort.send_msg( self.loopMessage, self.nodeid )
+	if verbose:
+	  print( "sending loop message", self.nodeid, self.loopMessage );
 	lock.release()
-	time.sleep( 0.005 )#TODO: why are we waiting here
+	time.sleep( 0.001 )#TODO: why are we waiting here
 	#serPort.send_data( self.nodeid, self.msgID, self.outdata )
 
   #def set_run( self, serPort, status ):
