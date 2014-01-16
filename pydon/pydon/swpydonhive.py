@@ -77,9 +77,11 @@ class SWPydonHive( object ):
     self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
 
     self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
+
+    self.datanetwork.set_quitAction( self.exit )
+
     self.datanetwork.startOSC()
     self.hive.start_serial()
-
 
   def exit( self ):
     self.hive.osclock.acquire()
