@@ -33,7 +33,7 @@ from distutils.core import setup
 files = ["pydon/*.py"]
 
 setup(name='pydon',
-      version='0.36',
+      version='0.37',
       description='Python packages for the Sense/Stage DataNetwork and interaction with Sense/Stage MiniBees',
       long_description="""The Sense/Stage DataNetwork can be used to communicate between programs,
       such as SuperCollider, Max/MSP, PureData, Processing, C++ and Python, as well as to communicate
