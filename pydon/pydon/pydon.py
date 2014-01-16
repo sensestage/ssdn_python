@@ -1241,8 +1241,10 @@ class DataNetwork(object):
       self.nodes[ nodeid ].setData( data )
       if not fromNetwork:
 	self.sendData( nodeid, data )
+      return True
     else:
       print( "DataNode: nodeid ", nodeid, " not in nodes" ) #, "not in nodes", self.nodes )
+      return False
 
   def setSlotData( self, nodeid, slotid, data ):
     if nodeid in self.nodes:

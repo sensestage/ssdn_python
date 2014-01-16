@@ -234,10 +234,11 @@ class SWPydonHive( object ):
     self.hive.osclock.acquire()
 #    if self.verbose:
 #      print( "osc lock acquired by thread ", threading.current_thread().name, "minibee to data node" )
-    self.datanetwork.setNodeData( nid, data, False )
+    res = self.datanetwork.setNodeData( nid, data, False )
 #    if self.verbose:
 #      print( "osc lock released by thread ", threading.current_thread().name, "minibee to data node" )
     self.hive.osclock.release()
+    return res
 
 # data node to minibee
   def dataNodeDataToMiniBee( self, data, nid ):

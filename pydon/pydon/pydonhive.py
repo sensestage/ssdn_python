@@ -1351,7 +1351,9 @@ class MiniBee(object):
 	  print ( "receiving data from minibee %i."%(self.nodeid) )
       self.set_status( 'receiving' )
       if self.dataAction != None :
-	self.dataAction( self.data, self.nodeid )
+	if not self.dataAction( self.data, self.nodeid ): # if datanode not in nodes, repeat the first data action
+	  if self.firstDataAction != None:
+	    self.firstDataAction( self.nodeid, self.data )
 	#if verbose:
 	  #print( "did data action", self.dataAction )
       if self.logAction != None :
