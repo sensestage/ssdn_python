@@ -248,8 +248,10 @@ class MiniHive(object):
 	self.poll()
       else:
 	time.sleep(0.001)
+    print( "hive loop not running anymore", self.running )
 
   def exit( self ):
+    print( "exiting hive loop" );
     self.running = False
     if self.serial.isOpen():
       self.seriallock.acquire()
