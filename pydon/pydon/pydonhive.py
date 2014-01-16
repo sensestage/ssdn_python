@@ -202,7 +202,9 @@ class MiniHive(object):
 	  if bee.status == 'waiting':
 	    bee.waiting = bee.waiting + 1
 	    if bee.waiting > 1000:
-	      self.wait_config( beeid, bee.cid )
+	      #self.seriallock.acquire()
+	      self.wait_config( beeid, bee.cid, True )
+	      #self.seriallock.release()
 	      #self.seriallock.acquire()
 	      #if self.verbose:
 		#print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
@@ -411,7 +413,7 @@ class MiniHive(object):
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )    
 
-  def new_bee_no_config( self, serial ):
+  def new_bee_no_config( self, serial, useLock = False ):
     firsttimenewbee = False
     # see if we already have this serial number in our config or minibee set, if so use that minibee
     #self.minibeeCount += 1
@@ -428,11 +430,13 @@ class MiniHive(object):
       firsttimenewbee = True
       
     if self.serial.isOpen():
-      self.seriallock.acquire()
+      if useLock:
+	self.seriallock.acquire()
       #if self.verbose:
 	#print( "lock acquired by thread ", threading.current_thread().name )
       self.serial.send_id( serial, minibee.nodeid )
-      self.seriallock.release()
+      if useLock:
+	self.seriallock.release()
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )
       
@@ -473,7 +477,7 @@ class MiniHive(object):
 	  self.serial.restart_minibee( minibee.serial )
 	  self.seriallock.release()
 
-  def new_bee( self, serial, libv, rev, caps, remConf = True ):
+  def new_bee( self, serial, libv, rev, caps, remConf = True, useLock = False ):
     firsttimenewbee = False
     # see if we already have this serial number in our config or minibee set, if so use that minibee
     #self.minibeeCount += 1
@@ -493,11 +497,13 @@ class MiniHive(object):
     if bool( remConf ):
       if minibee.cid > 0:
 	if self.serial.isOpen():
-	  self.seriallock.acquire()
+	  if useLock:
+	    self.seriallock.acquire()
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.send_id( serial, minibee.nodeid, minibee.cid )
-	  self.seriallock.release()
+	  if useLock:
+	    self.seriallock.release()
 	#minibee.set_status( 'waiting' )
 	minibee.waiting = 0
       elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
@@ -510,11 +516,13 @@ class MiniHive(object):
       #sys.exit()
     else:
       if self.serial.isOpen():
-	self.seriallock.acquire()
+	if useLock:
+	  self.seriallock.acquire()
 	#if self.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.send_id( serial, minibee.nodeid )
-	self.seriallock.release()
+	if useLock:
+	  self.seriallock.release()
       if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
@@ -523,7 +531,7 @@ class MiniHive(object):
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
   
-  def new_data( self, beeid, msgid, data, rssi = 0 ):    
+  def new_data( self, beeid, msgid, data, rssi = 0, useLock = False ):    
     if self.verbose:
       print( "received new data", beeid, msgid, data )
     # find minibee, set data to it
@@ -534,11 +542,13 @@ class MiniHive(object):
       print( "received data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
 	if self.serial.isOpen():
-	  self.seriallock.acquire()
+	  if useLock:
+	    self.seriallock.acquire()
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.announce( 0xFFFA )
-	  self.seriallock.release()
+	  if useLock:
+	    self.seriallock.release()
 
   def bee_active( self, beeid, msgid ):
     if beeid in self.bees:
@@ -558,7 +568,7 @@ class MiniHive(object):
       print( "received paused message", beeid, msgid )
     # find minibee, set data to it
 
-  def wait_config( self, beeid, configid ):
+  def wait_config( self, beeid, configid, useLock = False ):
     #print "sending configuration"
     if beeid in self.bees:
       #print beeid, configid
@@ -571,11 +581,13 @@ class MiniHive(object):
 	if self.verbose:
 	  print( "sent configmessage to minibee", configMsg )
 	if self.serial.isOpen():
-	  self.seriallock.acquire()
+	  if useLock:
+	    self.seriallock.acquire()
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.send_config( beeid, configMsg )
-	  self.seriallock.release()
+	  if useLock:
+	    self.seriallock.release()
 	  #time.sleep( 0.005 ) #TODO: why are we waiting here?
       else:
 	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
@@ -592,11 +604,12 @@ class MiniHive(object):
       else:
 	print( "minibee %i is configured"%beeid )
 	if self.serial.isOpen():
-	  self.seriallock.acquire()
+	  # don't use lock, this is called from the serial thread anyways
+	  #self.seriallock.acquire()
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.send_me( self.bees[beeid].serial, 0 )
-	  self.seriallock.release()
+	  #self.seriallock.release()
 	  #time.sleep( 0.005 ) #TODO: why are we waiting here?
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
