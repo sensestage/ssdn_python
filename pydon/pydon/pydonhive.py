@@ -181,9 +181,10 @@ class MiniHive(object):
 	elif self.checkXBeeError:
 	  # check whether thread alive, if not start it again
 	  if not self.serial.isRunning():
-	    if not self.serial.hasXBeeError():
-	      self.serial.start()
-	    else:
+	    #if not self.serial.hasXBeeError():
+	      #self.serial.start()   # serial.start is automatic because of dispatch method
+	    #else:
+	    if self.serial.hasXBeeError():
 	      print "xbee serial error, closing serial port"
 	      self.serial.halt()
 	      self.serial.closePort()
@@ -233,11 +234,12 @@ class MiniHive(object):
 	  #print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.open_serial_port()
 	#self.seriallock.release()
+	time.sleep( 0.1 )
 	if self.serial.isOpen():
 	  print "serial port is open again"
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.init_comm()
+	  self.serial.init_comm() # initComm start the thread
 	  if not self.hadXBeeError:
 	    self.seriallock.acquire()
 	    self.serial.announce()

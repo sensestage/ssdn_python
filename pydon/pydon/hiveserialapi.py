@@ -140,11 +140,12 @@ class HiveSerialAPI(object):
     self.xbee = XBee( self.tapped_ser, callback=self.dispatch.dispatch, escaped=True)
     self.xbee.name = "xbee-thread"
 
-  def start( self ):
-    self.xbee.start()
+  #def start( self ):
+    #self.xbee.start()
 
   def halt( self ):
     self.xbee.halt()
+    self.xbee.join(1) # 1 second timeout to join thread
 
   def hasXBeeError( self ):
     return self.xbee.hasXBeeError
@@ -283,6 +284,7 @@ class HiveSerialAPI(object):
   def quit( self ):
     self.send_msg_inc( 0xFFFF, 'Q', [] );
     self.xbee.halt()
+    self.xbee.join() # no timeout to join thread
     self.serial.close()
     
   def incMsgID( self ):
