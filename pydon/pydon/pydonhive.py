@@ -183,16 +183,16 @@ class MiniHive(object):
 	    if not self.serial.hasXBeeError():
 	      self.serial.start()
 	    else:
-	      print "xbee serial error, opening serial port again"
+	      print "xbee serial error, closing serial port"
 	      self.serial.halt()
 	      self.serial.closePort()
 	      self.hadXBeeError = True
-	  #elif self.countSinceLastData > 12000: # we did not receive any data for about 10 seconds, something's up, let's close and reopen the serial port
-	    #print "no data for 10 seconds, opening serial port again"
-	    #self.serial.halt()
-	    #self.serial.closePort()
-	    #self.countSinceLastData = 0
-	    #self.hadXBeeError = True
+	  elif self.countSinceLastData > 60000: # we did not receive any data for about 60 seconds, something's up, let's close and reopen the serial port
+	    print "no data for 60 seconds, opening serial port again"
+	    self.serial.halt()
+	    self.serial.closePort()
+	    self.countSinceLastData = 0
+	    self.hadXBeeError = True
 	for beeid, bee in self.bees.items():
 	  #print beeid, bee
 	  bee.countsincestatus = bee.countsincestatus + 1
@@ -224,22 +224,25 @@ class MiniHive(object):
 		#self.serial.send_me( bee.serial, 0 )
       else:
 	time.sleep( 0.1 )
-	print "trying to open serial port"
-	self.seriallock.acquire()
+	print "serial port is closed, trying to open serial port again"
+	#self.seriallock.acquire()
 	#if self.verbose:
 	  #print( "lock acquired by thread ", threading.current_thread().name )
 	self.serial.open_serial_port()
-	self.seriallock.release()
+	#self.seriallock.release()
 	if self.serial.isOpen():
-	  self.seriallock.acquire()
+	  print "serial port is open again"
 	  #if self.verbose:
 	    #print( "lock acquired by thread ", threading.current_thread().name )
 	  self.serial.init_comm()
 	  if not self.hadXBeeError:
+	    self.seriallock.acquire()
 	    self.serial.announce()
+	    self.seriallock.release()
 	  else:
 	    self.hadXBeeError = False
-	  self.seriallock.release()  
+	else:
+	  print "serial port was not opened"
       if self.poll:
 	self.poll()
       else:
