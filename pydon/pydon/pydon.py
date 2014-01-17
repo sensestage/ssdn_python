@@ -1107,7 +1107,14 @@ class DataNode(object):
     #print insize
     self.data = list( 0 for i in range( 1, insize+1 ) )    
     self.slotlabels = list( "slot_{0!s}_{1!s}".format( nid, i ) for i in range(1,insize+1) )
+    self.mapOutput = None
+    self.mapCustom = None
 
+  def setMapOutput( self, mid ):
+    self.mapOutput = mid
+
+  def setMapCustom( self, mid ):
+    self.mapCustom = mid
     
   def setAction( self, action ):
     self.action = action
@@ -1214,6 +1221,9 @@ class DataNetwork(object):
     self.expectednodes.add( nodeid )
     #print "Expected nodes:", self.expectednodes
     
+  def subscribedToNode( self, nodeid ):  
+    return nodeid in self.nodes
+  
   def resend_state( self ):
     #print( "resend state", self.nodes, self.setters )
     for nodeid,node in self.nodes.items():

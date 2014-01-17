@@ -115,29 +115,54 @@ class SWPydonHive( object ):
 
 # mapping support
   def mapMiniBee( self, nodeid, mid ):
-    self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nid, mid ) )
+    # check whether already mapped
+    # check whether subscribed
+    if self.datanetwork.subscribedToNode( nodeid ):
+      # check whether mapped to minibee
+      if self.datanetwork.nodes[ nodeid ].mapOutput != mid:
+	# change mapping, otherwise do nothing
+	self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
+	self.datanetwork.nodes[ nodeid ].setMapCustom( None )
+	self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
+    else:
+      self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nid, mid ) )
   
   def setMapAction( self, nodeid, mid ):
-    if nodeid not in self.datanetwork.nodes:
+    #if nodeid not in self.datanetwork.nodes:
+    if self.datanetwork.subscribedToNode( nodeid ):
       self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
     else:
+      self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
+      self.datanetwork.nodes[ nodeid ].setMapCustom( None )
       self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
 
   def unmapMiniBee( self, nodeid, mid ):
     self.datanetwork.osc.unsubscribeNode( nodeid )
+    self.datanetwork.nodes[ nodeid ].setMapOutput( None )
     self.datanetwork.nodes[ nodeid ].setAction( None )
 
   def mapMiniBeeCustom( self, nodeid, mid ):
-    self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapCustomAction( nodeid, mid ) )
+    if self.datanetwork.subscribedToNode( nodeid ):
+      # check whether mapped to minibee
+      if self.datanetwork.nodes[ nodeid ].mapOutput != mid:
+	# change mapping, otherwise do nothing
+	self.datanetwork.nodes[ nodeid ].setMapOutput( None )
+	self.datanetwork.nodes[ nodeid ].setMapCustom( mid )
+	self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )      
+    else:
+      self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapCustomAction( nodeid, mid ) )
   
   def unmapMiniBeeCustom( self, nodeid, mid ):
     self.datanetwork.osc.unsubscribeNode( nodeid )
+    self.datanetwork.nodes[ nodeid ].setMapCustom( None )
     self.datanetwork.nodes[ nodeid ].setAction( None )
 
   def setMapCustomAction( self, nodeid, mid ):
-    if nodeid not in self.datanetwork.nodes:
+    if self.datanetwork.subscribedToNode( nodeid ):
       self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapCustomAction( nid, mid ) )
     else:
+      self.datanetwork.nodes[ nodeid ].setMapOutput( None )
+      self.datanetwork.nodes[ nodeid ].setMapCustom( mid )
       self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )
 
   def resetHive( self ):
