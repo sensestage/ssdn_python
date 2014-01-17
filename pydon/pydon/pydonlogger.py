@@ -91,13 +91,13 @@ class LogFile(object):
     def __init__(self, options, name=None):
         self.logger = logging.getLogger(name)
 	#formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
-	#formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
+	formatter = logging.Formatter('%(asctime)s\t%(message)s')
 	level = logging.__dict__.get(options.loglevel.upper(),logging.DEBUG)
 	self.logger.setLevel(level)
 	 # Output logging information to screen
 	if not options.quiet:
 	  hdlr = logging.StreamHandler(sys.stderr)
-	  #hdlr.setFormatter(formatter)
+	  hdlr.setFormatter(formatter)
 	  self.logger.addHandler(hdlr)
 
 	# Output logging information to file
