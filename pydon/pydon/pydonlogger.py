@@ -104,7 +104,7 @@ class LogFile(object):
 	logfile = os.path.join(options.logdir, options.logname )
 	if options.clean and os.path.isfile(logfile):
 	    os.remove(logfile)
-	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=5)  #max 5 megabytes per file
+	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=20)  #max 5 megabytes per file
 	#hdlr2 = logging.FileHandler(logfile)
 	#hdlr2.setFormatter(formatter)
 	self.logger.addHandler(hdlr2)
