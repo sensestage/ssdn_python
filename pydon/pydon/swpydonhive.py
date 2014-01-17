@@ -125,11 +125,13 @@ class SWPydonHive( object ):
 	self.datanetwork.nodes[ nodeid ].setMapCustom( None )
 	self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
     else:
+      self.hive.osclock.acquire()
       self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nid, mid ) )
+      self.hive.osclock.release()
   
   def setMapAction( self, nodeid, mid ):
     #if nodeid not in self.datanetwork.nodes:
-    if self.datanetwork.subscribedToNode( nodeid ):
+    if not self.datanetwork.subscribedToNode( nodeid ):
       self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
     else:
       self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
@@ -137,28 +139,34 @@ class SWPydonHive( object ):
       self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
 
   def unmapMiniBee( self, nodeid, mid ):
+    self.hive.osclock.acquire()
     self.datanetwork.osc.unsubscribeNode( nodeid )
+    self.hive.osclock.release()
     self.datanetwork.nodes[ nodeid ].setMapOutput( None )
     self.datanetwork.nodes[ nodeid ].setAction( None )
 
   def mapMiniBeeCustom( self, nodeid, mid ):
     if self.datanetwork.subscribedToNode( nodeid ):
       # check whether mapped to minibee
-      if self.datanetwork.nodes[ nodeid ].mapOutput != mid:
+      if self.datanetwork.nodes[ nodeid ].mapCustom != mid:
 	# change mapping, otherwise do nothing
 	self.datanetwork.nodes[ nodeid ].setMapOutput( None )
 	self.datanetwork.nodes[ nodeid ].setMapCustom( mid )
 	self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )      
     else:
+      self.hive.osclock.acquire()
       self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapCustomAction( nodeid, mid ) )
+      self.hive.osclock.release()
   
   def unmapMiniBeeCustom( self, nodeid, mid ):
+    self.hive.osclock.acquire()
     self.datanetwork.osc.unsubscribeNode( nodeid )
+    self.hive.osclock.release()
     self.datanetwork.nodes[ nodeid ].setMapCustom( None )
     self.datanetwork.nodes[ nodeid ].setAction( None )
 
   def setMapCustomAction( self, nodeid, mid ):
-    if self.datanetwork.subscribedToNode( nodeid ):
+    if not self.datanetwork.subscribedToNode( nodeid ):
       self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapCustomAction( nid, mid ) )
     else:
       self.datanetwork.nodes[ nodeid ].setMapOutput( None )
