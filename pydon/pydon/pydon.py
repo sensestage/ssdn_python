@@ -219,6 +219,7 @@ class DataNetworkOSC(object):
   #@make_method('/subscribed/node', 'isi' )
   def handler_node_subscribed( self, path, types, args, source ):
     #print( "subscribe node", args )
+    self.am_subscribed( args[2] )
     self.call_callback( 'subscribe', args[2] )
     #if 'subscribe' in self.callbacks:
       ##print self.dnosc.callbacks['subscribe']
@@ -622,6 +623,8 @@ class DataNetworkOSC(object):
   def info_slot( self, nodeid, slotid, label, dntype ):
     self.network.infoSlot( nodeid, slotid, label, dntype )
 
+  def am_subscribed( self, nodeid ):
+    self.network.add_subscription( nodeid )
 
   def am_setter( self, nodeid ):
     self.network.add_setter( nodeid )
@@ -1154,7 +1157,8 @@ class DataNode(object):
 # begin class DataNetwork
 class DataNetwork(object):
   def __init__(self, hostip, myport, myname, cltype=0, nonodes = 0, myhost='0.0.0.0', defaulthostport=57120 ):
-    self.nodes = {} # contains the nodes we are subscribed to
+    self.nodes = {} # contains the nodes that are there
+    self.subscribednodes = set([])  # contains the nodes we are subscribed to
     self.expectednodes = set([]) # contains node ids that are expected and could be subscribed to
     self.setters = set([]) # contains the nodes we are the setters of
     
@@ -1186,6 +1190,9 @@ class DataNetwork(object):
     self.verbose = onoff
     if self.osc != None:
       self.osc.setVerbose( onoff )
+
+  def add_subscription( self, nodeid ):
+    self.subscribednodes.add( nodeid )
     
   def add_setter( self, nodeid ):
     self.setters.add( nodeid )
@@ -1221,12 +1228,14 @@ class DataNetwork(object):
     self.expectednodes.add( nodeid )
     #print "Expected nodes:", self.expectednodes
     
-  def subscribedToNode( self, nodeid ):  
-    return nodeid in self.nodes
+  def subscribedToNode( self, nodeid ):
+    print( "is subscribed to node", nodeid, nodeid in self.nodes )
+    return nodeid in self.subscribednodes
   
   def resend_state( self ):
     #print( "resend state", self.nodes, self.setters )
-    for nodeid,node in self.nodes.items():
+    #for nodeid,node in self.nodes.items():
+    for nodeid in self.subscribednodes:
       if self.osc.verbose:
 	print( "subscription", nodeid, node )
       self.osc.subscribeNode( nodeid )
@@ -1267,6 +1276,7 @@ class DataNetwork(object):
 	self.sendData( nodeid, data )
       return True
     else:
+      print self.nodes
       print( "DataNode: nodeid ", nodeid, " not in nodes" ) #, "not in nodes", self.nodes )
       return False
 

@@ -172,8 +172,8 @@ class MiniHive(object):
     self.hadXBeeError = False 
     #print( "running", self.running )
     while self.running:
-      if self.verbose:
-	print( "pydonhive run loop: serial open", self.serial.isOpen(), self.countSinceLastData, self.serial.hasXBeeError() )
+      #if self.verbose:
+	#print( "pydonhive run loop: serial open", self.serial.isOpen(), self.countSinceLastData, self.serial.hasXBeeError() )
       if self.serial.isOpen():
 	self.countSinceLastData = self.countSinceLastData + 1
 	if not self.apiMode:
