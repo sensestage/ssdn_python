@@ -1276,7 +1276,7 @@ class DataNetwork(object):
 	self.sendData( nodeid, data )
       return True
     else:
-      print self.nodes
+      #print self.nodes
       print( "DataNode: nodeid ", nodeid, " not in nodes" ) #, "not in nodes", self.nodes )
       return False
 
