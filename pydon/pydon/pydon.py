@@ -1225,7 +1225,8 @@ class DataNetwork(object):
     self.quitAction = action
 
   def addExpectedNode( self, nodeid ):
-    self.expectednodes.add( nodeid )
+    if nodeid not in self.expectednodes:
+      self.expectednodes.add( nodeid )
     #print "Expected nodes:", self.expectednodes
     
   def subscribedToNode( self, nodeid ):
