@@ -213,7 +213,8 @@ class DataNetworkOSC(object):
   #@make_method('/info/setter', 'isii' )
   def handler_node_setter( self, path,  types, args, source ):
     # could do something more with this info
-    self.am_setter( args[2] )
+    print( args )
+    self.am_setter( args[0] ) ###FIXME: seems inconsistent with subscription info
     #print "Present setter:", args
 
   #@make_method('/subscribed/node', 'isi' )
@@ -627,6 +628,7 @@ class DataNetworkOSC(object):
     self.network.add_subscription( nodeid )
 
   def am_setter( self, nodeid ):
+    print( "am setter", nodeid )
     self.network.add_setter( nodeid )
     if 'setter' in self.callbacks:
       self.callbacks['setter']( nodeid )
@@ -811,6 +813,11 @@ class DataNetworkOSC(object):
     self.sendSimpleMessage( "/unregister/hive" )
     
   def set_registered_hive( self, state, minid, maxid ):
+    print( "registered hive", state, self.registered )
+    if state:
+      if not self.registered:
+	print( "resend hive state" )
+	self.network.resend_hive_state()
     self.set_registered( state )
     #if self.registered:
       #FIXME: should be doing this actually!
@@ -898,6 +905,7 @@ class DataNetworkOSC(object):
   # sending info about a minibee created
   def infoMinibee( self, mid, nin, nout ):
     self.sendMessage( "/info/minibee", [ mid, nin, nout ] )
+    print( "sent /info/minibee", mid, nin, nout )
     #msg = liblo.Message( "/info/minibee", self.port, self.name, mid, nin, nout )
     #self.sendMessage( msg )
     #del msg
@@ -1233,6 +1241,14 @@ class DataNetwork(object):
     print( "is subscribed to node", nodeid, nodeid in self.nodes )
     return nodeid in self.subscribednodes
   
+  def resend_hive_state( self ):
+    #print( self.hive )
+    if self.hive != None:
+      #print( self.hive.bees )
+      for beeid, bee in self.hive.bees.items():
+	#print( beeid, bee )
+	self.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
+  
   def resend_state( self ):
     #print( "resend state", self.nodes, self.setters )
     #for nodeid,node in self.nodes.items():
@@ -1240,11 +1256,13 @@ class DataNetwork(object):
       if self.osc.verbose:
 	print( "subscription", nodeid, node )
       self.osc.subscribeNode( nodeid )
+    #print( self.setters )
     for sid in self.setters:
       if self.osc.verbose:
 	print( "setter", sid )
-      self.osc.addExpected( sid, [ self.nodes[ sid ].label, self.nodes[ sid ].size ] )
-      self.nodes[sid].sendData()
+      if sid in self.nodes:
+	self.osc.addExpected( sid, [ self.nodes[ sid ].label, self.nodes[ sid ].size ] )
+	self.nodes[sid].sendData()
       
   def createNode( self, nodeid, size, label, dntype = 0 ):
     if nodeid not in self.nodes:
