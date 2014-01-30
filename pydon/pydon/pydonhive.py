@@ -274,7 +274,7 @@ class MiniHive(object):
 	# remove the bee from the list at the old id
 	del self.bees[ oldid ]
 	# add it with the new id
-	minibee.set_nodeid = mid
+	minibee.set_nodeid( mid )
 	self.bees[ mid ] = minibee
     else:
       if mid in self.bees: # another bee has this ID, return an error message!
