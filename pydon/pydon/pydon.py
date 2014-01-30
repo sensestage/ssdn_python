@@ -1243,8 +1243,8 @@ class DataNetwork(object):
     for sid in self.setters:
       if self.osc.verbose:
 	print( "setter", sid )
-      self.osc.addExpected( nodeid, [ self.nodes[ nodeid ].label, self.nodes[ nodeid ].size ] )
-      self.nodes[nodeid].sendData()
+      self.osc.addExpected( sid, [ self.nodes[ sid ].label, self.nodes[ sid ].size ] )
+      self.nodes[sid].sendData()
       
   def createNode( self, nodeid, size, label, dntype = 0 ):
     if nodeid not in self.nodes:
