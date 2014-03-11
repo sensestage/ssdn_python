@@ -1,0 +1,2626 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<MainPatch version="6">
+
+  <Patch>
+    <Properties>
+      <PropertySet name="gui-mdi">
+        <Property name="Private.ZoomFactor">1.30000007152557</Property>
+        <Property name="Private.RunLevel">1</Property>
+        <Property name="Private.ScrollPos">134.615377208891;601.538428442016</Property>
+      </PropertySet>
+      <PropertySet name="subpatch">
+        <Property name="owner_drawn_block"></Property>
+      </PropertySet>
+    </Properties>
+    <Blocks>
+      <Block active="1" catalog="base" class-id="server_osc" id="21" label="OSCServer_data" log_info="6" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">150;690</Property>
+            <Property name="Private.ZOrder">79</Property>
+            <Property name="Private.ObjID">1</Property>
+            <Property name="Appearance.Size">64;65</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;UDP Port;raw_mode;Address Pattern;Number of outputs;Limit Buffer Size;Buffer Size Limit;Type;Type1;Type2;Type3</Property>
+            <Property name="Private.FullPath">Peripherals.Network.OSC.OSCServer</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Server Port" design-time="1" enabled="1" group_index="0" id="UDP Port" name="Port" run-time="1">
+            <Value>2010</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="In raw mode the block sends the undecoded data to the output without decoding the OSC tags. In practice, the block gets whatever is received on the given UDP port" design-time="1" enabled="1" group_index="0" id="raw_mode" name="Raw Mode" run-time="0">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="string" description="Address Pattern" design-time="1" enabled="1" group_index="0" id="Address Pattern" name="Address Pattern" run-time="1">
+            <Value>/minibee/data</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of data items received in the OSC packet" design-time="1" enabled="1" group_index="0" id="Number of outputs" name="Number of outputs" run-time="0">
+            <Value>4</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies whether the block gives an upperbound to the number of internally stored items. Setting an uperbound may reduce the latency but may also cause data loss" design-time="1" enabled="1" group_index="0" id="Limit Buffer Size" name="Limit buffer size" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="In the case of bounded buffer size, specifies the bound" design-time="1" enabled="1" group_index="0" id="Buffer Size Limit" name="Buffer size limit" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type1" name="Type of output" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type2" name="Type of output" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type3" name="Type of output" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="double" description="Output" group_index="0" id="output_data1" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="double" description="Output" group_index="0" id="output_data2" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="double" description="Output" group_index="0" id="output_data3" inherited-id="" inplace-id="" name="Output"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="scalar_graph_display_gdi" id="98" label="raw data" log_info="2" run_level="1" sync-in_mode="1" window_docked="0" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="278" window_rect_width="336" window_rect_x="14" window_rect_y="345" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="raw data" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">690;560</Property>
+            <Property name="Private.ZOrder">77</Property>
+            <Property name="Private.ObjID">2</Property>
+            <Property name="Appearance.Size">116;91</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;Label;nInput;min;max;nXAxis;nYAxis;durate;ColorData000;ShowData000;ColorData001;ShowData001;ColorData002;ShowData002;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarGraph</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="bool" description="Label" design-time="1" enabled="1" group_index="0" id="Label" name="Label" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of input." design-time="1" enabled="1" group_index="0" id="nInput" name="Numer of input" run-time="0">
+            <Value>3</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Minimum value to plot." design-time="1" enabled="1" group_index="0" id="min" name="min" run-time="1">
+            <Value>-0.20000000000000001</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Maximum value to plot." design-time="1" enabled="1" group_index="0" id="max" name="max" run-time="1">
+            <Value>0.20000000000000001</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of horizontal axis" design-time="1" enabled="1" group_index="0" id="nXAxis" name="Num X Axis" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of vertical axis" design-time="1" enabled="1" group_index="0" id="nYAxis" name="Num Y Axis" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="time" description="This parameter sets the visible time window of the graph. The graph only shows the most recent value within the time window; as time increase (i.e., as the patch execution progresses) the time window is shifted." design-time="1" enabled="1" group_index="0" id="durate" name="time window" run-time="1">
+            <Value>100000000</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the input number 001." design-time="1" enabled="1" group_index="0" id="ColorData000" name="Color 001 Input" run-time="1">
+            <Value>rgb: 0;1;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 001 values." design-time="1" enabled="1" group_index="0" id="ShowData000" name="Show 001 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the graph of input number 002." design-time="1" enabled="1" group_index="0" id="ColorData001" name="Color 002 Input" run-time="1">
+            <Value>rgb: 1;1;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 002 values." design-time="1" enabled="1" group_index="0" id="ShowData001" name="Show 002 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the graph of input number 003." design-time="1" enabled="1" group_index="0" id="ColorData002" name="Color 003 Input" run-time="1">
+            <Value>rgb: 1;0.75294117647058822;0.79607843137254897</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 003 values." design-time="1" enabled="1" group_index="0" id="ShowData002" name="Show 003 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="double" description="Input of scalar values to plot on the graph." group_index="0" id="InputData000" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+          <Input catalog="kernel" class-id="double" description="This is the input number 002." group_index="0" id="InputData001" name="002 Input" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+          <Input catalog="kernel" class-id="double" description="This is the input number 003." group_index="0" id="InputData002" name="003 Input" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="point_3d_generator" id="205" label="Point3DGenerator_1" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">240;700</Property>
+            <Property name="Private.ZOrder">75</Property>
+            <Property name="Private.ObjID">3</Property>
+            <Property name="Appearance.Size">64;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">x_parameter;y_parameter;z_parameter;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;mode_parameter;x_parameter;y_parameter;z_parameter</Property>
+            <Property name="Private.FullPath">Geometric.Generator.3D.Point3DGenerator</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies whether parameters and output are in the double or integer domain" design-time="1" enabled="1" group_index="0" id="mode_parameter" name="Domain" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Double;Int</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="X coordinates of point" design-time="1" enabled="1" group_index="0" id="x_parameter" name="XCoordinate" run-time="1">
+            <Value>0.48113784193992615</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Y coordinates of point" design-time="1" enabled="1" group_index="0" id="y_parameter" name="YCoordinate" run-time="1">
+            <Value>0.48773044347763062</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Z coordinates of point" design-time="1" enabled="1" group_index="0" id="z_parameter" name="ZCoordinate" run-time="1">
+            <Value>0.52020508050918579</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="base" class-id="base_geometric_point_3d_double" description="Output Point 3D" group_index="0" id="point_output" inherited-id="" inplace-id="" name="OutputPoint3D"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="output_selector" id="860" label="Output selector_1" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">360;650</Property>
+            <Property name="Private.ZOrder">71</Property>
+            <Property name="Private.ObjID">12</Property>
+            <Property name="Appearance.Size">47;45</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">active_output;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;num_outputs;active_output</Property>
+            <Property name="Private.FullPath">FlowAndControlStructures.Output selector</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of outputs of the block. The minimum is 1, even if this case is meaningless. At least two inputs should be used for normal operations." design-time="1" enabled="1" group_index="0" id="num_outputs" name="# outputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Zero-based index of the active output. The selected output is activated." design-time="1" enabled="1" group_index="0" id="active_output" name="Active output" run-time="1">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input of the selector. The input is propagated to the choosen output." group_index="0" id="input" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="0 output of the block." group_index="0" id="output_1" inherited-id="input" inplace-id="" name="Output 1"/>
+          <Output catalog="kernel" class-id="generic_datatype" description="1 output of the block." group_index="0" id="output_2" inherited-id="input" inplace-id="" name="Output 2"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="912" label="String Display_5" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">430;620</Property>
+            <Property name="Private.ZOrder">76</Property>
+            <Property name="Private.ObjID">13</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="1010" label="String Display_2" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">430;670</Property>
+            <Property name="Private.ZOrder">69</Property>
+            <Property name="Private.ObjID">14</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="arith_op" id="1108" label="Arithmetic_1" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">250;610</Property>
+            <Property name="Private.ZOrder">67</Property>
+            <Property name="Private.ObjID">15</Property>
+            <Property name="Appearance.Size">48;48</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;op_type;num_inputs</Property>
+            <Property name="Private.FullPath">Operations.Arithmetic</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Select the type of operation that will be performed on the input datatypes.&#xA;The absolute subtraction operation subtracts the operand from the current datatype if the current. The result is always written to the current datatype." design-time="1" enabled="1" group_index="0" id="op_type" name="Operation type" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;7;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Sum;Subtract;Multiply;Divide;Max;Min;Absolute difference</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of inputs of this block." design-time="1" enabled="1" group_index="0" id="num_inputs" name="Number of inputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">2;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 0th operand involved in the operation." group_index="0" id="input_1" name="Input 1" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 1th operand involved in the operation." group_index="0" id="input_2" name="Input 2" read-write="0" required_for_execution="0" required_for_initialization="0">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="Block output. It contains the result of the specified operation." group_index="0" id="output" inherited-id="input_1" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Index of the max/min value. Has not meaning for the other options." group_index="0" id="chosen_input" inherited-id="" inplace-id="" name="Output index"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="int_const_generator" id="1162" label="ConstantGenerator - int_1" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">150;570</Property>
+            <Property name="Private.ZOrder">65</Property>
+            <Property name="Private.ObjID">16</Property>
+            <Property name="Appearance.Size">80;40</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;value;continuous_output</Property>
+            <Property name="Private.FullPath">Math.Scalar.Generator.ConstantGenerator - int</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">2</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Input value of the constant." design-time="1" enabled="1" group_index="0" id="value" name="Input Value" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies wether the output is always generated (true) or only when the value changes (false)" design-time="1" enabled="1" group_index="0" id="continuous_output" name="Continuous output" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="int" description="Output Value of the constant." group_index="0" id="output" inherited-id="" inplace-id="" name="Output Value"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="Display" id="1210" label="ScalarDisplay_10" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="ScalarDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="1.0023309471830852">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">330;550</Property>
+            <Property name="Private.ZOrder">63</Property>
+            <Property name="Private.ObjID">17</Property>
+            <Property name="Appearance.Size">115;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;nInput;LabelFont;DisplayNDD;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarDisplay</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Number of inputs of the block. All inputs are displays in the block area, vertically stacked. Each input can be assigned a label which is displayed next to its value." design-time="1" enabled="1" group_index="0" id="nInput" name="Number of inputs" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;16;1</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="font" description="This is the font used to display the scalar value and the associated label." design-time="1" enabled="1" group_index="0" id="LabelFont" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="If the input datatype is double it sets the number of decimal digits to be shown." design-time="1" enabled="1" group_index="0" id="DisplayNDD" name="Decimal digits" run-time="1">
+            <Value>10</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input 0 of the block" group_index="0" id="Input000" name="Input 0" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="point_coordinates_double" id="1295" label="GetPoint3DCoordinates-Double_1" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">600;570</Property>
+            <Property name="Private.ZOrder">60</Property>
+            <Property name="Private.ObjID">18</Property>
+            <Property name="Appearance.Size">66;66</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level</Property>
+            <Property name="Private.FullPath">Geometric.Operations.3D.GetPoint3DCoordinates-Double</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters/>
+        <Inputs>
+          <Input catalog="base" class-id="base_geometric_point_3d_double" description="Generic input 3D" group_index="0" id="input_3d" name="Input3D" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="double" description="Coordinates X." group_index="0" id="output_coordinate_x" inherited-id="" inplace-id="" name="Coordinate X"/>
+          <Output catalog="kernel" class-id="double" description="Coordinates Y." group_index="0" id="output_coordinate_y" inherited-id="" inplace-id="" name="Coordinate Y"/>
+          <Output catalog="kernel" class-id="double" description="Coordinates Z." group_index="0" id="output_coordinate_z" inherited-id="" inplace-id="" name="Coordinate Z"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="scalar_graph_display_gdi" id="1342" label="ScalarGraph_4" log_info="2" run_level="1" sync-in_mode="1" window_docked="0" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="261" window_rect_width="336" window_rect_x="23" window_rect_y="65" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="raw data 2" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.9291666666666667">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">690;650</Property>
+            <Property name="Private.ZOrder">56</Property>
+            <Property name="Private.ObjID">19</Property>
+            <Property name="Appearance.Size">116;91</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;Label;nInput;min;max;nXAxis;nYAxis;durate;ColorData000;ShowData000;ColorData001;ShowData001;ColorData002;ShowData002;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarGraph</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="bool" description="Label" design-time="1" enabled="1" group_index="0" id="Label" name="Label" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of input." design-time="1" enabled="1" group_index="0" id="nInput" name="Numer of input" run-time="0">
+            <Value>3</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Minimum value to plot." design-time="1" enabled="1" group_index="0" id="min" name="min" run-time="1">
+            <Value>-0.20000000000000001</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Maximum value to plot." design-time="1" enabled="1" group_index="0" id="max" name="max" run-time="1">
+            <Value>0.20000000000000001</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of horizontal axis" design-time="1" enabled="1" group_index="0" id="nXAxis" name="Num X Axis" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Number of vertical axis" design-time="1" enabled="1" group_index="0" id="nYAxis" name="Num Y Axis" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="time" description="This parameter sets the visible time window of the graph. The graph only shows the most recent value within the time window; as time increase (i.e., as the patch execution progresses) the time window is shifted." design-time="1" enabled="1" group_index="0" id="durate" name="time window" run-time="1">
+            <Value>100000000</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the input number 001." design-time="1" enabled="1" group_index="0" id="ColorData000" name="Color 001 Input" run-time="1">
+            <Value>rgb: 0;1;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 001 values." design-time="1" enabled="1" group_index="0" id="ShowData000" name="Show 001 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the graph of input number 002." design-time="1" enabled="1" group_index="0" id="ColorData001" name="Color 002 Input" run-time="1">
+            <Value>rgb: 1;1;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 002 values." design-time="1" enabled="1" group_index="0" id="ShowData001" name="Show 002 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="This is the color used to paint the graph of input number 003." design-time="1" enabled="1" group_index="0" id="ColorData002" name="Color 003 Input" run-time="1">
+            <Value>rgb: 1;0.75294160842895508;0.79607892036437988</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Show or hide the graph of input number 003 values." design-time="1" enabled="1" group_index="0" id="ShowData002" name="Show 003 Input" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="double" description="Input of scalar values to plot on the graph." group_index="0" id="InputData000" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+          <Input catalog="kernel" class-id="double" description="This is the input number 002." group_index="0" id="InputData001" name="002 Input" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+          <Input catalog="kernel" class-id="double" description="This is the input number 003." group_index="0" id="InputData002" name="003 Input" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="point_coordinates_double" id="1449" label="GetPoint3DCoordinates-Double_2" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">600;660</Property>
+            <Property name="Private.ZOrder">55</Property>
+            <Property name="Private.ObjID">20</Property>
+            <Property name="Appearance.Size">66;66</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level</Property>
+            <Property name="Private.FullPath">Geometric.Operations.3D.GetPoint3DCoordinates-Double</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters/>
+        <Inputs>
+          <Input catalog="base" class-id="base_geometric_point_3d_double" description="Generic input 3D" group_index="0" id="input_3d" name="Input3D" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="double" description="Coordinates X." group_index="0" id="output_coordinate_x" inherited-id="" inplace-id="" name="Coordinate X"/>
+          <Output catalog="kernel" class-id="double" description="Coordinates Y." group_index="0" id="output_coordinate_y" inherited-id="" inplace-id="" name="Coordinate Y"/>
+          <Output catalog="kernel" class-id="double" description="Coordinates Z." group_index="0" id="output_coordinate_z" inherited-id="" inplace-id="" name="Coordinate Z"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="point_3d_generator" id="2097" label="Point3DGenerator_2" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">330;740</Property>
+            <Property name="Private.ZOrder">45</Property>
+            <Property name="Private.ObjID">29</Property>
+            <Property name="Appearance.Size">64;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;mode_parameter;x_parameter;y_parameter;z_parameter</Property>
+            <Property name="Private.FullPath">Geometric.Generator.3D.Point3DGenerator</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies whether parameters and output are in the double or integer domain" design-time="1" enabled="1" group_index="0" id="mode_parameter" name="Domain" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Double;Int</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="X coordinates of point" design-time="1" enabled="1" group_index="0" id="x_parameter" name="XCoordinate" run-time="1">
+            <Value>0.5</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Y coordinates of point" design-time="1" enabled="1" group_index="0" id="y_parameter" name="YCoordinate" run-time="1">
+            <Value>0.5</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="double" description="Z coordinates of point" design-time="1" enabled="1" group_index="0" id="z_parameter" name="ZCoordinate" run-time="1">
+            <Value>0.5</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="base" class-id="base_geometric_point_3d_double" description="Output Point 3D" group_index="0" id="point_output" inherited-id="" inplace-id="" name="OutputPoint3D"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="arith_op" id="2151" label="Arithmetic_2" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">460;740</Property>
+            <Property name="Private.ZOrder">44</Property>
+            <Property name="Private.ObjID">30</Property>
+            <Property name="Appearance.Size">48;48</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">1</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;op_type;num_inputs</Property>
+            <Property name="Private.FullPath">Operations.Arithmetic</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Select the type of operation that will be performed on the input datatypes.&#xA;The absolute subtraction operation subtracts the operand from the current datatype if the current. The result is always written to the current datatype." design-time="1" enabled="1" group_index="0" id="op_type" name="Operation type" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;7;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Sum;Subtract;Multiply;Divide;Max;Min;Absolute difference</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of inputs of this block." design-time="1" enabled="1" group_index="0" id="num_inputs" name="Number of inputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">2;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 0th operand involved in the operation." group_index="0" id="input_1" name="Input 1" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 1th operand involved in the operation." group_index="0" id="input_2" name="Input 2" read-write="0" required_for_execution="0" required_for_initialization="0">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="Block output. It contains the result of the specified operation." group_index="0" id="output" inherited-id="input_1" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Index of the max/min value. Has not meaning for the other options." group_index="0" id="chosen_input" inherited-id="" inplace-id="" name="Output index"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="server_osc" id="12668" label="OSCServer_2" log_info="6" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">160;120</Property>
+            <Property name="Private.ZOrder">40</Property>
+            <Property name="Private.ObjID">86</Property>
+            <Property name="Appearance.Size">64;65</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;UDP Port;raw_mode;Address Pattern;Number of outputs;Limit Buffer Size;Buffer Size Limit;Type;Type1;Type2;Type3</Property>
+            <Property name="Private.FullPath">Peripherals.Network.OSC.OSCServer</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Server Port" design-time="1" enabled="1" group_index="0" id="UDP Port" name="Port" run-time="1">
+            <Value>2010</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="In raw mode the block sends the undecoded data to the output without decoding the OSC tags. In practice, the block gets whatever is received on the given UDP port" design-time="1" enabled="1" group_index="0" id="raw_mode" name="Raw Mode" run-time="0">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="string" description="Address Pattern" design-time="1" enabled="1" group_index="0" id="Address Pattern" name="Address Pattern" run-time="1">
+            <Value>/minibee/info</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of data items received in the OSC packet" design-time="1" enabled="1" group_index="0" id="Number of outputs" name="Number of outputs" run-time="0">
+            <Value>4</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies whether the block gives an upperbound to the number of internally stored items. Setting an uperbound may reduce the latency but may also cause data loss" design-time="1" enabled="1" group_index="0" id="Limit Buffer Size" name="Limit buffer size" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="In the case of bounded buffer size, specifies the bound" design-time="1" enabled="1" group_index="0" id="Buffer Size Limit" name="Buffer size limit" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type" name="Type of output" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type1" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type2" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type3" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="string" description="Output" group_index="0" id="output_data" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data1" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data2" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data3" inherited-id="" inplace-id="" name="Output"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="12753" label="String Display_3" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">360;100</Property>
+            <Property name="Private.ZOrder">39</Property>
+            <Property name="Private.ObjID">87</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="Display" id="12942" label="ScalarDisplay_7" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="ScalarDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.95571090312805795">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">610;80</Property>
+            <Property name="Private.ZOrder">38</Property>
+            <Property name="Private.ObjID">89</Property>
+            <Property name="Appearance.Size">110;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;nInput;LabelFont;DisplayNDD;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarDisplay</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Number of inputs of the block. All inputs are displays in the block area, vertically stacked. Each input can be assigned a label which is displayed next to its value." design-time="1" enabled="1" group_index="0" id="nInput" name="Number of inputs" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;16;1</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="font" description="This is the font used to display the scalar value and the associated label." design-time="1" enabled="1" group_index="0" id="LabelFont" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="If the input datatype is double it sets the number of decimal digits to be shown." design-time="1" enabled="1" group_index="0" id="DisplayNDD" name="Decimal digits" run-time="1">
+            <Value>10</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input 0 of the block" group_index="0" id="Input000" name="Input 0" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="Display" id="13028" label="ScalarDisplay_8" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="ScalarDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.95571090312805795">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">490;80</Property>
+            <Property name="Private.ZOrder">37</Property>
+            <Property name="Private.ObjID">90</Property>
+            <Property name="Appearance.Size">110;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;nInput;LabelFont;DisplayNDD;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarDisplay</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Number of inputs of the block. All inputs are displays in the block area, vertically stacked. Each input can be assigned a label which is displayed next to its value." design-time="1" enabled="1" group_index="0" id="nInput" name="Number of inputs" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;16;1</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="font" description="This is the font used to display the scalar value and the associated label." design-time="1" enabled="1" group_index="0" id="LabelFont" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="If the input datatype is double it sets the number of decimal digits to be shown." design-time="1" enabled="1" group_index="0" id="DisplayNDD" name="Decimal digits" run-time="1">
+            <Value>10</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input 0 of the block" group_index="0" id="Input000" name="Input 0" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="server_osc" id="13689" label="OSCServer_3" log_info="6" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">160;370</Property>
+            <Property name="Private.ZOrder">35</Property>
+            <Property name="Private.ObjID">96</Property>
+            <Property name="Appearance.Size">64;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;UDP Port;raw_mode;Address Pattern;Number of outputs;Limit Buffer Size;Buffer Size Limit;Type;Type1;Type2</Property>
+            <Property name="Private.FullPath">Peripherals.Network.OSC.OSCServer</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Server Port" design-time="1" enabled="1" group_index="0" id="UDP Port" name="Port" run-time="1">
+            <Value>2010</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="In raw mode the block sends the undecoded data to the output without decoding the OSC tags. In practice, the block gets whatever is received on the given UDP port" design-time="1" enabled="1" group_index="0" id="raw_mode" name="Raw Mode" run-time="0">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="string" description="Address Pattern" design-time="1" enabled="1" group_index="0" id="Address Pattern" name="Address Pattern" run-time="1">
+            <Value>/minibee/status</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of data items received in the OSC packet" design-time="1" enabled="1" group_index="0" id="Number of outputs" name="Number of outputs" run-time="0">
+            <Value>3</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies whether the block gives an upperbound to the number of internally stored items. Setting an uperbound may reduce the latency but may also cause data loss" design-time="1" enabled="1" group_index="0" id="Limit Buffer Size" name="Limit buffer size" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="In the case of bounded buffer size, specifies the bound" design-time="1" enabled="1" group_index="0" id="Buffer Size Limit" name="Buffer size limit" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type1" name="Type of output" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Type of output" design-time="1" enabled="1" group_index="0" id="Type2" name="Type of output" run-time="0">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;4;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Integer;Double;String;Integer 64bits</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="string" description="Output" group_index="0" id="output_data1" inherited-id="" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Output" group_index="0" id="output_data2" inherited-id="" inplace-id="" name="Output"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="output_selector" id="13820" label="Output selector_2" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">370;330</Property>
+            <Property name="Private.ZOrder">32</Property>
+            <Property name="Private.ObjID">98</Property>
+            <Property name="Appearance.Size">47;45</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">active_output;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;num_outputs;active_output</Property>
+            <Property name="Private.FullPath">FlowAndControlStructures.Output selector</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of outputs of the block. The minimum is 1, even if this case is meaningless. At least two inputs should be used for normal operations." design-time="1" enabled="1" group_index="0" id="num_outputs" name="# outputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Zero-based index of the active output. The selected output is activated." design-time="1" enabled="1" group_index="0" id="active_output" name="Active output" run-time="1">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input of the selector. The input is propagated to the choosen output." group_index="0" id="input" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="0 output of the block." group_index="0" id="output_1" inherited-id="input" inplace-id="" name="Output 1"/>
+          <Output catalog="kernel" class-id="generic_datatype" description="1 output of the block." group_index="0" id="output_2" inherited-id="input" inplace-id="" name="Output 2"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="13872" label="String Display_4" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">440;300</Property>
+            <Property name="Private.ZOrder">33</Property>
+            <Property name="Private.ObjID">99</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="13970" label="String Display_6" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">440;350</Property>
+            <Property name="Private.ZOrder">30</Property>
+            <Property name="Private.ObjID">100</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="arith_op" id="14068" label="Arithmetic_3" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">270;300</Property>
+            <Property name="Private.ZOrder">28</Property>
+            <Property name="Private.ObjID">101</Property>
+            <Property name="Appearance.Size">48;48</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;op_type;num_inputs</Property>
+            <Property name="Private.FullPath">Operations.Arithmetic</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Select the type of operation that will be performed on the input datatypes.&#xA;The absolute subtraction operation subtracts the operand from the current datatype if the current. The result is always written to the current datatype." design-time="1" enabled="1" group_index="0" id="op_type" name="Operation type" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;7;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Sum;Subtract;Multiply;Divide;Max;Min;Absolute difference</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of inputs of this block." design-time="1" enabled="1" group_index="0" id="num_inputs" name="Number of inputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">2;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 0th operand involved in the operation." group_index="0" id="input_1" name="Input 1" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 1th operand involved in the operation." group_index="0" id="input_2" name="Input 2" read-write="0" required_for_execution="0" required_for_initialization="0">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="Block output. It contains the result of the specified operation." group_index="0" id="output" inherited-id="input_1" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Index of the max/min value. Has not meaning for the other options." group_index="0" id="chosen_input" inherited-id="" inplace-id="" name="Output index"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="int_const_generator" id="14122" label="ConstantGenerator - int_2" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">150;280</Property>
+            <Property name="Private.ZOrder">26</Property>
+            <Property name="Private.ObjID">102</Property>
+            <Property name="Appearance.Size">80;40</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;value;continuous_output</Property>
+            <Property name="Private.FullPath">Math.Scalar.Generator.ConstantGenerator - int</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">2</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Input value of the constant." design-time="1" enabled="1" group_index="0" id="value" name="Input Value" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies wether the output is always generated (true) or only when the value changes (false)" design-time="1" enabled="1" group_index="0" id="continuous_output" name="Continuous output" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="int" description="Output Value of the constant." group_index="0" id="output" inherited-id="" inplace-id="" name="Output Value"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="output_selector" id="15464" label="Output selector_3" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">280;110</Property>
+            <Property name="Private.ZOrder">22</Property>
+            <Property name="Private.ObjID">115</Property>
+            <Property name="Appearance.Size">47;45</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">active_output;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;num_outputs;active_output</Property>
+            <Property name="Private.FullPath">FlowAndControlStructures.Output selector</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of outputs of the block. The minimum is 1, even if this case is meaningless. At least two inputs should be used for normal operations." design-time="1" enabled="1" group_index="0" id="num_outputs" name="# outputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Zero-based index of the active output. The selected output is activated." design-time="1" enabled="1" group_index="0" id="active_output" name="Active output" run-time="1">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input of the selector. The input is propagated to the choosen output." group_index="0" id="input" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="0 output of the block." group_index="0" id="output_1" inherited-id="input" inplace-id="" name="Output 1"/>
+          <Output catalog="kernel" class-id="generic_datatype" description="1 output of the block." group_index="0" id="output_2" inherited-id="input" inplace-id="" name="Output 2"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="arith_op" id="15516" label="Arithmetic_4" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">250;40</Property>
+            <Property name="Private.ZOrder">21</Property>
+            <Property name="Private.ObjID">116</Property>
+            <Property name="Appearance.Size">48;48</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;op_type;num_inputs</Property>
+            <Property name="Private.FullPath">Operations.Arithmetic</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Select the type of operation that will be performed on the input datatypes.&#xA;The absolute subtraction operation subtracts the operand from the current datatype if the current. The result is always written to the current datatype." design-time="1" enabled="1" group_index="0" id="op_type" name="Operation type" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;7;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Sum;Subtract;Multiply;Divide;Max;Min;Absolute difference</Layout>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of inputs of this block." design-time="1" enabled="1" group_index="0" id="num_inputs" name="Number of inputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">2;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 0th operand involved in the operation." group_index="0" id="input_1" name="Input 1" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+          <Input catalog="kernel" class-id="generic_datatype" description="This input represent the 1th operand involved in the operation." group_index="0" id="input_2" name="Input 2" read-write="0" required_for_execution="0" required_for_initialization="0">
+            <RequiredInterfaces>
+              <RequiredInterface catalog="kernel" class-id="arith_op"/>
+            </RequiredInterfaces>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="Block output. It contains the result of the specified operation." group_index="0" id="output" inherited-id="input_1" inplace-id="" name="Output"/>
+          <Output catalog="kernel" class-id="int" description="Index of the max/min value. Has not meaning for the other options." group_index="0" id="chosen_input" inherited-id="" inplace-id="" name="Output index"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="int_const_generator" id="15570" label="ConstantGenerator - int_3" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">150;30</Property>
+            <Property name="Private.ZOrder">20</Property>
+            <Property name="Private.ObjID">117</Property>
+            <Property name="Appearance.Size">80;40</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;value;continuous_output</Property>
+            <Property name="Private.FullPath">Math.Scalar.Generator.ConstantGenerator - int</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">2</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Input value of the constant." design-time="1" enabled="1" group_index="0" id="value" name="Input Value" run-time="1">
+            <Value>1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="bool" description="Specifies wether the output is always generated (true) or only when the value changes (false)" design-time="1" enabled="1" group_index="0" id="continuous_output" name="Continuous output" run-time="1">
+            <Value>0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs/>
+        <Outputs>
+          <Output catalog="kernel" class-id="int" description="Output Value of the constant." group_index="0" id="output" inherited-id="" inplace-id="" name="Output Value"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="output_selector" id="15668" label="Output selector_4" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">280;160</Property>
+            <Property name="Private.ZOrder">17</Property>
+            <Property name="Private.ObjID">121</Property>
+            <Property name="Appearance.Size">47;45</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">active_output;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;num_outputs;active_output</Property>
+            <Property name="Private.FullPath">FlowAndControlStructures.Output selector</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of outputs of the block. The minimum is 1, even if this case is meaningless. At least two inputs should be used for normal operations." design-time="1" enabled="1" group_index="0" id="num_outputs" name="# outputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Zero-based index of the active output. The selected output is activated." design-time="1" enabled="1" group_index="0" id="active_output" name="Active output" run-time="1">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input of the selector. The input is propagated to the choosen output." group_index="0" id="input" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="0 output of the block." group_index="0" id="output_1" inherited-id="input" inplace-id="" name="Output 1"/>
+          <Output catalog="kernel" class-id="generic_datatype" description="1 output of the block." group_index="0" id="output_2" inherited-id="input" inplace-id="" name="Output 2"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="kernel" class-id="output_selector" id="15721" label="Output selector_5" log_info="2" run_level="1" sync-in_mode="1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">280;210</Property>
+            <Property name="Private.ZOrder">16</Property>
+            <Property name="Private.ObjID">122</Property>
+            <Property name="Appearance.Size">47;45</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams">active_output;</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;num_outputs;active_output</Property>
+            <Property name="Private.FullPath">FlowAndControlStructures.Output selector</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Specifies the number of outputs of the block. The minimum is 1, even if this case is meaningless. At least two inputs should be used for normal operations." design-time="1" enabled="1" group_index="0" id="num_outputs" name="# outputs" run-time="0">
+            <Value>2</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Zero-based index of the active output. The selected output is activated." design-time="1" enabled="1" group_index="0" id="active_output" name="Active output" run-time="1">
+            <Value>0</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;2;2</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input of the selector. The input is propagated to the choosen output." group_index="0" id="input" name="Input" read-write="1" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs>
+          <Output catalog="kernel" class-id="generic_datatype" description="0 output of the block." group_index="0" id="output_1" inherited-id="input" inplace-id="" name="Output 1"/>
+          <Output catalog="kernel" class-id="generic_datatype" description="1 output of the block." group_index="0" id="output_2" inherited-id="input" inplace-id="" name="Output 2"/>
+        </Outputs>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="system" class-id="string_display" id="15776" label="String Display_7" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="StringDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.71428567498595275">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">360;170</Property>
+            <Property name="Private.ZOrder">15</Property>
+            <Property name="Private.ObjID">123</Property>
+            <Property name="Appearance.Size">116;46</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;font;color;background_color;number_of_lines;number_of_columns;aligment;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">System.String.Output.String Display</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="font" description="The font used to display the input string." design-time="1" enabled="1" group_index="0" id="font" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Font color (RGB model space)" design-time="1" enabled="1" group_index="0" id="color" name="Color" run-time="1">
+            <Value>rgb: 0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="rgbcolor" description="Color of the text background (RGB model space)" design-time="1" enabled="1" group_index="0" id="background_color" name="Background color (RGB model space)" run-time="1">
+            <Value>rgb: 1;1;1</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of lines which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_lines" name="Number of lines" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="The number of columns which compose the document on which the text is written" design-time="1" enabled="1" group_index="0" id="number_of_columns" name="Number of columns" run-time="1">
+            <Value>20</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;0;0</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="Background color (RGB model space)" design-time="1" enabled="1" group_index="0" id="aligment" name="Horizontal alignment" run-time="1">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">0;1;3;2</Domain>
+            <Layout catalog="kernel" class-id="combo">Near (left);Center;Far (right)</Layout>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="string" description="Input string to display." group_index="0" id="string" name="Input string" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="Display" id="15874" label="ScalarDisplay_2" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="ScalarDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.95571090312805795">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">610;150</Property>
+            <Property name="Private.ZOrder">14</Property>
+            <Property name="Private.ObjID">124</Property>
+            <Property name="Appearance.Size">110;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;nInput;LabelFont;DisplayNDD;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarDisplay</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Number of inputs of the block. All inputs are displays in the block area, vertically stacked. Each input can be assigned a label which is displayed next to its value." design-time="1" enabled="1" group_index="0" id="nInput" name="Number of inputs" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;16;1</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="font" description="This is the font used to display the scalar value and the associated label." design-time="1" enabled="1" group_index="0" id="LabelFont" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="If the input datatype is double it sets the number of decimal digits to be shown." design-time="1" enabled="1" group_index="0" id="DisplayNDD" name="Decimal digits" run-time="1">
+            <Value>10</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input 0 of the block" group_index="0" id="Input000" name="Input 0" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+      <Block active="1" catalog="base" class-id="Display" id="15959" label="ScalarDisplay_3" log_info="2" run_level="1" sync-in_mode="1" window_docked="1" window_fit_mode="1" window_full_screen="0" window_full_screen_monitor_index="0" window_horizontal_scroll_pos="0" window_keep_aspect_ratio="1" window_rect_height="0" window_rect_width="0" window_rect_x="0" window_rect_y="0" window_refresh_rate_max_frequency="25" window_refresh_rate_min_interval="400000" window_refresh_rate_mode="0" window_title="ScalarDisplay" window_title_bar_visible="1" window_vertical_scroll_pos="0" window_zoom="0.95571090312805795">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Appearance.Pos">490;150</Property>
+            <Property name="Private.ZOrder">13</Property>
+            <Property name="Private.ObjID">125</Property>
+            <Property name="Appearance.Size">110;64</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Private.ExportedParams"></Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ParamsOrder">kernel::active_status;kernel::active_trigger;kernel::run_level;kernel::sync_in_mode;kernel::log_level;nInput;LabelFont;DisplayNDD;kernel::window_title;kernel::window_rect_x;kernel::window_rect_y;kernel::window_rect_width;kernel::window_rect_height;kernel::window_docked;kernel::window_full_screen;kernel::window_full_screen_monitor_index;kernel::window_zoom;kernel::window_keep_aspect_ratio;kernel::window_horizontal_scroll_pos;kernel::window_vertical_scroll_pos;kernel::window_title_visible;kernel::window_refresh_rate_mode;kernel::window_refresh_rate_min_interval;kernel::window_refresh_rate_max_frequency;kernel::fit_mode</Property>
+            <Property name="Private.FullPath">Math.Scalar.Output.ScalarDisplay</Property>
+            <Property name="DisplaySyncInVisible">0</Property>
+            <Property name="DisplaySyncOutVisible">0</Property>
+          </PropertySet>
+        </Properties>
+        <Parameters>
+          <Parameter catalog="kernel" class-id="int" description="Number of inputs of the block. All inputs are displays in the block area, vertically stacked. Each input can be assigned a label which is displayed next to its value." design-time="1" enabled="1" group_index="0" id="nInput" name="Number of inputs" run-time="0">
+            <Value>1</Value>
+            <Domain catalog="kernel" class-id="int-domain">1;1;16;1</Domain>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="font" description="This is the font used to display the scalar value and the associated label." design-time="1" enabled="1" group_index="0" id="LabelFont" name="Font" run-time="1">
+            <Value>Times New Roman;-12;0;0;0</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+          <Parameter catalog="kernel" class-id="int" description="If the input datatype is double it sets the number of decimal digits to be shown." design-time="1" enabled="1" group_index="0" id="DisplayNDD" name="Decimal digits" run-time="1">
+            <Value>10</Value>
+            <Domain/>
+            <Layout/>
+            <InitInfo/>
+          </Parameter>
+        </Parameters>
+        <Inputs>
+          <Input catalog="kernel" class-id="generic_datatype" description="Input 0 of the block" group_index="0" id="Input000" name="Input 0" read-write="0" required_for_execution="1" required_for_initialization="1">
+            <RequiredInterfaces/>
+          </Input>
+        </Inputs>
+        <Outputs/>
+        <PrivateData/>
+      </Block>
+    </Blocks>
+    <PatchPins>
+      <PatchPin id="2599" name="Point1">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">PatchPin</Property>
+            <Property name="Appearance.Pos">560;610</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">49</Property>
+            <Property name="Private.ObjID">36</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">30;60</Property>
+            <Property name="Appearance.FillColor">100; 255; 100</Property>
+          </PropertySet>
+        </Properties>
+      </PatchPin>
+      <PatchPin id="2600" name="Point2">
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">PatchPin</Property>
+            <Property name="Appearance.Pos">560;680</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">48</Property>
+            <Property name="Private.ObjID">37</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">30;60</Property>
+            <Property name="Appearance.FillColor">255; 100; 100</Property>
+          </PropertySet>
+        </Properties>
+      </PatchPin>
+    </PatchPins>
+    <CustomObjects>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">150;650</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">78</Property>
+            <Property name="Private.ObjID">85</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">60;30</Property>
+            <Property name="Appearance.FillColor">255; 255; 255</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">0; 0; 0</Property>
+            <Property name="Appearance.BorderSize">0</Property>
+            <Property name="Appearance.Text">data input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">0</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">160;80</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">36</Property>
+            <Property name="Private.ObjID">95</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">60;30</Property>
+            <Property name="Appearance.FillColor">255; 255; 255</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">0; 0; 0</Property>
+            <Property name="Appearance.BorderSize">0</Property>
+            <Property name="Appearance.Text">info input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">0</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">160;330</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">34</Property>
+            <Property name="Private.ObjID">112</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">70;30</Property>
+            <Property name="Appearance.FillColor">255; 255; 255</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">0; 0; 0</Property>
+            <Property name="Appearance.BorderSize">0</Property>
+            <Property name="Appearance.Text">status input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">0</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">140;20</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">80</Property>
+            <Property name="Private.ObjID">140</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">680;240</Property>
+            <Property name="Appearance.FillColor">152; 251; 152</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">0; 255; 0</Property>
+            <Property name="Appearance.BorderSize">4</Property>
+            <Property name="Appearance.Text">MiniBee Info input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">140;270</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">81</Property>
+            <Property name="Private.ObjID">141</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">680;240</Property>
+            <Property name="Appearance.FillColor">255; 255; 224</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">255; 255; 0</Property>
+            <Property name="Appearance.BorderSize">4</Property>
+            <Property name="Appearance.Text">MiniBee Status input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">140;520</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">82</Property>
+            <Property name="Private.ObjID">142</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">680;290</Property>
+            <Property name="Appearance.FillColor">175; 238; 238</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">64; 224; 208</Property>
+            <Property name="Appearance.BorderSize">4</Property>
+            <Property name="Appearance.Text">MiniBee Data input</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">2</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+      <CustomObject>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="GuiObjectType">Label</Property>
+            <Property name="Appearance.Pos">140;820</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">0</Property>
+            <Property name="Private.ObjID">143</Property>
+            <Property name="Appearance.Orientation">1</Property>
+            <Property name="Appearance.Size">680;50</Property>
+            <Property name="Appearance.FillColor">255; 228; 225</Property>
+            <Property name="Appearance.Transparent">0</Property>
+            <Property name="Appearance.BorderColor">255; 192; 203</Property>
+            <Property name="Appearance.BorderSize">4</Property>
+            <Property name="Appearance.Text">This example shows how to route data for two minibees with the default accelerometer inputs. If you have additional sensors attached to your minibee, you will need to adjust the number of outputs on the osc server for the data input. If you have more than two minibees then you need to increase the number of outputs of the output selectors.</Property>
+            <Property name="Appearance.Margins">5;5</Property>
+            <Property name="Appearance.Font">MS Shell Dlg; 8.25; </Property>
+            <Property name="Appearance.FontColor">0; 0; 0</Property>
+            <Property name="Appearance.HorzAlign">0</Property>
+            <Property name="Appearance.VertAlign">0</Property>
+          </PropertySet>
+        </Properties>
+      </CustomObject>
+    </CustomObjects>
+    <Links>
+      <Link>
+        <Pin block="21" id="output_data1" type="source"/>
+        <Pin block="205" id="x_parameter" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">74</Property>
+            <Property name="Private.ObjID">43</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="21" id="output_data2" type="source"/>
+        <Pin block="205" id="y_parameter" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">73</Property>
+            <Property name="Private.ObjID">44</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="21" id="output_data3" type="source"/>
+        <Pin block="205" id="z_parameter" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">72</Property>
+            <Property name="Private.ObjID">45</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_1" type="source"/>
+        <Pin block="912" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">70</Property>
+            <Property name="Private.ObjID">53</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_2" type="source"/>
+        <Pin block="1010" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">68</Property>
+            <Property name="Private.ObjID">54</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="21" id="output_data" type="source"/>
+        <Pin block="1108" id="input_1" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">66</Property>
+            <Property name="Private.ObjID">55</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1162" id="output" type="source"/>
+        <Pin block="1108" id="input_2" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">64</Property>
+            <Property name="Private.ObjID">56</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1108" id="output" type="source"/>
+        <Pin block="1210" id="Input000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">62</Property>
+            <Property name="Private.ObjID">57</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1108" id="output" type="source"/>
+        <Pin block="860" id="active_output" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">61</Property>
+            <Property name="Private.ObjID">58</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1295" id="output_coordinate_x" type="source"/>
+        <Pin block="98" id="InputData000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">59</Property>
+            <Property name="Private.ObjID">59</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1295" id="output_coordinate_y" type="source"/>
+        <Pin block="98" id="InputData001" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">58</Property>
+            <Property name="Private.ObjID">60</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1295" id="output_coordinate_z" type="source"/>
+        <Pin block="98" id="InputData002" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">57</Property>
+            <Property name="Private.ObjID">61</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1449" id="output_coordinate_x" type="source"/>
+        <Pin block="1342" id="InputData000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">54</Property>
+            <Property name="Private.ObjID">62</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1449" id="output_coordinate_y" type="source"/>
+        <Pin block="1342" id="InputData001" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">53</Property>
+            <Property name="Private.ObjID">63</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="1449" id="output_coordinate_z" type="source"/>
+        <Pin block="1342" id="InputData002" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">52</Property>
+            <Property name="Private.ObjID">64</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_1" type="source"/>
+        <Pin block="1295" id="input_3d" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">51</Property>
+            <Property name="Private.ObjID">65</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_2" type="source"/>
+        <Pin block="1449" id="input_3d" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">50</Property>
+            <Property name="Private.ObjID">66</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_1" type="source"/>
+        <Pin patchpin="2599" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">-2.5;0</Property>
+            <Property name="Private.DstPinNdx">0</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">47</Property>
+            <Property name="Private.ObjID">67</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="860" id="output_2" type="source"/>
+        <Pin patchpin="2600" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">-2.5;0</Property>
+            <Property name="Private.DstPinNdx">0</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">46</Property>
+            <Property name="Private.ObjID">68</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="2097" id="point_output" type="source"/>
+        <Pin block="2151" id="input_2" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">43</Property>
+            <Property name="Private.ObjID">78</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="205" id="point_output" type="source"/>
+        <Pin block="2151" id="input_1" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">42</Property>
+            <Property name="Private.ObjID">79</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="2151" id="output" type="source"/>
+        <Pin block="860" id="input" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">41</Property>
+            <Property name="Private.ObjID">80</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="13820" id="output_1" type="source"/>
+        <Pin block="13872" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">31</Property>
+            <Property name="Private.ObjID">106</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="13820" id="output_2" type="source"/>
+        <Pin block="13970" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">29</Property>
+            <Property name="Private.ObjID">107</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="14122" id="output" type="source"/>
+        <Pin block="14068" id="input_2" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">25</Property>
+            <Property name="Private.ObjID">109</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="14068" id="output" type="source"/>
+        <Pin block="13820" id="active_output" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">24</Property>
+            <Property name="Private.ObjID">110</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="13689" id="output_data" type="source"/>
+        <Pin block="14068" id="input_1" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">27</Property>
+            <Property name="Private.ObjID">108</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="13689" id="output_data1" type="source"/>
+        <Pin block="13820" id="input" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">23</Property>
+            <Property name="Private.ObjID">114</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15570" id="output" type="source"/>
+        <Pin block="15516" id="input_2" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">19</Property>
+            <Property name="Private.ObjID">118</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15516" id="output" type="source"/>
+        <Pin block="15464" id="active_output" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">18</Property>
+            <Property name="Private.ObjID">119</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15464" id="output_1" type="source"/>
+        <Pin block="12753" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">12</Property>
+            <Property name="Private.ObjID">126</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15464" id="output_2" type="source"/>
+        <Pin block="15776" id="string" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">11</Property>
+            <Property name="Private.ObjID">128</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15668" id="output_1" type="source"/>
+        <Pin block="13028" id="Input000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">10</Property>
+            <Property name="Private.ObjID">129</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15668" id="output_2" type="source"/>
+        <Pin block="15959" id="Input000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">9</Property>
+            <Property name="Private.ObjID">130</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15721" id="output_1" type="source"/>
+        <Pin block="12942" id="Input000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">8</Property>
+            <Property name="Private.ObjID">131</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15721" id="output_2" type="source"/>
+        <Pin block="15874" id="Input000" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">7</Property>
+            <Property name="Private.ObjID">132</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="12668" id="output_data" type="source"/>
+        <Pin block="15464" id="input" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">6</Property>
+            <Property name="Private.ObjID">133</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="12668" id="output_data1" type="source"/>
+        <Pin block="15516" id="input_1" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">5</Property>
+            <Property name="Private.ObjID">134</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="12668" id="output_data2" type="source"/>
+        <Pin block="15668" id="input" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">4</Property>
+            <Property name="Private.ObjID">135</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="12668" id="output_data3" type="source"/>
+        <Pin block="15721" id="input" target_type="input" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">3</Property>
+            <Property name="Private.ObjID">136</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15516" id="output" type="source"/>
+        <Pin block="15668" id="active_output" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">2</Property>
+            <Property name="Private.ObjID">137</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+      <Link>
+        <Pin block="15516" id="output" type="source"/>
+        <Pin block="15721" id="active_output" target_type="parameter" type="target"/>
+        <Properties>
+          <PropertySet name="gui-mdi">
+            <Property name="Private.SrcPinDelta">0;0</Property>
+            <Property name="Private.SrcPinNdx">-1</Property>
+            <Property name="Private.DstPinDelta">0;0</Property>
+            <Property name="Private.DstPinNdx">-1</Property>
+            <Property name="Private.NumPins">0</Property>
+            <Property name="Private.Selected">0</Property>
+            <Property name="Private.ZOrder">1</Property>
+            <Property name="Private.ObjID">138</Property>
+          </PropertySet>
+        </Properties>
+      </Link>
+    </Links>
+  </Patch>
+
+</MainPatch>
