@@ -294,13 +294,13 @@ class SWPydonHive( object ):
   def dataNodeDataToMiniBee( self, data, nid ):
     if self.verbose:
       print( "output mapped data", nid, data )
-    if nid in self.hive.bees[ nid ]:
+    if nid in self.hive.bees:
       self.hive.bees[ nid ].send_output( self.hive.serial, data )
 
   def dataNodeDataToMiniBeeCustom( self, data, nid ):
     if self.verbose:
       print( "custom mapped data", nid, data )
-    if nid in self.hive.bees[ nid ]:
+    if nid in self.hive.bees:
       self.hive.bees[ nid ].send_custom( self.hive.serial, data )
 
 # logger:
