@@ -53,6 +53,8 @@ class MiniHiveOSC(object):
     
   def add_handlers( self ):
     
+    self.osc.addMsgHandler( "/minihive/quit", self.handler_quit )
+    
     self.osc.addMsgHandler( "/minihive/reset", self.handler_reset_hive )
     self.osc.addMsgHandler( "/minihive/ids/save", self.handler_saveids )
 
@@ -197,6 +199,10 @@ class MiniHiveOSC(object):
     self.loadConfiguration( args[0] )
     if self.verbose:
       print( "MiniBee load configuration:", args )
+      
+  def handler_quit( self, path, types, args, source ):    
+    self.quit()
+    print( "MiniHiveOSC quit:", args )     
 
   def fallback(self, path, args, types, src):
     print( "got unknown message '%s' from '%s'" % (path, src.get_url()) )
@@ -324,6 +330,9 @@ class MiniHiveOSC(object):
   def saveConfiguration( self, filename ):
     self.hive.hive.write_to_file( filename )
     print( "saved configuration to:", filename )
+    
+  def quit( self ):
+    self.hive.exit()
 
 # end class DNOSCServer
 
