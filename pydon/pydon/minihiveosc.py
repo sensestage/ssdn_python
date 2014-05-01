@@ -332,7 +332,7 @@ class MiniHiveOSC(object):
     print( "saved configuration to:", filename )
     
   def quit( self ):
-    self.hive.exit()
+    self.hive.hive.exit()
 
 # end class DNOSCServer
 
@@ -374,7 +374,7 @@ class SWMiniHiveOSC( object ):
     self.verbose = verbose
 
     self.hive.set_newBeeAction( self.hookBeeToOSC )
-    self.hive.start_serial()
+    self.hive.start_serial()  
   
   def exit( self ):
     self.osc.osc.close()
