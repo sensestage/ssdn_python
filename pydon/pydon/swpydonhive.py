@@ -193,10 +193,12 @@ class SWPydonHive( object ):
     self.hive.reset_bee( mid )
 
   def runMiniBee( self, mid, status ):
-    self.hive.bees[ mid ].send_run( self.hive.serial, status )
+    if mid in self.hive.bees:
+      self.hive.bees[ mid ].send_run( self.hive.serial, status )
 
   def loopMiniBee( self, mid, status ):
-    self.hive.bees[ mid ].send_loopback( self.hive.serial, status )
+    if mid in self.hive.bees:
+      self.hive.bees[ mid ].send_loopback( self.hive.serial, status )
 
 
 # labeling
@@ -292,12 +294,14 @@ class SWPydonHive( object ):
   def dataNodeDataToMiniBee( self, data, nid ):
     if self.verbose:
       print( "output mapped data", nid, data )
-    self.hive.bees[ nid ].send_output( self.hive.serial, data )
+    if nid in self.hive.bees[ nid ]:
+      self.hive.bees[ nid ].send_output( self.hive.serial, data )
 
   def dataNodeDataToMiniBeeCustom( self, data, nid ):
     if self.verbose:
       print( "custom mapped data", nid, data )
-    self.hive.bees[ nid ].send_custom( self.hive.serial, data )
+    if nid in self.hive.bees[ nid ]:
+      self.hive.bees[ nid ].send_custom( self.hive.serial, data )
 
 # logger:
   def initializeLogger( self ):

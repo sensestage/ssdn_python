@@ -425,23 +425,29 @@ class SWMiniHiveOSC( object ):
     self.hive.store_minibee_id( nid )
 
   def oscRunToMiniBee( self, nid, status ):
-    self.hive.bees[ nid ].send_run( self.hive.serial, status )
+    if nid in self.hive.bees:
+      self.hive.bees[ nid ].send_run( self.hive.serial, status )    
     if self.verbose:
       print( "minibee run", nid,  status )
 
   def oscLoopbackToMiniBee( self, nid, status ):
-    self.hive.bees[ nid ].send_loopback( self.hive.serial, status )
+    if nid in self.hive.bees:
+      self.hive.bees[ nid ].send_loopback( self.hive.serial, status )
     if self.verbose:
       print( "minibee loopback", nid,  status )
 
 # data node to minibee
   def oscToMiniBee( self, nid, data ):
-    self.hive.bees[ nid ].send_output( self.hive.serial, data )
+    if nid in self.hive.bees:
+      self.hive.bees[ nid ].send_output( self.hive.serial, data )
     if self.verbose:
-      print( nid,  data )
+      print( "output", nid,  data )
 
   def oscToMiniBeeCustom( self, nid, data ):
-    self.hive.bees[ nid ].send_custom( self.hive.serial, data )
+    if nid in self.hive.bees:
+      self.hive.bees[ nid ].send_custom( self.hive.serial, data )
+    if self.verbose:
+      print( "custom", nid,  data )
 
   #def dataNodeDataToMiniBeeCustom( self, data, nid ):
     #self.hive.bees[ nid ].send_custom( self.hive.serial, data )
