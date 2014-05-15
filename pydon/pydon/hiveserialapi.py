@@ -128,12 +128,13 @@ class HiveSerialAPI(object):
     self.hiveMsgId = 1
     self.logAction = None
     self.verbose = False
+    self.tapSerial = False
     self.open_serial_port()
     
   def init_comm( self ):
     print( "initialising communication through serial port")
     self.tapped_ser = self.serial
-    if self.verbose:
+    if self.tapSerial:
       self.tapped_ser = TappedSerial( self.serial )
     self.dispatch = Dispatch( self.tapped_ser )
     self.register_callbacks()

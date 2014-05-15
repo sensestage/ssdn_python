@@ -160,14 +160,20 @@ class SWPydonHive( object ):
   def setupTriggerMiniBee( self, mid, nodeid ):
     print( "triggers of minibee", mid, "to node", nodeid )
     self.minibeeToTriggerNodes[ mid ] = nodeid
+    #FIXME
+    #self.datanetwork.osc.addExpected( nid, [ mybee.getTriggerSize(), mybee.name ] )
+    #self.datanetwork.createNode( nid, mybee.getTriggerSize(), mybee.name, 0 )    
     
   def unsetupTriggerMiniBee( self, mid, nodeid ):
     print( "triggers of minibee", mid, "not to node", nodeid )
     del self.minibeeToTriggerNodes[ mid ]
 
-  def setupPrivateMiniBee( self, mid, nodeid ):
+  def setupPrivateMiniBee( self, mid, nodeid, datasize ):
     print( "private of minibee", mid, "to node", nodeid )
+    self.datanetwork.osc.addExpected( nodeid, [ datasize ] ) # , mybee.name
+    self.datanetwork.createNode( nodeid, datasize, "", 0 )    
     self.minibeeToPrivateNodes[ mid ] = nodeid
+    print( self.minibeeToPrivateNodes )
     
   def unsetupPrivateMiniBee( self, mid, nodeid ):
     print( "private of minibee", mid, "not to node", nodeid )
@@ -284,29 +290,32 @@ class SWPydonHive( object ):
 #	print( "osc lock released by thread ", threading.current_thread().name, "send bee labels" )
       self.hive.osclock.release()
 
-  def minibeeDataToDataNode( self, data, nid ):
+  def minibeeDataToDataNode( self, data, nid ): # inverse argument order - why?
     self.hive.osclock.acquire()
     res = self.datanetwork.setNodeData( nid, data, False )
     self.hive.osclock.release()
     return res
 
-  def minibeeTriggerDataToDataNode( self, data, mid ):
+  def minibeeTriggerDataToDataNode( self, mid, data ): # inverse argument order - why?
     if mid in self.minibeeToTriggerNodes:
       nid = self.minibeeToTriggerNodes[ mid ]
       self.hive.osclock.acquire()
       res = self.datanetwork.setNodeData( nid, data, False )
       self.hive.osclock.release()
-    else
+    else:
       res = True
     return res
 
-  def minibeePrivateDataToDataNode( self, data, mid ):
+  def minibeePrivateDataToDataNode( self, mid, data ): # inverse argument order - why?
+    if self.verbose:
+      print( "private data from minibee", mid, data )
+    print( self.minibeeToPrivateNodes, type( self.minibeeToPrivateNodes ), mid )
     if mid in self.minibeeToPrivateNodes:
       nid = self.minibeeToPrivateNodes[ mid ]
       self.hive.osclock.acquire()
       res = self.datanetwork.setNodeData( nid, data, False )
       self.hive.osclock.release()
-    else
+    else:
       res = True
     return res
 

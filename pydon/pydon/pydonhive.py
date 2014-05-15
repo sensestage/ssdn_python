@@ -585,13 +585,13 @@ class MiniHive(object):
 
   def new_private_data( self, beeid, msgid, data, rssi = 0, useLock = False ):    
     if self.verbose:
-      print( "received new trigger data", beeid, msgid, data )
+      print( "received new private data", beeid, msgid, data )
     # find minibee, set data to it
     if beeid in self.bees:
       self.gotData()
       self.bees[beeid].parse_private_data( msgid, data, self.verbose, rssi )
     else:
-      print( "received trigger data from unknown minibee", beeid, msgid, data )
+      print( "received private data from unknown minibee", beeid, msgid, data )
       if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
 	if self.serial.isOpen():
 	  if useLock:
@@ -1224,7 +1224,7 @@ class MiniBee(object):
     self.triggerDataAction = action
 
   def set_private_action( self, action ):
-    self.privateAction = action
+    self.privateDataAction = action
 
   def set_info_action( self, action ):
     self.infoAction = action
@@ -1369,20 +1369,21 @@ class MiniBee(object):
   def parse_private_data( self, msgid, data, verbose = False, rssi = 0 ):
     # to do: add msgid check
     if verbose:
-      print( "msg ids", msgid, self.lastRecvMsgID )
+      print( "private data - msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
       #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
 	  if self.config.rssi:
 	    data.append( rssi )
+	  #print( "private data action:", self.nodeid, self.privateDataAction );
 	  if self.privateDataAction != None :
 	    self.privateDataAction( self.nodeid, data )
 
   def parse_trigger_data( self, msgid, data, verbose = False, rssi = 0 ):
     # to do: add msgid check
     if verbose:
-      print( "msg ids", msgid, self.lastRecvMsgID )
+      print( "trigger data - msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
       #self.time_since_last_message = 0

@@ -377,10 +377,10 @@ class DataNetworkOSC(object):
     print( "UnConfig minibee trigger data:", args )
 
   def handler_config_minibee_private( self, path, types, args, source ):
-    self.config_minibee_private( args[0], args[1] )
+    self.config_minibee_private( args[0], args[1], args[2] )
     print( "Config minibee private data:", args )
 
-  def handler_config_minibee_private( self, path, types, args, source ):
+  def handler_unconfig_minibee_private( self, path, types, args, source ):
     self.unconfig_minibee_private( args[0] )
     print( "UnConfig minibee private data:", args )
 
@@ -964,8 +964,8 @@ class DataNetworkOSC(object):
     #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
 
   # configure bee to node private
-  def config_minibee_private( self, mid, nodeid ):
-    self.network.privateNodeAction( mid, nodeid )
+  def config_minibee_private( self, mid, nodeid, datasize ):
+    self.network.privateNodeAction( mid, nodeid, datasize )
     #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
 
   # unconfigure bee to node private
@@ -1029,9 +1029,6 @@ class DataNetworkOSC(object):
     # unmap data from subscribed node to minihive's custom output
     self.network.unmapCustomAction( nodeid, 0xFFFF )
     self.sendMessage( "/unmapped/minihive/custom", [ nodeid ] )    
-
-  def config_minibee_private( self, mid, nodeid ):
-    
 
   def setMiniBeeConfiguration( self, config ):
     if not self.network.hive == None:
@@ -1277,7 +1274,7 @@ class DataNetwork(object):
     self.triggerRemoveNodeAction = action
 
   def set_privateNodeAction( self, action ):
-    self.triggerNodeAction = action
+    self.privateNodeAction = action
 
   def set_privateRemoveNodeAction( self, action ):
     self.privateRemoveNodeAction = action
