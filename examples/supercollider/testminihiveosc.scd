@@ -2,6 +2,7 @@
 // SuperCollider Code to work with MiniHiveOSC
 // ============================================
 
+"pydongui.py".runInTerminal;
 // check SC's osc port (use as argument for minihiveosc
 NetAddr.langPort;
 
