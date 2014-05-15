@@ -250,7 +250,7 @@ class HiveSerialAPI(object):
       self.recv_data( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )
     elif packet['rf_data'][0] == 't' and len( packet[ 'rf_data' ] ) > 1: # minibee sending trigger data
       self.recv_triggerdata( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )      
-    elif packet['rf_data'][0] == 'p' and len( packet[ 'rf_data' ] ) > 1: # minibee sending private data
+    elif packet['rf_data'][0] == 'e' and len( packet[ 'rf_data' ] ) > 1: # minibee sending private data
       self.recv_privatedata( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )      
     elif packet['rf_data'][0] == 's' and len( packet[ 'rf_data' ] ) > 12:
       if len( packet[ 'rf_data' ] ) > 13 :
@@ -265,7 +265,10 @@ class HiveSerialAPI(object):
       self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
     elif packet['rf_data'][0] == 'i' and len( packet[ 'rf_data' ] ) > 2: # info message
       print( "info message",  packet, [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
-      #self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
+    elif packet['rf_data'][0] == 'p' and len( packet[ 'rf_data' ] ) > 1: # minibee sending pause message
+      self.recv_paused( packet['rf_data'][1], packet[ 'source_addr'], packet['rssi'] )      
+    elif packet['rf_data'][0] == 'a' and len( packet[ 'rf_data' ] ) > 1: # minibee sending active message
+      self.recv_active( packet['rf_data'][1], packet[ 'source_addr'], packet['rssi'] )      
     self.hive.gotData()
     self.log_data( packet )
     
@@ -410,12 +413,6 @@ class HiveSerialAPI(object):
 	    #parameter=hrm
 	    )
 
-  #def send_data( self, rmmy, data ):
-    #self.send_msg( rmmy, 'O', data )
-
-  #def send_custom( self, rmmy, datalistin ):
-    #self.send_msg( rmmy, 'X', datalistin )
-
   def create_beemsg( self, msgtype, msgid, msgdata, mid ):
     datalist = [ msgtype ]
     datalist.append( chr(msgid) )
@@ -504,20 +501,6 @@ class HiveSerialAPI(object):
     #self.hive.new_bee_no_config( sser )
     self.hive.new_bee( sser, libv, rev, caps, remConf )
 
-  #def wait_config( self ):
-    #if self.verbose:
-      #print( "waiting configuration" )
-      #print( self.incMsg )
-    #self.hive.wait_config( self.incMsg[1], self.incMsg[2] ) # minibee id, config id
-    ##print "end waiting configuration"
-
-  #def confirm_config( self ):
-    #if self.verbose:
-      #print( "confirming configuration" )
-      #print( self.incMsg )
-    #self.hive.check_config( self.incMsg[1], self.incMsg[2], self.incMsg[3:] )
-    ##print "end confirming configuration"
-
   def recv_data( self, rfdata, source, rfrssi ):
     data = []
     for x in rfdata[1:]:
@@ -551,23 +534,21 @@ class HiveSerialAPI(object):
       print( "receiving private data from minibee", nid, msgid, data, rssi )
     self.hive.new_private_data( nid, msgid, data, rssi )
 
-  #def active( self ):
-    ##print "receiving data"
-    ##print self.incMsg
-    #if len(self.incMsg) == 2:
-      #self.hive.bee_active( self.incMsg[1], self.incMsg[2] )
-    ##print "end receiving data"
-    #if self.verbose:
-      #print( "active minibee", self.incMsg[1], self.incMsg[2] )
+  def recv_paused( self, msgid, source, rfrssi ):
+    nid = int( ByteToHex( source ), 16 )
+    rssi = int( ByteToHex( rfrssi ), 16 )
+    msgid = int( ByteToHex( msgid ), 16 )
+    if self.verbose:
+      print( "receiving paused data from minibee", nid, msgid, rssi )
+    self.hive.new_paused( nid, msgid, rssi )
 
-  #def pausing( self ):
-    ##print "receiving data"
-    ##print self.incMsg
-    #if len(self.incMsg) == 2:
-      #self.hive.bee_pausing( self.incMsg[1], self.incMsg[2] )
-    ##print "end receiving data"
-    #if self.verbose:
-      #print( "pausing minibee", self.incMsg[1], self.incMsg[2] )
+  def recv_active( self, msgid, source, rfrssi ):
+    nid = int( ByteToHex( source ), 16 )
+    rssi = int( ByteToHex( rfrssi ), 16 )
+    msgid = int( ByteToHex( msgid ), 16 )
+    if self.verbose:
+      print( "receiving active data from minibee", nid, msgid, rssi )
+    self.hive.new_active( nid, msgid, rssi )
 
   def set_log_action( self, action ):
     self.logAction = action
@@ -585,39 +566,5 @@ class HiveSerialAPI(object):
     #print "receiving data"
     if self.logAction != None :
       self.logAction( data )
-    #else:
-      #print self.incMsg
-    #self.hive.new_data( self.incMsg[1], self.incMsg[2], self.incMsg[3:] )
-    #print "end receiving data"
-
-  #def parse_message( self ):
-    ##print self.incType
-    ##print self.incType, chr( self.incType ), self.incMsg
-    #if type( self.incType ) == int:
-      #incTypeChr = chr( self.incType )
-    #else:
-      #incTypeChr = 'u' # unknown message
-    ##incTypeChr = self.incType
-    #if incTypeChr == 's' : # serial from minibee device
-      #self.parse_serial()
-    #elif incTypeChr == 'w' : # minibee waiting for configuration
-      #self.wait_config()
-    #elif incTypeChr == 'c' : # minibee confirming configuration
-      #self.confirm_config()
-    #elif incTypeChr == 'd' : # minibee sending data
-      #self.recv_data()
-    #elif incTypeChr == 'a' : # minibee confirming it's active
-      #self.active()
-    #elif incTypeChr == 'p' : # minibee confirming it's pausing
-      #self.pausing()
-    #elif incTypeChr == 'i' : # minibee sending info (debugging mostly)
-      #self.display_data()
-    #elif incTypeChr == 'x' : # minibee sending info (debugging mostly)
-      #self.display_data()
-    #else:
-      #print( incTypeChr, self.incMsg )
-    #self.log_data()
-    ## add loopback
-    ##res = messageTypes.get( chr(incType) )()
 
 # end of HiveSerialAPI

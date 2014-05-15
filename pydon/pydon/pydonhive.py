@@ -533,6 +533,18 @@ class MiniHive(object):
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
   
+  def new_paused( self, beeid, msgid, rssi = 0, useLock = False ):    
+    if self.verbose:
+      print( "received paused message", beeid, msgid )
+    if beeid in self.bees:
+      self.bees[ beeid ].setStatus( 'paused' )
+
+  def new_active( self, beeid, msgid, rssi = 0, useLock = False ):    
+    if self.verbose:
+      print( "received active message", beeid, msgid )
+    if beeid in self.bees:
+      self.bees[ beeid ].setStatus( 'active' )
+    
   def new_data( self, beeid, msgid, data, rssi = 0, useLock = False ):    
     if self.verbose:
       print( "received new data", beeid, msgid, data )
