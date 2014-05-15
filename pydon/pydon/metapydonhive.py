@@ -314,7 +314,7 @@ class MetaPydonHive:
       #app.SetOutputWindowAttributes( "MetaPydonHive Output" )
 
     print( "--------------------------------------------------------------------------------------" )
-    print( "MetaPydonHive - a universal client to communicate with the minibee network. version v0.37" )
+    print( "MetaPydonHive - a universal client to communicate with the minibee network. version v0.38-dev" )
     print( " --- to find out more about the startup options start with \'metapydonhive.py -h\'" )
     print( " --- The client has been started with these options:" )
     #print( parser )

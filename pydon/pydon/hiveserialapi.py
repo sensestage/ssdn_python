@@ -248,6 +248,10 @@ class HiveSerialAPI(object):
       print "RFData Received: ", packet
     if packet['rf_data'][0] == 'd' and len( packet[ 'rf_data' ] ) > 1: # minibee sending data
       self.recv_data( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )
+    elif packet['rf_data'][0] == 't' and len( packet[ 'rf_data' ] ) > 1: # minibee sending trigger data
+      self.recv_triggerdata( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )      
+    elif packet['rf_data'][0] == 'p' and len( packet[ 'rf_data' ] ) > 1: # minibee sending private data
+      self.recv_privatedata( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )      
     elif packet['rf_data'][0] == 's' and len( packet[ 'rf_data' ] ) > 12:
       if len( packet[ 'rf_data' ] ) > 13 :
 	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), ord( packet[ 'rf_data' ][13] ) )
@@ -524,6 +528,28 @@ class HiveSerialAPI(object):
     if self.verbose:
       print( "receiving data from minibee", nid, msgid, data, rssi )
     self.hive.new_data( nid, msgid, data, rssi )
+
+  def recv_triggerdata( self, rfdata, source, rfrssi ):
+    data = []
+    for x in rfdata[1:]:
+      data.append( int( ByteToHex( x ), 16 ) )    
+    nid = int( ByteToHex( source ), 16 )
+    rssi = int( ByteToHex( rfrssi ), 16 )
+    msgid = int( ByteToHex( rfdata[0] ), 16 )
+    if self.verbose:
+      print( "receiving trigger data from minibee", nid, msgid, data, rssi )
+    self.hive.new_trigger_data( nid, msgid, data, rssi )
+
+  def recv_privatedata( self, rfdata, source, rfrssi ):
+    data = []
+    for x in rfdata[1:]:
+      data.append( int( ByteToHex( x ), 16 ) )    
+    nid = int( ByteToHex( source ), 16 )
+    rssi = int( ByteToHex( rfrssi ), 16 )
+    msgid = int( ByteToHex( rfdata[0] ), 16 )
+    if self.verbose:
+      print( "receiving private data from minibee", nid, msgid, data, rssi )
+    self.hive.new_private_data( nid, msgid, data, rssi )
 
   #def active( self ):
     ##print "receiving data"

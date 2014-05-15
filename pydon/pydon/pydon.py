@@ -95,6 +95,12 @@ class DataNetworkOSC(object):
     self.osc.addMsgHandler( "/mapped/minibee/custom", self.handler_mapped_minibee_custom )
     self.osc.addMsgHandler( "/unmapped/minibee/custom", self.handler_unmapped_minibee_custom )    
 
+    self.osc.addMsgHandler( "/config/minibee/trigger", self.handler_config_minibee_trigger )
+    self.osc.addMsgHandler( "/unconfig/minibee/trigger", self.handler_unconfig_minibee_trigger )    
+
+    self.osc.addMsgHandler( "/config/minibee/private", self.handler_config_minibee_private )
+    self.osc.addMsgHandler( "/unconfig/minibee/private", self.handler_unconfig_minibee_private )    
+
     #begin# map to broadcast bee
     self.osc.addMsgHandler( "/map/minihive/output", self.handler_map_minihive )
     self.osc.addMsgHandler( "/unmap/minihive/output", self.handler_unmap_minihive )    
@@ -360,6 +366,23 @@ class DataNetworkOSC(object):
   def handler_unmapped_minibee_custom( self, path, types, args, source ):
     self.unmapped_minibee_custom( args[0], args[1] )
     print( "Unmapped Minibee custom:", args )
+
+
+  def handler_config_minibee_trigger( self, path, types, args, source ):
+    self.config_minibee_trigger( args[0], args[1] )
+    print( "Config minibee trigger data:", args )
+
+  def handler_unconfig_minibee_trigger( self, path, types, args, source ):
+    self.unconfig_minibee_trigger( args[0] )
+    print( "UnConfig minibee trigger data:", args )
+
+  def handler_config_minibee_private( self, path, types, args, source ):
+    self.config_minibee_private( args[0], args[1] )
+    print( "Config minibee private data:", args )
+
+  def handler_config_minibee_private( self, path, types, args, source ):
+    self.unconfig_minibee_private( args[0] )
+    print( "UnConfig minibee private data:", args )
 
 
 ### map to hive ###
@@ -930,26 +953,37 @@ class DataNetworkOSC(object):
     self.network.loopAction( mid, status )
     #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
     
+  # configure bee to node trigger
+  def config_minibee_trigger( self, mid, nodeid ):
+    self.network.triggerNodeAction( mid, nodeid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
+  # unconfigure bee to node trigger
+  def unconfig_minibee_trigger( self, mid ):
+    self.network.triggerRemoveNodeAction( mid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
+  # configure bee to node private
+  def config_minibee_private( self, mid, nodeid ):
+    self.network.privateNodeAction( mid, nodeid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
+
+  # unconfigure bee to node private
+  def unconfig_minibee_private( self, mid ):
+    self.network.privateRemoveNodeAction( mid )
+    #self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
 
   # receiving map request output
   def map_minibee( self, nodeid, mid ):
-    #self.subscribeNode( nodeid )
     # map data from subscribed node to minibee's data output
     self.network.mapAction( nodeid, mid )
     self.sendMessage( "/mapped/minibee/output", [ nodeid, mid ] )
-    #msg = liblo.Message( "/mapped/minibee/output", self.port, self.name, nodeid, mid )
-    #self.sendMessage( msg )
-    #del msg
 
   # receiving map request custom
   def map_minibee_custom( self, nodeid, mid ):
-    #self.subscribeNode( nodeid )
     # map data from subscribed node to minibee's custom output
     self.network.mapCustomAction( nodeid, mid )
     self.sendMessage( "/mapped/minibee/custom", [ nodeid, mid ] )
-    #msg = liblo.Message( "/mapped/minibee/custom", self.port, self.name, nodeid, mid )
-    #self.sendMessage( msg )
-    #del msg
 
   # receiving unmap request output
   def unmap_minibee( self, nodeid, mid ):
@@ -996,6 +1030,8 @@ class DataNetworkOSC(object):
     self.network.unmapCustomAction( nodeid, 0xFFFF )
     self.sendMessage( "/unmapped/minihive/custom", [ nodeid ] )    
 
+  def config_minibee_private( self, mid, nodeid ):
+    
 
   def setMiniBeeConfiguration( self, config ):
     if not self.network.hive == None:
@@ -1180,6 +1216,11 @@ class DataNetwork(object):
     self.mapCustomAction = None
     self.unmapCustomAction = None
     self.quitAction = None
+    
+    self.triggerNodeAction = None
+    self.triggerRemoveNodeAction = None
+    self.privateNodeAction = None
+    self.privateRemoveNodeAction = None
 
     self.osc = DataNetworkOSC( hostip, myport, myname, self, cltype, nonodes, myhost, defaulthostport )
   
@@ -1228,6 +1269,18 @@ class DataNetwork(object):
 
   def set_unmapCustomAction( self, action ):
     self.unmapCustomAction = action
+    
+  def set_triggerNodeAction( self, action ):
+    self.triggerNodeAction = action
+
+  def set_triggerRemoveNodeAction( self, action ):
+    self.triggerRemoveNodeAction = action
+
+  def set_privateNodeAction( self, action ):
+    self.triggerNodeAction = action
+
+  def set_privateRemoveNodeAction( self, action ):
+    self.privateRemoveNodeAction = action
 
   def set_quitAction( self, action ):
     self.quitAction = action

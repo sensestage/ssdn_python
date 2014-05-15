@@ -70,11 +70,18 @@ class SWPydonHive( object ):
     self.datanetwork.set_resetAction( self.resetMiniBee )
     self.datanetwork.set_runAction( self.runMiniBee )
     self.datanetwork.set_loopAction( self.loopMiniBee )
+
+    self.datanetwork.set_mapAction( self.mapMiniBee )
     
     self.datanetwork.set_mapAction( self.mapMiniBee )
     self.datanetwork.set_mapCustomAction( self.mapMiniBeeCustom )
     self.datanetwork.set_unmapAction( self.unmapMiniBee )
     self.datanetwork.set_unmapCustomAction( self.unmapMiniBeeCustom )
+
+    self.datanetwork.set_triggerNodeAction( self.setupTriggerMiniBee )
+    self.datanetwork.set_triggerRemoveNodeAction( self.unsetupTriggerMiniBee )
+    self.datanetwork.set_privateNodeAction( self.setupPrivateMiniBee )
+    self.datanetwork.set_privateRemoveNodeAction( self.unsetupPrivateMiniBee )
 
     self.datanetwork.osc.add_callback_noid( 'register', self.reregisterBees )
 
@@ -82,6 +89,9 @@ class SWPydonHive( object ):
 
     self.datanetwork.startOSC()
     self.hive.start_serial()
+    
+    self.minibeeToTriggerNodes = {}
+    self.minibeeToPrivateNodes = {}
 
   def exit( self ):
     self.hive.osclock.acquire()
@@ -134,8 +144,6 @@ class SWPydonHive( object ):
   
   def setMapAction( self, nodeid, mid ):
     if nodeid not in self.datanetwork.nodes:
-    #if not self.datanetwork.subscribedToNode( nodeid ):
-    #if not nodeid in self.datanetwork.nodes:
       self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
     else:
       self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
@@ -148,6 +156,22 @@ class SWPydonHive( object ):
     self.hive.osclock.release()
     self.datanetwork.nodes[ nodeid ].setMapOutput( None )
     self.datanetwork.nodes[ nodeid ].setAction( None )
+
+  def setupTriggerMiniBee( self, mid, nodeid ):
+    print( "triggers of minibee", mid, "to node", nodeid )
+    self.minibeeToTriggerNodes[ mid ] = nodeid
+    
+  def unsetupTriggerMiniBee( self, mid, nodeid ):
+    print( "triggers of minibee", mid, "not to node", nodeid )
+    del self.minibeeToTriggerNodes[ mid ]
+
+  def setupPrivateMiniBee( self, mid, nodeid ):
+    print( "private of minibee", mid, "to node", nodeid )
+    self.minibeeToPrivateNodes[ mid ] = nodeid
+    
+  def unsetupPrivateMiniBee( self, mid, nodeid ):
+    print( "private of minibee", mid, "not to node", nodeid )
+    del self.minibeeToPrivateNodes[ mid ]
 
   def mapMiniBeeCustom( self, nodeid, mid ):
     print( "map minibee custom", nodeid, "to", mid )
@@ -207,28 +231,21 @@ class SWPydonHive( object ):
 
 # bee to datanode
   def hookBeeToDatanetwork( self, minibee ):
-    #self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_info_action( self.sendInfoBee )
+    minibee.set_status_action( self.sendStatusInfo )
     minibee.set_first_action( self.addAndSubscribe )
     minibee.set_action( self.minibeeDataToDataNode )
-    minibee.set_status_action( self.sendStatusInfo )
+    minibee.set_private_action( self.minibeePrivateDataToDataNode )
+    minibee.set_trigger_action( self.minibeeTriggerDataToDataNode )
     
   def sendInfoBee( self, minibee ):    
     self.hive.osclock.acquire()
-#    if self.verbose:
-#      print( "osc lock acquired by thread ", threading.current_thread().name, "send info bee" )
     self.datanetwork.osc.infoMinibee( minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
-#    if self.verbose:
-#      print( "osc lock released by thread ", threading.current_thread().name, "send info bee" )
     self.hive.osclock.release()
 
   def sendStatusInfo( self, nid, status ):
     self.hive.osclock.acquire()
-#    if self.verbose:
-#      print( "osc lock acquired by thread ", threading.current_thread().name, "send status bee" )
     self.datanetwork.osc.statusMinibee( nid, status )
-#    if self.verbose:
-#      print( "osc lock released by thread ", threading.current_thread().name, "send status bee" )
     self.hive.osclock.release()
     
   def reregisterBees( self, state ):
@@ -238,31 +255,19 @@ class SWPydonHive( object ):
 	if beeid < 65535:
 	  self.hookBeeToDatanetwork( bee )
 	  self.hive.osclock.acquire()
-#	  if self.verbose:
-#	    print( "osc lock acquired by thread ", threading.current_thread().name, "reregister bees" )
 	  self.datanetwork.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
 	  self.sendStatusInfo( beeid, bee.status )
 	  if bee.status == 'receiving':
 	    self.datanetwork.osc.addExpected( beeid, [] )
-#	  if self.verbose:
-#	    print( "osc lock released by thread ", threading.current_thread().name, "reregister bees" )
 	  self.hive.osclock.release()
-	  #self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
-	  #self.datanetwork.osc.subscribeNode( nid )
-	  #self.addAndSubscribe( beeid, [] )
 
   def addAndSubscribe( self, nid, data ):
     mybee = self.hive.bees[ nid ]
     if mybee.name == "":
       mybee.name = (self.labelbase + str(nid) )
     self.hive.osclock.acquire()
-#    if self.verbose:
-#      print( "osc lock acquired by thread ", threading.current_thread().name, "add and subscribe" )
     self.datanetwork.osc.addExpected( nid, [ mybee.getInputSize(), mybee.name ] )
-#    if self.verbose:
-#      print( "osc lock released by thread ", threading.current_thread().name, "add and subscribe" )
     self.datanetwork.createNode( nid, mybee.getInputSize(), mybee.name, 0 )
-    #self.datanetwork.osc.subscribeNode( nid )
     self.hive.osclock.release()
     self.sendBeeLabels( mybee )
 
@@ -280,14 +285,29 @@ class SWPydonHive( object ):
       self.hive.osclock.release()
 
   def minibeeDataToDataNode( self, data, nid ):
-    #print( "sending data to network", nid, data )
     self.hive.osclock.acquire()
-#    if self.verbose:
-#      print( "osc lock acquired by thread ", threading.current_thread().name, "minibee to data node" )
     res = self.datanetwork.setNodeData( nid, data, False )
-#    if self.verbose:
-#      print( "osc lock released by thread ", threading.current_thread().name, "minibee to data node" )
     self.hive.osclock.release()
+    return res
+
+  def minibeeTriggerDataToDataNode( self, data, mid ):
+    if mid in self.minibeeToTriggerNodes:
+      nid = self.minibeeToTriggerNodes[ mid ]
+      self.hive.osclock.acquire()
+      res = self.datanetwork.setNodeData( nid, data, False )
+      self.hive.osclock.release()
+    else
+      res = True
+    return res
+
+  def minibeePrivateDataToDataNode( self, data, mid ):
+    if mid in self.minibeeToPrivateNodes:
+      nid = self.minibeeToPrivateNodes[ mid ]
+      self.hive.osclock.acquire()
+      res = self.datanetwork.setNodeData( nid, data, False )
+      self.hive.osclock.release()
+    else
+      res = True
     return res
 
 # data node to minibee
