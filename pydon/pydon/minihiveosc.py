@@ -430,7 +430,7 @@ class SWMiniHiveOSC( object ):
     if self.verbose:
       print( nid,  data )
 
-  def minibeePrivateDataToOSC( self, data, nid ):
+  def minibeePrivateDataToOSC( self, nid, data ):
     self.osc.privateDataMiniBee( nid, data )
     if self.verbose:
       print( nid,  data )
