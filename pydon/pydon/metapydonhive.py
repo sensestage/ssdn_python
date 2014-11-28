@@ -115,7 +115,7 @@ class MetaPydonHive:
     
   def readOptions( self, fromcommandLine = True ):
     defaults = {'program': 'datanetwork', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "../configs/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".",
-                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False' }
+                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False', 'createNewFiles': 'True' }
     
     configParser = ConfigParser.SafeConfigParser( defaults )
     configParser.read( "pydondefaults.ini" )
@@ -166,6 +166,13 @@ class MetaPydonHive:
 		    help='ignore unknown minibees [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
+    parser.add_option('-f','--create-new-files', action='store', dest="createNewFiles",
+		    #default=False, 
+		    default = configParser.get( 'hive', 'createNewFiles' ),
+		    #group="program", option="verbose",
+		    help='create new files for unknown minibees [default:%s]'% True)
+    #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
+    
     parser.add_option('-x','--check-for-xbee-error', action='store', dest="xbeeerror",
 		    #default=False, 
 		    default = configParser.get( 'hive', 'xbeeerror' ),
@@ -262,6 +269,7 @@ class MetaPydonHive:
     self.options.quiet = self.options.quiet == 'True'
     self.options.ignore = self.options.ignore == 'True'
     self.options.clean = self.options.clean == 'True'
+    self.options.createNewFiles = self.options.createNewFiles == 'True'
     
     return self.options
   
@@ -279,7 +287,7 @@ class MetaPydonHive:
     config.add_section( 'hive' )
     config.add_section( 'verbosity' )
 
-    for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror', 'autostart' ]:
+    for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror', 'autostart', 'createNewFiles' ]:
       #print key, option_dict[ key ]
       config.set( 'hive', key, self.option_dict[ key ] )
 
@@ -325,6 +333,7 @@ class MetaPydonHive:
     
     if self.options.program == 'datanetwork':
       self.swhive = swpydonhive.SWPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.hport )
+      self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       #print self.options.logdata
       try:
 	if ast.literal_eval(self.options.logdata):
@@ -343,6 +352,7 @@ class MetaPydonHive:
 
     elif self.options.program == 'osc':
       self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
+      self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
       #if haveGui:
 	#frame.setHive( swhive )
@@ -356,6 +366,7 @@ class MetaPydonHive:
 
     elif self.options.program == 'junxion':
       self.swhive = minihivejunxion.SWMiniHiveJunxion( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
+      self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
       #if haveGui:
 	#frame.setHive( swhive )
@@ -367,6 +378,7 @@ class MetaPydonHive:
     elif self.options.program == 'libmapper':
       if haveLibmapper:
 	self.swhive = lmpydonhive.LMPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
+	#self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
 	#if haveGui:
 	  #frame.setHive( swhive )
 	  #app.MainLoop()
