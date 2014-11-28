@@ -492,13 +492,19 @@ class MiniHive(object):
       # we already know the minibee, so send it its id and configid
       minibee = self.bees[ self.mapBeeToSerial[ serial ] ]
     else:
-      # new minibee, so generate a new id
-      mid = self.get_new_minibee_id()
-      minibee = MiniBee( mid, serial )
-      minibee.set_lib_revision( libv, rev, caps )
-      self.bees[ mid ] = minibee
-      self.mapBeeToSerial[ serial ] = mid
-      firsttimenewbee = True
+      #check whether valid serial number
+      #print( "check valid", serial, serial.find( "0013A2" ) );
+      if serial.find( "0013A2" ) == 0:
+	# new minibee, so generate a new id
+	mid = self.get_new_minibee_id()
+	minibee = MiniBee( mid, serial )
+	minibee.set_lib_revision( libv, rev, caps )
+	self.bees[ mid ] = minibee
+	self.mapBeeToSerial[ serial ] = mid
+	firsttimenewbee = True
+      else: ##faulty serial numer
+	#if self.verbose:
+	print( "faulty serial number", serial );
      
     #print minibee
     if bool( remConf ):
