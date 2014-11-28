@@ -138,15 +138,18 @@ class ConfigureMenu:
       openConfig.grid( row=0, column=3, columnspan=4 )
       
       serialframe = LabelFrame( self.frame, text="Serial Port", padx=5, pady=5 )
-      serialframe.grid( row=2, column=0, columnspan=2, sticky="W" )
+      serialframe.grid( row=2, column=0, columnspan=3, sticky="W" )
       
       self.serialentry = self.createSerialBox( serialframe, 0, 0 )
       #self.serialentry = self.addTextEntry( serialframe, "port", 0, 0, 1, 40 ) #TODO: should select from list of available ports
-      self.baudrate = self.createBaudrateBox( serialframe, 0, 2 )
+      self.baudrate = self.createBaudrateBox( serialframe, 0, 1 )
       #self.baudrate =    self.addIntEntry( serialframe, vcmd, "baudrate", 0, 2, 1, 10 ) #TODO: should select from list of possible baudrates ## advanced setting
+      updateSerial = Button( serialframe, text="update", command = self.updateSerialBox )
+      updateSerial.grid( row=0, column=3, columnspan=1 )
+
 
       vbframe = LabelFrame( self.frame, text="Verbosity and logging", padx=5, pady=5 )
-      vbframe.grid( row=2, column=2, columnspan=2, sticky="W" )
+      vbframe.grid( row=2, column=3, columnspan=2, sticky="W" )
       
       self.verbose = self.addCheckbox( vbframe, "verbose", 0, 0 )
       self.log = self.addCheckbox( vbframe, "log data", 0, 1 )
@@ -340,8 +343,18 @@ class ConfigureMenu:
       w = OptionMenu( frame, self.serialportvar, *serialoptions )
       w.grid( row=row, column=col )
       return w
-      
     
+    def updateSerialBox( self ):
+      serialoptions = self.updateSerialPorts()      
+      self.serialportvar = StringVar()
+      if len( serialoptions ) == 0:
+	serialoptions.append( '' )
+      self.serialportvar.set( serialoptions[0] ) # default value
+      menu = self.serialentry["menu"]
+      menu.delete(0, "end")
+      for string in serialoptions:
+	menu.add_command(label=string, command=lambda value=string: self.serialportvar.set(value))
+
     def updateSerialPorts( self ):
         #if os.name == 'nt': #sys.platform == 'win32':
         #    sports = pydon_list_ports_windows.comports()
