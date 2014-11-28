@@ -177,7 +177,8 @@ class ConfigureMenu:
 
       self.api = self.addCheckbox( xbframe, "api mode", 0, 0 ) ## advanced setting
       self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  0, 1 ) ## advanced setting
-      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 0, 2 ) ## advanced setting
+      self.createNewFiles = self.addCheckbox( xbframe, "create new files", 0, 2 ) ## advanced setting
+      self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 0, 3 ) ## advanced setting
       
       lgframe = LabelFrame( self.frame, text="Output logging", padx=5, pady=5 )
       lgframe.grid( row=7, column=0, columnspan=5,  sticky="W" )
@@ -242,6 +243,7 @@ class ConfigureMenu:
       self.setCheckBox( self.verbose, options.verbose )
       self.setCheckBox( self.api, options.apimode )
       self.setCheckBox( self.ignore, options.ignore )
+      self.setCheckBox( self.createNewFiles, options.createNewFiles )
       self.setCheckBox( self.xbeeerror, options.xbeeerror )
       self.setCheckBox( self.log, options.logdata )
 
@@ -272,6 +274,7 @@ class ConfigureMenu:
       options.logdata = self.log['var'].get()
       options.apimode = self.api['var'].get()      
       options.ignore = self.ignore['var'].get()
+      options.createNewFiles = self.createNewFiles['var'].get()
       options.xbeeerror = self.xbeeerror['var'].get()
       options.config = self.config.get()
       
@@ -399,11 +402,11 @@ class ConfigureMenu:
         #print self.advanced
         if self.advanced == "basic":
             #print "basic mode"
-            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
                 widget.configure(state="disabled")
         else:
             #print "advanced mode"
-            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
                 widget.configure(state="normal")
         self.setMode()
 
