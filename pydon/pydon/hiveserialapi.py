@@ -342,6 +342,18 @@ class HiveSerialAPI(object):
     #FIXME: this should be a setting or a separate osc message or something
     #self.store_remote_at64( serial )
 
+  def set_digital_out3_short( self, beeid, rmmy ):
+    if self.serial.isOpen():
+      hrm = struct.pack('>H', rmmy)
+      destaddr = struct.pack('>H', beeid)
+      self.xbee.send('remote_at', 
+	    frame_id='B',
+	    dest_addr=destaddr,
+	    options='\x02',
+	    command='D3',
+	    parameter=hrm
+	    )
+
   def reset_minibee( self, serial ):
     if self.serial.isOpen():
       rfser = HexToByte( serial )
@@ -356,6 +368,18 @@ class HiveSerialAPI(object):
 	    parameter=hrm
 	    )
 
+  def reset_minibee_short( self, beeid ):
+    if self.serial.isOpen():
+      destaddr = struct.pack('>H', beeid)
+      hrm = struct.pack('>H', 8 )
+      self.xbee.send('remote_at', 
+	    frame_id='C',
+	    dest_addr=destaddr,
+	    options='\x02',
+	    command='IO',
+	    parameter=hrm
+	    )
+
   def restart_minibee( self, serial ):
     if self.serial.isOpen():
       rfser = HexToByte( serial )
@@ -365,6 +389,18 @@ class HiveSerialAPI(object):
       self.xbee.send('remote_at', 
 	    frame_id='D',
 	    dest_addr_long=destaddr,
+	    options='\x02',
+	    command='IO',
+	    parameter=hrm
+	    )
+
+  def restart_minibee_short( self, beeid ):
+    if self.serial.isOpen():
+      destaddr = struct.pack('>H', beeid)
+      hrm = struct.pack('>H', 0 )
+      self.xbee.send('remote_at', 
+	    frame_id='D',
+	    dest_addr=destaddr,
 	    options='\x02',
 	    command='IO',
 	    parameter=hrm

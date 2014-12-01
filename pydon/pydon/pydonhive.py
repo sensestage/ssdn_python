@@ -484,6 +484,24 @@ class MiniHive(object):
 	  self.serial.restart_minibee( minibee.serial )
 	  self.seriallock.release()
 
+  def reset_unknown_bee( self, beeid ):
+    if self.apiMode:
+      #TODO: this should be a state machine, rather than have busy waits in the loop
+      if self.serial.isOpen():
+	# check whether 5 is right (otherwise 4)
+	self.seriallock.acquire()
+	self.serial.set_digital_out3_short( beeid, 5 )
+	self.seriallock.release()
+	#TODO: these should be callbacks:
+	time.sleep(0.05)
+	self.seriallock.acquire()
+	self.serial.reset_minibee_short( beeid )
+	self.seriallock.release()
+	time.sleep(0.20)
+	self.seriallock.acquire()
+	self.serial.restart_minibee_short( beeid )
+	self.seriallock.release()
+
   def new_bee( self, serial, libv, rev, caps, remConf = True, useLock = False ):
     firsttimenewbee = False
     # see if we already have this serial number in our config or minibee set, if so use that minibee
@@ -566,15 +584,18 @@ class MiniHive(object):
       self.bees[beeid].parse_data( msgid, data, self.verbose, rssi )
     else:
       print( "received data from unknown minibee", beeid, msgid, data )
-      if self.apiMode and beeid == 0xFFFA: #unconfigured minibee
-	if self.serial.isOpen():
-	  if useLock:
-	    self.seriallock.acquire()
-	  #if self.verbose:
-	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.announce( 0xFFFA )
-	  if useLock:
-	    self.seriallock.release()
+      if self.apiMode:
+	if beeid == 0xFFFA: #unconfigured minibee
+	  if self.serial.isOpen():
+	    if useLock:
+	      self.seriallock.acquire()
+	    #if self.verbose:
+	      #print( "lock acquired by thread ", threading.current_thread().name )
+	    self.serial.announce( 0xFFFA )
+	    if useLock:
+	      self.seriallock.release()
+	else:
+	  self.reset_unknown_bee( beeid )
 
   def new_trigger_data( self, beeid, msgid, data, rssi = 0, useLock = False ):    
     if self.verbose:
