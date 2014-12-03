@@ -522,7 +522,8 @@ class MiniHive(object):
 	firsttimenewbee = True
       else: ##faulty serial numer
 	#if self.verbose:
-	print( "faulty serial number", serial );
+	print( "faulty serial number", serial )
+	return
      
     #print minibee
     if bool( remConf ):
