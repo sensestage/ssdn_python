@@ -4,12 +4,12 @@ Installing
 
 INSTALLATION
 
-On Linux you should be able to just execute the installation.sh script, so open a terminal, navigate to the folder where you put the pydon download, and execute:
+On Linux and OSX you should be able to just execute the installation.sh script, so open a terminal, navigate to the folder where you put the pydon download, and execute:
 $ ./installation.sh
 You may need to do this as the superuser (root), which on most systems can be done with:
 $ sudo ./installation.sh
 
-On OSX, the script should also work, but that still needs to be tested.
+You need python2 to run the script, NOT python3.
 
 For Windows, you will have to do this manually.
 (
@@ -25,7 +25,7 @@ The instructions below are for more detailed steps, if the installation script i
 ==========
 
 Dependencies are:
-* python (version 2.6 or higher) - e.g. http://www.python.org/download/releases/2.7.1/
+* python2 (version 2.6 or higher; not python3) - e.g. http://www.python.org/download/releases/2.7.1/
 * pyserial (version 2.6 with mods from Jakob Leben) - https://github.com/jleben/python-serial/ (included in the packaged version)
 * pyOSC - http://gitorious.org/pyosc (checkout included in the packaged version)
 * python-xbee-api (version 2.0.1 or higher) - (included in the packaged version)
@@ -36,7 +36,7 @@ To use the XBee Xplorer coordinator board, you will also need an FTDI driver for
 python :
 check which version you have:
   $ python --version
-If it is lower than 2.6 you will need to get a version higher than 2.6.
+If it is lower than 2.6 you will need to get a version higher than 2.6, but not above 3.
 
 (make sure Python is in your path (esp. for Windows!))
 
