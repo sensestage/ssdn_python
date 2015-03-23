@@ -8,7 +8,9 @@ OSC messages it sends:
 
 /minibee/info   - siii   - serial number, id, number of inputs, number of outputs
 /minibee/data   - iff..f - id, and as many floats as inputs
-/minibee/status - i
+/minibee/private   - iff..f - id, and as many floats as inputs
+/minibee/trigger   - iff..f - id, and as many floats as inputs
+/minibee/status - ii
 
 OSC messages it listens to:
 
