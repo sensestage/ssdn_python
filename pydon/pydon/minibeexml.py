@@ -1,6 +1,6 @@
+#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-#!/usr/bin/python
 # Filename: minibeexml.py
 
 import xml.etree.ElementTree as ET

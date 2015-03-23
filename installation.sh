@@ -2,18 +2,18 @@
 
 tar xzvf pyosc.tar.gz
 cd pyosc
-python setup.py install
+python2 setup.py install
 cd ..
 
 mkdir pyserial
 tar xzvf pyserial_leben.tar.gz -C pyserial
 cd pyserial
-python setup.py install
+python2 setup.py install
 cd ..
 
 tar xzvf XBee-2.0.1.tar.gz
 cd XBee-2.0.1
-python setup.py install
+python2 setup.py install
 cd ..
 
 # tar xzvf optparse_gui-0.2.tar.gz
@@ -22,5 +22,5 @@ cd ..
 # cd ..
 
 cd pydon
-python setup.py install
+python2 setup.py install
 cd ..
