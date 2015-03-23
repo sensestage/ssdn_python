@@ -1,0 +1,17 @@
+* Download and install driver as described here:
+
+http://arduino.cc/en/Guide/Windows#toc4
+
+* Install latest python for windows
+
+msi installer 32 bit
+or
+msi installer 64 bit
+
+Just doubleclick and follow instructions,
+- * select to add python.exe to the path *
+- use the default location.
+
+* Execute the install_pydon.bat file by doubleclicking
+
+* Execute the start_pydon.bat file by doubleclicking to start pydongui
