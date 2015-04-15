@@ -224,6 +224,11 @@ class MiniHiveOSC(object):
       if self.verbose:
 	print( "error sending message", msg )
 
+  def loopbackMinibee( self, mid, data ):
+    alldata = [ mid ]
+    alldata.extend( data )
+    self.sendMessage( "/minibee/loopback", alldata )
+  
   def infoMiniBee( self, serial, mid, insize, outsize ):
     self.sendMessage( "/minibee/info", [ serial, mid, insize, outsize ] )
     
@@ -387,6 +392,7 @@ class SWMiniHiveOSC( object ):
     
     self.verbose = verbose
 
+    self.hive.set_loopbackAction( self.loopBackToOSC )
     self.hive.set_newBeeAction( self.hookBeeToOSC )
     self.hive.start_serial()  
   
@@ -410,6 +416,9 @@ class SWMiniHiveOSC( object ):
   #def setMapAction( self, nodeid, mid ):
     #self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
   
+  def loopBackToOSC( self, mid, data ):
+    self.osc.loopbackMinibee( mid, data )
+    
 # bee to datanode
   def hookBeeToOSC( self, minibee ):
     self.osc.infoMiniBee( minibee.serial, minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )

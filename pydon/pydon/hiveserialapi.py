@@ -265,6 +265,8 @@ class HiveSerialAPI(object):
     elif packet['rf_data'][0] == 'c' and len( packet[ 'rf_data' ] ) > 6: # configuration confirmation
       self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
     elif packet['rf_data'][0] == 'i' and len( packet[ 'rf_data' ] ) > 2: # info message
+      nid = int( ByteToHex( packet[ 'source_addr'] ), 16 )
+      self.hive.loopback( nid , [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
       print( "info message",  packet, [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
     elif packet['rf_data'][0] == 'p' and len( packet[ 'rf_data' ] ) > 1: # minibee sending pause message
       self.recv_paused( packet['rf_data'][1], packet[ 'source_addr'], packet['rssi'] )      

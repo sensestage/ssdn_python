@@ -100,6 +100,7 @@ class MiniHive(object):
     self.mapBeeToSerial = {}
     self.configs = {}
     self.apiMode = apiMode
+    self.loopbackAction = None
     self.running = True
     self.newBeeAction = None
     self.verbose = False
@@ -115,7 +116,11 @@ class MiniHive(object):
     self.seriallock = threading.RLock()
     self.osclock = threading.RLock()
     self.createNewFileForUnknownConfig = True
-    
+  
+  def loopback( self, mid, data ):
+    if self.loopbackAction:
+      self.loopbackAction( mid, data )
+  
   def set_create_newfile_for_unknown( self, state ):
     print( "create new files for unknown minibees", state );
     self.createNewFileForUnknownConfig = state
@@ -560,7 +565,10 @@ class MiniHive(object):
 	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
       self.newBeeAction( minibee )
-    
+  
+  def set_loopbackAction( self, action ):
+    self.loopbackAction = action
+  
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
   
@@ -702,7 +710,6 @@ class MiniHive(object):
     #minibee.set_config( configuration )
     #serial.send_config( configuration )
     #print "end confirming configuration"
-    
     
   def load_from_file( self, filename ):
     cfgfile = minibeexml.HiveConfigFile()
