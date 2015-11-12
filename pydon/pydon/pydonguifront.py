@@ -120,7 +120,7 @@ class ConfigureMenu:
     
     
       self.mode = StringVar()
-      self.mode.set("datanetwork") # initialize
+      self.mode.set("osc") # initialize
       #print "initialisation", self.mode.get()
       
       cl = 0
