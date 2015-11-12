@@ -114,9 +114,9 @@ class ConfigureMenu:
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
       if self.hiveapp.mpd.haveLibmapper:
-	MODES = [ "datanetwork", "osc", "junxion", "libmapper" ]
+	MODES = [ "osc", "junxion", "datanetwork", "libmapper" ]
       else:
-	MODES = [ "datanetwork", "osc", "junxion" ]
+	MODES = [ "osc", "junxion", "datanetwork" ]
     
     
       self.mode = StringVar()
