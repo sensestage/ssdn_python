@@ -12,7 +12,7 @@ NetAddr.langPort;
 ~o3 = OSCresponderNode( nil, "/minibee/status", { |t,r,msg| msg.postln; } ).add;
 
 // in 3.5.~dev:
-OSCdef( \minibeedata, { |data,time,src|  data.postln; }, '/minibee/data' );
+OSCdef( \minibeedata, { |data,time,src| [data,time,src].postln; }, '/minibee/data' );
 OSCdef( \minibeeinfo, { |data,time,src| [data,time,src].postln; }, '/minibee/info' );
 OSCdef( \minibeestatus, { |data,time,src| [data,time,src].postln; }, '/minibee/status' );
 
@@ -54,6 +54,7 @@ n.sendMsg( "/minibee/configuration", 2, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 3, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 4, 1 ); // minibee id, config id
 n.sendMsg( "/minibee/configuration", 5, 1 ); // minibee id, config id
+n.sendMsg( "/minibee/configuration", 6, 1 ); // minibee id, config id
 
 // define configuration:
 
