@@ -6,7 +6,7 @@ python setup.py install
 cd ..
 
 mkdir pyserial
-tar xzvf pyserial_leben.tar.gz -C pyserial
+tar xzvf pyserial-sensestage.tar.gz -C pyserial
 cd pyserial
 python setup.py install
 cd ..
