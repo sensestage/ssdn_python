@@ -3,7 +3,7 @@
 MiniHiveOSC is a simple program which just receives the serial data and sends it to another program via osc, and listens to osc to send data to minibees.
 It uses the same configuration file as swpydonhive.
 
-See also [https://minibee/osc-interface.html]() for documentation of the interface.
+See also [https://docs.sensestage.eu/minibee/osc-interface.html]() for documentation of the interface.
 
 ---------------------------------
 OSC messages it sends:
