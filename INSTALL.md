@@ -15,7 +15,7 @@ You need `python2` to run the script, NOT `python3`.
 For Windows, you will have to do this manually.
 
 
-See [Sense/Stage Documentation](https://docs.sensestage.eu/minibee/install-the-hive-software.html)
+See [Sense/Stage Documentation](https://docs.sensestage.eu/minibee/install-the-hive-software.html) for a more complete guide on installation.
 
 
 
@@ -23,7 +23,7 @@ See [Sense/Stage Documentation](https://docs.sensestage.eu/minibee/install-the-h
 
 
 (
-links for getting to an installer, still on the TODO list
+links for getting to a Windows installer, still on the TODO list
 * http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/
 * http://docs.python-guide.org/en/latest/starting/install/win/
 * http://docs.python.org/2/distutils/builtdist.html
@@ -46,7 +46,9 @@ To use the XBee Xplorer coordinator board, you will also need an FTDI driver for
 ### python
 
 check which version you have:
+
     $ python --version
+    
 If it is lower than 2.6 you will need to get a version higher than 2.6, but not above 3.
 
 (make sure Python is in your path (esp. for Windows!))
@@ -56,28 +58,34 @@ Install the dependencies:
 ###pyOSC :
 
 extract archive and:
+
     $ cd pyosc
     $ sudo python setup.py install
 
 Go back to the main folder:
+
     $ cd ..
 
 ### pyserial :
 
 extract archive and:
+
     $ cd python-serial
     $ sudo python setup.py install
 
 Go back to the main folder:
+
     $ cd ..
 
 ### XBee-2.0.1 :
 
 extract archive and:
+
     $ cd XBee-2.0.1
     $ sudo python setup.py install
 
 Go back to the main folder:
+
     $ cd ..
 
 ### pydon:
@@ -86,14 +94,16 @@ Go back to the main folder:
     $ sudo python setup.py install
 
 Go back to the main folder:
+
     $ cd ..
 
 
 -------------------------------------------------------------------  
 Start the GUI interface:
+
     $ pydongui.py
-  will pop up a gui where you can set the options
-  the default options are saved to a file named `pydondefaults.ini`, so that next time you open the program, you'll have the same defaults
+
+will pop up a gui where you can set the options; the default options are saved to a file named `pydondefaults.ini`, so that next time you open the program, you'll have the same defaults
 
 Now you can choose which kind of client to use:
   - datanetwork: integrate with the SenseWorld DataNetwork
@@ -106,9 +116,11 @@ Serial port:
 
 -------------------------------------------------------------------
 Command line start:
+
     $ pydoncli.py -h
   this will print the help (see below)
 
     $ pydoncli.py
+    
   will take the defaults found in the `pydondefaults.ini` file in the same folder, settings that need to be changed can be changed with the command line arguments
 
