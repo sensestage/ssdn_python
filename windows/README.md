@@ -12,21 +12,19 @@ msi installer 32 bit
 or
 msi installer 64 bit
 
-Just doubleclick and follow instructions,
-- * select to add python.exe to the path *
-- use the default location.
+Just doubleclick and follow instructions, * select to add python.exe to the path * - use the default location.
+
 
 * Execute the `install_pydon.bat` file by doubleclicking
-
 * Execute the `start_pydon.bat` file by doubleclicking to start pydongui
 
 
 ### Note:
 
-* if you failed to make the selection to add `python.exe` to the path, then you can use the scripts:
+If you failed to make the selection to add `python.exe` to the path, then you can use the scripts:
 
-Execute the `install_pydon_2.bat` file by doubleclicking
-Execute the `start_pydon_2.bat` file by doubleclicking
+* Execute the `install_pydon_2.bat` file by doubleclicking
+* Execute the `start_pydon_2.bat` file by doubleclicking
 
 
 ### Updating from Windows:
