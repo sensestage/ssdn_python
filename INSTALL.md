@@ -5,18 +5,28 @@ Installing
 INSTALLATION
 
 On Linux and OSX you should be able to just execute the installation.sh script, so open a terminal, navigate to the folder where you put the pydon download, and execute:
-$ ./installation.sh
+    $ ./installation.sh
 You may need to do this as the superuser (root), which on most systems can be done with:
-$ sudo ./installation.sh
+    $ sudo ./installation.sh
+    
 
-You need python2 to run the script, NOT python3.
+You need `python2` to run the script, NOT `python3`.
 
 For Windows, you will have to do this manually.
+
+
+See [Sense/Stage Documentation](https://docs.sensestage.eu/minibee/install-the-hive-software.html)
+
+
+
+==========
+
+
 (
 links for getting to an installer, still on the TODO list
-http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/
-http://docs.python-guide.org/en/latest/starting/install/win/
-http://docs.python.org/2/distutils/builtdist.html
+* http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/
+* http://docs.python-guide.org/en/latest/starting/install/win/
+* http://docs.python.org/2/distutils/builtdist.html
 )
 
 
@@ -33,65 +43,57 @@ Dependencies are:
 
 To use the XBee Xplorer coordinator board, you will also need an FTDI driver for your platform: http://www.ftdichip.com/Drivers/VCP.htm
 
-python :
+### python
+
 check which version you have:
-  $ python --version
+    $ python --version
 If it is lower than 2.6 you will need to get a version higher than 2.6, but not above 3.
 
 (make sure Python is in your path (esp. for Windows!))
 
 Install the dependencies:
 
-=======
-
-pyOSC :
+###pyOSC :
 
 extract archive and:
-  $ cd pyosc
-  $ sudo python setup.py install
+    $ cd pyosc
+    $ sudo python setup.py install
 
 Go back to the main folder:
-  $ cd ..
+    $ cd ..
 
-=======
-
-pyserial :
+### pyserial :
 
 extract archive and:
-  $ cd python-serial
-  $ sudo python setup.py install
+    $ cd python-serial
+    $ sudo python setup.py install
 
 Go back to the main folder:
-  $ cd ..
+    $ cd ..
 
-=======
-XBee-2.0.1 :
+### XBee-2.0.1 :
 
 extract archive and:
-  $ cd XBee-2.0.1
-  $ sudo python setup.py install
+    $ cd XBee-2.0.1
+    $ sudo python setup.py install
 
 Go back to the main folder:
-  $ cd ..
+    $ cd ..
 
-=======
-pydon:
+### pydon:
 
- $ cd pydon
- $ sudo python setup.py install
-
-pyserial will be installed automatically if it is not yet installed.
+    $ cd pydon
+    $ sudo python setup.py install
 
 Go back to the main folder:
-  $ cd ..
+    $ cd ..
 
-==========
 
 -------------------------------------------------------------------  
 Start the GUI interface:
-  $ pydongui.py
+    $ pydongui.py
   will pop up a gui where you can set the options
-  the default options are saved to a file named "pydondefaults.ini", so that next time you open the program, you'll have the same defaults
+  the default options are saved to a file named `pydondefaults.ini`, so that next time you open the program, you'll have the same defaults
 
 Now you can choose which kind of client to use:
   - datanetwork: integrate with the SenseWorld DataNetwork
@@ -100,69 +102,13 @@ Now you can choose which kind of client to use:
   - junXion: send osc messages that STEIM's JunXion can deal with
 
 Serial port:
-/dev/ttyUSB0 is the address of your serial port, it will be different on a mac (something like: /dev/tty-ASSFADF0002332), you can select it from a dropdown menu
+`/dev/ttyUSB0` is the address of your serial port, it will be different on a mac (something like: `/dev/tty-ASSFADF0002332`), you can select it from a dropdown menu
 
 -------------------------------------------------------------------
 Command line start:
-  $ pydoncli.py -h
+    $ pydoncli.py -h
   this will print the help (see below)
-  
-  $ pydoncli.py
-  will take the defaults found in the pydondefaults.ini file in the same folder, settings that need to be changed can be changed with the command line arguments
 
--------------------------------------------------------------------
-Usage: pydoncli.py [options]
+    $ pydoncli.py
+  will take the defaults found in the `pydondefaults.ini` file in the same folder, settings that need to be changed can be changed with the command line arguments
 
-MetaPydonHive - Create a client to communicate with the minibee network.
-
-Options:
-  -h, --help            show this help message and exit
-  -P PROGRAM, --program=PROGRAM
-                        Which program/infrastructure do you want to use?
-                        options: datanetwork, osc, libmapper, junxion
-  -s SERIAL, --serial=SERIAL
-                        the serial port [default:/dev/ttyUSB0]
-  -a APIMODE, --apimode=APIMODE
-                        use API mode for communication with the minibees
-                        [default:False]
-  -v VERBOSE, --verbose=VERBOSE
-                        verbose printing [default:False]
-  -u IGNORE, --ignore-unknown=IGNORE
-                        ignore unknown minibees [default:False]
-  -x XBEEERROR, --check-for-xbee-error=XBEEERROR
-                        check whether xbee-error occurred [default:False]
-  --auto=AUTOSTART      autostart [default:False]
-  -l LOGDATA, --logdata=LOGDATA
-                        log data to file [default:False]
-  -c CONFIG, --config=CONFIG
-                        the name of the configuration file for the minibees
-                        [default:../configs/example_hiveconfig.xml]
-  -n NAME, --name=NAME  the name of the client in the datanetwork
-                        [default:pydonhive] (needed for datanetwork or
-                        libmapper)
-  -b BAUDRATE, --baudrate=BAUDRATE
-                        the serial port [default:57600]
-  -m MINIBEES, --nr_of_minibees=MINIBEES
-                        the number of minibees in the network [default:20]
-  -o MBOFFSET, --minibee_offset=MBOFFSET
-                        the offset of the number range for the minibees in the
-                        network [default:1]
-  -d HOST, --host_ip=HOST
-                        the ip address of the datanetwork host or osc/junxion
-                        receiver [default:127.0.0.1]
-  -t HPORT, --host_port=HPORT
-                        the port on which the application that has to receive
-                        the OSC messages will listen [default:57120] (needed
-                        for osc or junxion or default for datanetwork)
-  -i IP, --ip=IP        the ip on which the client will listen
-                        [default:0.0.0.0]
-  -p PORT, --port=PORT  the port on which the client will listen
-                        [default:57600]
-  -N LOGNAME, --logname=LOGNAME
-                        log name (default pydon.log)
-  -V LOGLEVEL, --loglevel=LOGLEVEL
-                        logging level (debug, info, error)
-  -L LOGDIR, --logdir=LOGDIR
-                        log DIRECTORY (default ./)
-  -Q, --quiet           do not log to console
-  -C, --clean           remove old log file
