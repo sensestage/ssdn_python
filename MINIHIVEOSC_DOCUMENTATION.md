@@ -46,9 +46,9 @@ OSC messages it listens to:
 * `/minibee/announce` - `i` - id
 
 
----------------------------------
-    ON THE FLY configuration
----------------------------------
+
+# ON THE FLY configuration
+
 
 *assign a config id to a node id, and that to a serial number*
 
@@ -67,51 +67,57 @@ possible return messages:
 
 *set configuration*
 
-/minihive/configuration/create
+`/minihive/configuration/create`
 
 Format:
-i config id
-s config name
-i samples per message
-i message interval
-i number of pins defined (N)
-i number of TWI devices defined (M)
+
+* `i` config id
+* `s` config name
+* `i` samples per message
+* `i` message interval
+* `i` number of pins defined (N)
+* `i` number of TWI devices defined (M)
 
 then N times:
-  s      - pin id (e.g. A0)
-  s or i - pin function (e.g. 3, or 'AnalogIn')
-  s      - pin label (e.g. light)
+
+* `s`      - pin id (e.g. A0)
+* `s` or `i` - pin function (e.g. 3, or 'AnalogIn')
+* `s`      - pin label (e.g. light)
 
 then M times:
-  i      - twi id (e.g. 0)
-  s or i - twi function (e.g. 10, or 'ADXL345')
-  s      - twi label (e.g. accelero)
+* `i`      - twi id (e.g. 0)
+* `s` or `i` - twi function (e.g. 10, or 'ADXL345')
+* `s`      - twi label (e.g. accelero)
 
-/minihive/configuration/short (as above but without separate pin definitions; those are done separately by the message that follow)
-/minihive/configuration/pin config id, pinid, pinconfig
-/minihive/configuration/twi config id, twiid, twiconfig
+* `/minihive/configuration/short` (as above but without separate pin definitions; those are done separately by the message that follow)
+* `/minihive/configuration/pin` config id, pinid, pinconfig
+* `/minihive/configuration/twi` config id, twiid, twiconfig
 
---- query configuration ---
-/minihive/configuration/query config id
+*query configuration*
 
-/minihive/configuration/pin/query config id, pinid
-/minihive/configuration/twi/query config id, twiid
+* `/minihive/configuration/query` config id
+* `/minihive/configuration/pin/query` config id, pinid
+* `/minihive/configuration/twi/query` config id, twiid
 
 
 
---- delete a configuration
-/minihive/configuration/delete config id
+*delete a configuration*
 
-  possible return messages:
-    /minihive/configuration/error config id
-    /minihive/configuration/delete/done config id
+`/minihive/configuration/delete` config id
 
------------------------------
-     TESTING WITH SC
------------------------------
+possible return messages:
+
+* `/minihive/configuration/error` config id
+* `/minihive/configuration/delete/done` config id
+
+
+# TESTING WITH SC or PD
+
 An example of sending the right messages with SuperCollider is given in:
-testminihiveosc.scd
+
+    testminihiveosc.scd
 
 An examples for PureData is given in:
-minihiveosc.pd
+
+    minihiveosc.pd
 
