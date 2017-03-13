@@ -34,6 +34,7 @@ import os
 import datetime
 import math
 import threading
+import copy
 
 import optparse
 #print time
@@ -436,7 +437,7 @@ class MiniHive(object):
       # new minibee, so generate a new id
       mid = self.get_new_minibee_id()
       minibee = MiniBee( mid, serial )
-      minibee.set_lib_revision( 7, 'D', 0 )
+      minibee.set_lib_revision( 7, 'D', 0 ) # FIXME
       self.bees[ mid ] = minibee
       self.mapBeeToSerial[ serial ] = mid
       firsttimenewbee = True
@@ -668,6 +669,7 @@ class MiniHive(object):
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
 	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
+	print "Send config message for MiniBee", beeid, ", revision", self.bees[ beeid ].revision
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
@@ -936,6 +938,8 @@ class MiniBeeConfig(object):
 
   def getConfigMessage( self, revision ):
     #print "-----MAKING CONFIG MESSAGE------"
+    #print revision
+    #print self.pins
     configMessage = []
     configMessage.append( self.configid )
     configMessage.append( self.messageInterval / 256 )
@@ -948,15 +952,19 @@ class MiniBeeConfig(object):
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
     #print( digpins, anapins )
+    pinslocal, pinslabels = self.adjust_config( revision )
+    #print self.pins, pinslocal
+    print "Configuration:", pinslocal
+            
     for pinname in digpins:
-      if pinname in self.pins:
-	configMessage.append( MiniBeeConfig.miniBeePinConfig[ self.pins[ pinname ] ] )
+      if pinname in pinslocal:
+	configMessage.append( MiniBeeConfig.miniBeePinConfig[ pinslocal[ pinname ] ] )
       else:
 	configMessage.append( MiniBeeConfig.miniBeePinConfig[ 'UnConfigured' ] )
 
     for pinname in anapins:
-      if pinname in self.pins:
-	configMessage.append( MiniBeeConfig.miniBeePinConfig[ self.pins[ pinname ] ] )
+      if pinname in pinslocal:
+	configMessage.append( MiniBeeConfig.miniBeePinConfig[ pinslocal[ pinname ] ] )
       else:
 	configMessage.append( MiniBeeConfig.miniBeePinConfig[ 'UnConfigured' ] )
 
@@ -973,8 +981,26 @@ class MiniBeeConfig(object):
     self.hasCustom = self.custom.set_conf( customconf )
     #print( "set_custom_config", self.hasCustom, self.custom.dataInSizes )
 
+  def adjust_config( self, rev ):
+    # for revision F if pin D2 is defined in the configuration, then that replaces the configuration for pin D7      
+    pinsconfigs = {}
+    pinslabels = {}
+    # make a copy
+    for pin in self.pins:
+        pinsconfigs[ pin ] = self.pins[ pin ]
+        pinslabels[ pin ] = self.pinlabels[ pin ]
+    # adjust for D2
+    if 'D2' in self.pins:
+        if rev == 'F':
+            pinsconfigs[ 'D7' ] = self.pins[ 'D2' ]
+            pinslabels[ 'D7' ] = self.pinlabels[ 'D2' ]
+        del pinsconfigs[ 'D2' ]
+        del pinslabels[ 'D2' ]
+    return pinsconfigs, pinslabels
+
 #MiniBeeConfig
   def check_config( self, libv, rev ):
+    
     #print( "begin check config", self.dataInSizes, self.custom.dataInSizes )
     if self.hasCustom:
       self.dataScales = list( self.custom.dataScales )
@@ -997,67 +1023,65 @@ class MiniBeeConfig(object):
     else :
       digpins = MiniBeeConfig.digitalPins[1:]
       anapins = MiniBeeConfig.analogPins
-    #print( digpins, anapins )
-
-    #if self.rssi:
-      
+    pinslocal, pinslabels = self.adjust_config( rev )
+    #print "Configuration for MiniBee:", self.nodeid, pinslocal
 
     if libv >= 4:
       for pinname in digpins + anapins: # iterate over all pins
-	if pinname in self.pins:
-	  if self.pins[ pinname ] == 'DigitalIn':
+	if pinname in pinslocal:
+	  if pinslocal[ pinname ] == 'DigitalIn':
 	    self.digitalIns = self.digitalIns + 1
 	    #self.dataInSizes.append( 1 )
 	    self.dataScales.append( 1 )
 	    self.dataOffsets.append( 0 )
 	    self.logDataFormat.append( 1 )
-	    self.logDataLabels.append( self.pinlabels[ pinname ] )
-	  elif self.pins[ pinname ] == 'DigitalInPullup':
+	    self.logDataLabels.append( pinslabels[ pinname ] )
+	  elif pinslocal[ pinname ] == 'DigitalInPullup':
 	    self.digitalIns = self.digitalIns + 1
 	    #self.dataInSizes.append( 1 )
 	    self.dataScales.append( 1 )
 	    self.dataOffsets.append( 0 )
 	    self.logDataFormat.append( 1 )
-	    self.logDataLabels.append( self.pinlabels[ pinname ] )
-	  elif self.pins[ pinname ] == 'DigitalOut':
+	    self.logDataLabels.append( pinslabels[ pinname ] )
+	  elif pinslocal[ pinname ] == 'DigitalOut':
 	    self.dataOutSizes.append( 1 )
 
     for pinname in anapins: # iterate over analog pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'AnalogIn':
+      if pinname in pinslocal:
+	if pinslocal[ pinname ] == 'AnalogIn':
 	  self.dataInSizes.append( 1 )
 	  self.dataScales.append( 255 )
 	  self.dataOffsets.append( 0 )
 	  self.logDataFormat.append( 1 )
-	  self.logDataLabels.append( self.pinlabels[ pinname ] )
+	  self.logDataLabels.append( pinslabels[ pinname ] )
 
-	elif self.pins[ pinname ] == 'AnalogIn10bit':
+	elif pinslocal[ pinname ] == 'AnalogIn10bit':
 	  self.dataInSizes.append( 2 )
 	  self.dataScales.append( 1023 )
 	  self.dataOffsets.append( 0 )
 	  self.logDataFormat.append( 1 )
-	  self.logDataLabels.append( self.pinlabels[ pinname ] )
+	  self.logDataLabels.append( pinslabels[ pinname ] )
 
     for pinname in digpins: # iterate over digital pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'AnalogOut':
+      if pinname in pinslocal:
+	if pinslocal[ pinname ] == 'AnalogOut':
 	  self.dataOutSizes.append( 1 )
 
     if libv <= 3:
       for pinname in digpins + anapins: # iterate over all pins
-	if pinname in self.pins:
-	  if self.pins[ pinname ] == 'DigitalIn':
+	if pinname in pinslocal:
+	  if pinslocal[ pinname ] == 'DigitalIn':
 	    self.dataInSizes.append( 1 )
 	    self.dataScales.append( 1 )
 	    self.dataOffsets.append( 0 )
 	    self.logDataFormat.append( 1 )
 	    self.logDataLabels.append( self.pinlabels[ pinname ] )
-	  elif self.pins[ pinname ] == 'DigitalOut':
+	  elif pinslocal[ pinname ] == 'DigitalOut':
 	    self.dataOutSizes.append( 1 )
 
     for pinname in anapins: # iterate over analog pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'TWIData':
+      if pinname in pinslocal:
+	if pinslocal[ pinname ] == 'TWIData':
 	  #print "library version" , libv
 	  if libv <= 2:
 	    #print "libv 2, revision" , rev
@@ -1099,8 +1123,8 @@ class MiniBeeConfig(object):
 	      #print self.dataInSizes
 
     for pinname in digpins + anapins: # iterate over all pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'SHTData':
+      if pinname in pinslocal:
+	if pinslocal[ pinname ] == 'SHTData':
 	  self.dataInSizes.extend( [2,2] )
 	  self.dataScales.extend( [1,1] )
 	  self.dataOffsets.extend( [0,0] )
@@ -1108,13 +1132,13 @@ class MiniBeeConfig(object):
 	  self.logDataLabels.extend( ['temperature','humidity'] )
 
     for pinname in digpins + anapins: # iterate over all pins
-      if pinname in self.pins:
-	if self.pins[ pinname ] == 'Ping':
+      if pinname in pinslocal:
+	if pinslocal[ pinname ] == 'Ping':
 	  self.dataInSizes.append( 2 )
 	  self.dataScales.append( 61.9195 )
 	  self.dataOffsets.append( 0 )
 	  self.logDataFormat.append( 1 )
-	  self.logDataLabels.append( self.pinlabels[ pinname ] )  
+	  self.logDataLabels.append( pinslabels[ pinname ] )  
     #print( "end check config", self.dataInSizes, self.custom.dataInSizes )
     #if self.verbose:
     #print self.digitalIns, self.dataInSizes, self.dataOutSizes, self.dataScales
@@ -1216,15 +1240,20 @@ class MiniBee(object):
     return False
 
   def set_config(self, cid, configuration ):
+    #print "set_config", self.nodeid, cid, configuration.pins
     self.cid = cid
-    self.config = configuration
-    self.config.check_config( self.libversion, self.revision )
+    self.config = copy.deepcopy( configuration )
     self.dataScales = list(self.custom.dataScales)
     self.dataOffsets = list(self.custom.dataOffsets)
+
+    self.config.check_config( self.libversion, self.revision )
     #self.dataScales = self.customDataScales
     #self.dataOffsets = self.customDataOffsets
     self.dataScales.extend( self.config.dataScales )
     self.dataOffsets.extend( self.config.dataOffsets )
+    #self.dataScales.extend( configScales )
+    #self.dataOffsets.extend( configOffsets )
+    
     self.redundancy = self.config.redundancy
     self.measuredInterval = self.config.messageInterval
     self.measuredSampleInterval = self.config.messageInterval / self.config.samplesPerMessage
@@ -1530,6 +1559,7 @@ class MiniBee(object):
 	print( "no config defined for this minibee", self.nodeid, data )
 
   def parse_single_data( self, data, verbose = False ):
+    #print "minibee", self.nodeid
     idx = 0
     parsedData = []
     scaledData = []
@@ -1537,6 +1567,7 @@ class MiniBee(object):
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
   #print "index after custom data in size", idx
+    #print "before dig", idx
     if self.config.digitalIns > 0:
       # digital data as bits
       nodigbytes = int(math.ceil(self.config.digitalIns / 8.))
@@ -1550,11 +1581,12 @@ class MiniBee(object):
 	digstoparse -= 8
     #else: 
       # digital data as bytes
+    #print "after dig", idx
 
     for sz in self.config.dataInSizes:
       parsedData.append( data[ idx : idx + sz ] )
       idx += sz
-    #print parsedData, self.dataScales, self.customDataScales
+    #print parsedData, self.dataScales
 
     for index, dat in enumerate( parsedData ):
       #print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
