@@ -51,29 +51,26 @@ As an example:
 
 So top level:
 
-ID and label
-Message interval in milliseconds
-Samples per message (for now just use 1)
-Redundancy (how often a message is sent out to a minibee)
+* ID and label
+* Message interval in milliseconds
+* Samples per message (for now just use 1)
+* Redundancy (how often a message is sent out to a minibee)
 
 
-Then for each pin:
-id and configuration. Pins that are not mentioned are not configured.
+Then for each pin: id and configuration. Pins that are not mentioned are not configured.
 
 Possible pin configurations:
 
-`DigitalIn`       -- digital input (any pin but A4, A5, A6, A7)
-`DigitalInPullup` -- digital input with pullup resistor enabled (any pin but A4, A5, A6, A7)
-`DigitalOut`      -- digital output on/off (any pin but A4, A5, A6, A7)
-`AnalogIn`        -- analog input (for pin A0, A1, A2, A3, A6, A7)
-`AnalogIn10bit`   -- analog input with 10bit result (for pin A0, A1, A2, A3, A6, A7)
-`AnalogOut`       -- PWM or analog out (pins D3, D5, D6, D9, D10, D11)
-`Ping`            -- Ultrasonic sensor (any pin but A4, A5, A6, A7)
-`SHTClock`        -- Clock signal for SHT15 sensor (temperature/humidity) (any pin but A4, A5, A6, A7)
-`SHTData`         -- Data signal for SHT15 sensor (temperature/humidity) (any pin but A4, A5, A6, A7)
-`TWIClock`        -- Use a TWI/I2C sensor, clock signal (pin A5)
-`TWIData`         -- Use a TWI/I2C sensor, data signal (pin A4)
+* `DigitalIn`       -- digital input (any pin but A4, A5, A6, A7)
+* `DigitalInPullup` -- digital input with pullup resistor enabled (any pin but A4, A5, A6, A7)
+* `DigitalOut`      -- digital output on/off (any pin but A4, A5, A6, A7)
+* `AnalogIn`        -- analog input (for pin A0, A1, A2, A3, A6, A7)
+* `AnalogIn10bit`   -- analog input with 10bit result (for pin A0, A1, A2, A3, A6, A7)
+* `AnalogOut`       -- PWM or analog out (pins D3, D5, D6, D9, D10, D11)
+* `Ping`            -- Ultrasonic sensor (any pin but A4, A5, A6, A7)
+* `SHTClock`        -- Clock signal for SHT15 sensor (temperature/humidity) (any pin but A4, A5, A6, A7)
+* `SHTData`         -- Data signal for SHT15 sensor (temperature/humidity) (any pin but A4, A5, A6, A7)
+* `TWIClock`        -- Use a TWI/I2C sensor, clock signal (pin A5)
+* `TWIData`         -- Use a TWI/I2C sensor, data signal (pin A4)
 
-And if TWI (two-wire interface) is used:
-the TWI (or I2C) devices which are used.
-Currently supported are ADXL345, LIS302DL, TMP102, BMP085, and HMC58X3.
+And if TWI (two-wire interface) is used: the TWI (or I2C) devices which are used. Currently supported are ADXL345, LIS302DL, TMP102, BMP085, and HMC58X3.
