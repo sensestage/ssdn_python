@@ -118,7 +118,7 @@ Serial port:
 Command line start:
 
     $ pydoncli.py -h
-  this will print the help (see below)
+  this will print the help
 
     $ pydoncli.py
     

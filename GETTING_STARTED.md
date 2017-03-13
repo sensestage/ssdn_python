@@ -5,7 +5,7 @@ XBees
 =====
 
 If you did not buy the MiniBees in a kit, you will need to configure your XBees as described on:
-http://docs.sensestage.eu/xbee-choice-andconfiguration
+[http://docs.sensestage.eu/xbee-choice-andconfiguration]()
 
 ========
 MiniBees
@@ -13,8 +13,8 @@ MiniBees
 
 These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check the pages below on how to configure your setup.
 
-http://docs.sensestage.eu/preparing-the-arduino-ide-for-use-with-sensestage
-http://docs.sensestage.eu/using-your-own-arduino-xbee-combination
+[http://docs.sensestage.eu/preparing-the-arduino-ide-for-use-with-sensestage]()
+[http://docs.sensestage.eu/using-your-own-arduino-xbee-combination]()
 
 
 =========
@@ -23,37 +23,43 @@ PYDONHIVE
 Pydonhive is a python client for the datanetwork that will talk to the MiniBees and send data to the datanetwork, or send data from the datanetwork to the MiniBees.
 
 You start it with:
-$ pydongui.py
 
-See also the INSTALL file for more detailed information.
+    $ pydongui.py
+
+See also the [INSTALL.md](INSTALL) file for more detailed information.
 
 ===========
 DataNetwork
 ===========
 Install the the packages within SuperCollider
-http://docs.sensestage.eu/downloads
+
+[http://docs.sensestage.eu/downloads]()
 
 Start the Standalone, or within SuperCollider:
 
-x = SWDataNetwork.new.createHost;
-x.makeGui;
+    x = SWDataNetwork.new.createHost;
+    x.makeGui;
 
 ===========
 YOUR DATANETWORK CLIENT
 ===========
 
-Get the client for your environment from: http://docs.sensestage.eu/downloads
+Get the client for your environment from: [http://docs.sensestage.eu/downloads]()
 
 To get the data from the MiniBees in your environment, you have to subscribe to the data.
 If your MiniBee got id 1, e.g. in Pd or Max you would create a dn.node object that listens to id 1.
 
 PureData:
-dn.node 1
+
+    dn.node 1
 
 Max:
-dn.node clientName 1
+
+    dn.node clientName 1
 
 
-To send data to a node, you use dn.mapnode
-dn.mapnode 500 3 2
+To send data to a node, you use `dn.mapnode`
+
+    dn.mapnode 500 3 2
+    
 will make a node 500 with 3 slots, and tell the DataNetwork to map the data to the outputs of MiniBee with ID 2.
