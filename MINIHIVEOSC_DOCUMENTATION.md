@@ -1,4 +1,4 @@
-MINIHIVE OSC documentation
+# MINIHIVE OSC documentation
 
 MiniHiveOSC is a simple program which just receives the serial data and sends it to another program via osc, and listens to osc to send data to minibees.
 It uses the same configuration file as swpydonhive.
@@ -6,58 +6,67 @@ It uses the same configuration file as swpydonhive.
 ---------------------------------
 OSC messages it sends:
 
-/minibee/info   - siii   - serial number, id, number of inputs, number of outputs
-/minibee/data   - iff..f - id, and as many floats as inputs
-/minibee/private   - iff..f - id, and as many floats as inputs
-/minibee/trigger   - iff..f - id, and as many floats as inputs
-/minibee/status - ii
+* `/minibee/info`      - `siii`   - serial number, id, number of inputs, number of outputs
+* `/minibee/data`      - `iff..f` - id, and as many floats as inputs
+* `/minibee/private`   - `iff..f` - id, and as many floats as inputs
+* `/minibee/trigger`   - `iff..f` - id, and as many floats as inputs
+* `/minibee/status`    - `ii`
 
 OSC messages it listens to:
 
-/minibee/output - iii..i - id, and as many 8bit integers as outputs (first PWM's then digital)
-/minibee/custom - iii..i - id, and as many 8bit integers as the custom message requires
+* `/minibee/output`    - `iii..i` - id, and as many 8bit integers as outputs (first PWM's then digital)
+* `/minibee/custom`    - `iii..i` - id, and as many 8bit integers as the custom message requires
 
---- pausing a minibee:
-/minibee/run - ii - id, and 0 (for pausing) or 1 (for running)
+*pausing a minibee:*
 
---- debugging a minibee:
-/minibee/loopback - ii - id, and 0 (for not sending messages back) or 1 (for sending each message back)
+* `/minibee/run`       - `ii` - id, and 0 (for pausing) or 1 (for running)
 
---- resetting a minibee:
-/minibee/reset - i - id
--- all:
-/minihive/reset
+*debugging a minibee:*
 
---- save id on xbee:
-/minibee/saveid - i - id
--- all:
-/minihive/ids/save
+*  `/minibee/loopback` - `ii` - id, and 0 (for not sending messages back) or 1 (for sending each message back)
 
---- send announce message (re-init):
-/minibee/announce - i - id
+*resetting a minibee:*
 
+* `/minibee/reset` - `i` - id
 
+* reset all minibees:*
 
+*  `/minihive/reset`
 
-and see below for on the fly configuration.
+*save id on xbee:*
+
+* `/minibee/saveid` - `i` - id
+
+*save ids of all xbees:*
+
+* `/minihive/ids/save`
+
+*send announce message (re-init):*
+
+* `/minibee/announce` - `i` - id
+
 
 ---------------------------------
     ON THE FLY configuration
 ---------------------------------
 
---- assign a config id to a node id, and that to a serial number ---
-/minibee/configuration node id, config id, serial number (optional)
+*assign a config id to a node id, and that to a serial number*
+
+`/minibee/configuration` node id, config id, serial number (optional)
 
 possible return messages:
-/minibee/configuration/done node id, config id, serial number (optional)
-/minibee/configuration/error node id, config id, serial number (optional)
+
+* `/minibee/configuration/done` node id, config id, serial number (optional)
+* `/minibee/configuration/error` node id, config id, serial number (optional)
 
 
---- load and save config ---
-/minihive/configuration/save filename
-/minihive/configuration/load filename
+*load and save config*
 
---- set configuration ---
+`/minihive/configuration/save` filename
+`/minihive/configuration/load` filename
+
+*set configuration*
+
 /minihive/configuration/create
 
 Format:
