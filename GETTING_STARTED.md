@@ -1,11 +1,18 @@
-Getting started with your MiniBees:
+# Getting started
+
+
+Full documentation can be found here:
+
+[Getting started with your MiniBees](https://docs.sensestage.eu/minibee/getting-started-with-sense-stage.html)
+
+
 
 =====
 XBees
 =====
 
 If you did not buy the MiniBees in a kit, you will need to configure your XBees as described on:
-[http://docs.sensestage.eu/xbee-choice-andconfiguration]()
+[https://docs.sensestage.eu/minibee/xbee-choice-and-configuration.html]()
 
 ========
 MiniBees
@@ -13,8 +20,8 @@ MiniBees
 
 These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check the pages below on how to configure your setup.
 
-[http://docs.sensestage.eu/preparing-the-arduino-ide-for-use-with-sensestage]()
-[http://docs.sensestage.eu/using-your-own-arduino-xbee-combination]()
+[https://docs.sensestage.eu/minibee/prepare-the-arduino-ide-for-use-with-sense-stage.html]()
+[https://docs.sensestage.eu/minibee/minibee-diy-use-your-own-arduino-and-xbee.html]()
 
 
 =========
@@ -26,14 +33,14 @@ You start it with:
 
     $ pydongui.py
 
-See also the [INSTALL.md](INSTALL) file for more detailed information.
+See also the [INSTALL](INSTALL.md) file for more detailed information.
 
 ===========
 DataNetwork
 ===========
 Install the the packages within SuperCollider
 
-[http://docs.sensestage.eu/downloads]()
+[https://docs.sensestage.eu/downloads]()
 
 Start the Standalone, or within SuperCollider:
 
@@ -44,7 +51,7 @@ Start the Standalone, or within SuperCollider:
 YOUR DATANETWORK CLIENT
 ===========
 
-Get the client for your environment from: [http://docs.sensestage.eu/downloads]()
+Get the client for your environment from: [https://docs.sensestage.eu/downloads]()
 
 To get the data from the MiniBees in your environment, you have to subscribe to the data.
 If your MiniBee got id 1, e.g. in Pd or Max you would create a dn.node object that listens to id 1.
