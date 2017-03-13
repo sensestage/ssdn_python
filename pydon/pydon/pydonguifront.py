@@ -453,7 +453,7 @@ class HiveApp( Tk ):
     def __init__(self):
       
       Tk.__init__(self)
-      self.title( "Sense/Stage MiniHive - v0.38-dev" )
+      self.title( "Sense/Stage MiniHive - v0.40" )
       
       menubar = Menu(self)
 
@@ -566,8 +566,13 @@ class HiveApp( Tk ):
       self.stopButton.pack()
       
       self.logtext = Text( self.logFrame )
-      self.logtext.pack()
-      
+      #self.logtext.pack()      
+      self.scroll = Scrollbar( self.logFrame )
+      self.scroll.pack(side=RIGHT, fill=Y)
+      self.logtext.pack(side=LEFT, fill=Y)
+      self.scroll.config(command=self.logtext.yview)
+      self.logtext.config(yscrollcommand=self.scroll.set)
+
       self.logfile = pydonlogger.LogFile( self.options, 'stdoutAndErr')
       self.loghandler = pydonlogger.WidgetLogger( self.logtext )
       self.logfile.addWidgetHandler( self.loghandler )

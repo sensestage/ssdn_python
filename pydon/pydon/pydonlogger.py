@@ -35,7 +35,7 @@ import logging.handlers as handlers
 from optparse import OptionParser
 
 
-from Tkinter import INSERT, LEFT
+from Tkinter import INSERT, LEFT, END
 
 
 #def customEmit(self, record):
@@ -79,8 +79,10 @@ class WidgetLogger(logging.Handler):
       #print( r )
       self.acquire()
       # Append message (record) to the widget
-      self.widget.insert(INSERT, r )
-      self.widget.mark_set(INSERT, "%d.%d" % (0,0) )
+      self.widget.insert(END, r )
+      #self.widget.mark_set(INSERT, "%d.%d" % (0,0) )
+      
+      self.widget.see("end")
       #self.widget.insert(o, r )
       self.release()
 
