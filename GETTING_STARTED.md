@@ -20,8 +20,8 @@ MiniBees
 
 These should be ready to go, unless you did not buy the MiniBees, but are using your own Arduino/XBee combination. In that case check the pages below on how to configure your setup.
 
-[https://docs.sensestage.eu/minibee/prepare-the-arduino-ide-for-use-with-sense-stage.html]()
-[https://docs.sensestage.eu/minibee/minibee-diy-use-your-own-arduino-and-xbee.html]()
+* [https://docs.sensestage.eu/minibee/prepare-the-arduino-ide-for-use-with-sense-stage.html]()
+* [https://docs.sensestage.eu/minibee/minibee-diy-use-your-own-arduino-and-xbee.html]()
 
 
 =========
