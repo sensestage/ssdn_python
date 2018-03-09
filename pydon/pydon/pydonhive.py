@@ -1591,6 +1591,8 @@ class MiniBee(object):
 
     for index, dat in enumerate( parsedData ):
       #print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
+      if len( dat ) == 4 :
+	scaledData.append(  float( data[0] * 65536 * 256 + dat[1] * 65536 + dat[2]*256 + dat[3] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 3 :
 	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 2 :
