@@ -1716,8 +1716,8 @@ class MiniBee(object):
       self.dataOffsets = []
 
       if self.hasCustom:
-	self.dataScales = list( self.custom.dataScales )
-	self.dataOffsets = list( self.custom.dataOffsets )
+        self.dataScales = list( self.custom.dataScales )
+        self.dataOffsets = list( self.custom.dataOffsets )
 
       #print( "custom in 3", self.hasCustom, customDataInSizes, self.custom.dataInSizes, self.config.custom.dataInSizes )
       
