@@ -1344,13 +1344,14 @@ class MiniBee(object):
 
   def send_output( self, serPort, data ):
     if self.cid > 0:
-      if len( data ) == sum( self.config.dataOutSizes ) :
-	self.outdata = data
-	self.outrepeated = 0
-	self.outMessage = self.create_msg( 'O', self.outdata, serPort )
-	#DONT SEND UNTIL CALLED IN THE QUEUE
-	#serPort.send_msg( self.outMessage, self.nodeid )
-	#serPort.send_data_inclid( self.nodeid, self.msgID, data )
+        if self.config:
+            if len( data ) == sum( self.config.dataOutSizes ) :
+                self.outdata = data
+                self.outrepeated = 0
+                self.outMessage = self.create_msg( 'O', self.outdata, serPort )
+                #DONT SEND UNTIL CALLED IN THE QUEUE
+                #serPort.send_msg( self.outMessage, self.nodeid )
+                #serPort.send_data_inclid( self.nodeid, self.msgID, data )
     elif self.nodeid == 0xFFFF: #broadcast node
       self.outdata = data
       self.outrepeated = 0
