@@ -321,16 +321,14 @@ class MetaPydonHive:
       #frame = MainFrame(None, -1, "MetaPydonHive", (-1,-1), (500,50))
       #app.SetOutputWindowAttributes( "MetaPydonHive Output" )
 
-    print( "--------------------------------------------------------------------------------------" )
-    print( "MetaPydonHive - a universal client to communicate with the minibee network. version v0.40" )
+    print( "---------------------------------------------------------------------------" )
+    print( "MetaPydonHive - a universal client to communicate with the minibee network." )
+    print( "version v0.40" )
     print( " --- to find out more about the startup options start with \'metapydonhive.py -h\'" )
     print( " --- The client has been started with these options:" )
-    #print( parser )
     print( self.options )
-    print( "--------------------------------------------------------------------------------------" )
-    
-    #print( self.options )
-    
+    print( "---------------------------------------------------------------------------" )
+        
     if self.options.program == 'datanetwork':
       self.swhive = swpydonhive.SWPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.hport )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
@@ -354,6 +352,7 @@ class MetaPydonHive:
       self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
+      print( "--------------------------------" )
       #if haveGui:
 	#frame.setHive( swhive )
 	#print( "starting thread" )
@@ -368,6 +367,7 @@ class MetaPydonHive:
       self.swhive = minihivejunxion.SWMiniHiveJunxion( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
+      print( "--------------------------------" )
       #if haveGui:
 	#frame.setHive( swhive )
 	#app.MainLoop()
@@ -387,6 +387,7 @@ class MetaPydonHive:
 	self.swhive.start()
       else:
 	print( "libmapper is not available, please check your installation or choose another mode" )
+	print( "--------------------------------" )
 
 
 # main program:
