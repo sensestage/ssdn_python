@@ -1313,19 +1313,20 @@ class MiniBee(object):
     
   def send_data( self, verbose = False ):
     if self.cid > 0:
-      if self.config.samplesPerMessage > 1:
-	nowtime = time.time()
-	#self.time_since_last_update = self.time_since_last_update + 1
-	#if time_since_last_message > self.messageInterval:
-	  # timeout on data
-	if (nowtime - self.time_of_last_update) >= self.measuredSampleInterval: # if time to send new sample:
-	  newdata = self.dataQueue.pop()
-	  #if verbose:
-	  #print( nowtime, self.time_of_last_update, nowtime-self.time_of_last_update, self.measuredSampleInterval, newdata )
-	  if newdata != None:
-	    self.parse_single_data( newdata, verbose )
-	    #self.time_since_last_update = 0
-	    self.time_of_last_update = time.time()
+      if self.config:
+        if self.config.samplesPerMessage > 1:
+            nowtime = time.time()
+            #self.time_since_last_update = self.time_since_last_update + 1
+            #if time_since_last_message > self.messageInterval:
+            # timeout on data
+            if (nowtime - self.time_of_last_update) >= self.measuredSampleInterval: # if time to send new sample:
+                newdata = self.dataQueue.pop()
+                #if verbose:
+                #print( nowtime, self.time_of_last_update, nowtime-self.time_of_last_update, self.measuredSampleInterval, newdata )
+                if newdata != None:
+                    self.parse_single_data( newdata, verbose )
+                    #self.time_since_last_update = 0
+                    self.time_of_last_update = time.time()
 
   def repeat_output( self, serPort, lock, verbose = False ):
     if self.outMessage != None:
