@@ -670,7 +670,7 @@ class MiniHive(object):
       #print beeid, configid
       if configid == self.bees[ beeid ].cid:
 	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
-	print "Send config message for MiniBee", beeid, ", revision", self.bees[ beeid ].revision
+	print( "Sending config message for MiniBee {}, revision {}, firmware {}".format( beeid, self.bees[ beeid ].revision, self.bees[ beeid ].libversion ) )
 	configuration = self.configs[ configid ]
 	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
 	self.bees[ beeid ].set_status( 'waiting' )
@@ -693,21 +693,23 @@ class MiniHive(object):
     #print "end sending configuration"
 
   def check_config( self, beeid, configid, confirmconfig ):
-    #print "confirming configuration"
+    #print( "MiniHive:check_config - confirming configuration" )
     if beeid in self.bees:
-      if not self.bees[beeid].check_config( configid, confirmconfig, self.verbose ):
-	self.wait_config( beeid, configid )
-	print( "minibee", beeid, "is not configured yet" )
-      else:
-	print( "minibee %i is configured"%beeid )
-	if self.serial.isOpen():
-	  # don't use lock, this is called from the serial thread anyways
-	  #self.seriallock.acquire()
-	  #if self.verbose:
-	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.send_me( self.bees[beeid].serial, 0 )
-	  #self.seriallock.release()
-	  #time.sleep( 0.005 ) #TODO: why are we waiting here?
+      if not self.bees[beeid].status == 'configured':
+        if not self.bees[beeid].check_config( configid, confirmconfig, self.verbose ):
+          self.wait_config( beeid, configid )
+          print( "minibee %i is not configured yet"%beeid )
+        else:
+          print( "minibee %i is configured"%beeid )
+          print( "--------------------------------" )
+          if self.serial.isOpen():
+              # don't use lock, this is called from the serial thread anyways
+              #self.seriallock.acquire()
+              #if self.verbose:
+                #print( "lock acquired by thread ", threading.current_thread().name )
+            self.serial.send_me( self.bees[beeid].serial, 0 )
+            #self.seriallock.release()
+            #time.sleep( 0.005 ) #TODO: why are we waiting here?
     else:
       print( "received configuration confirmation from unknown minibee", beeid, configid, confirmconfig )
     #minibee.set_config( configuration )
@@ -1001,7 +1003,7 @@ class MiniBeeConfig(object):
 
 #MiniBeeConfig
   def check_config( self, libv, rev ):
-    
+    #print( "MiniBeeConfig:check_config" )
     #print( "begin check config", self.dataInSizes, self.custom.dataInSizes )
     if self.hasCustom:
       self.dataScales = list( self.custom.dataScales )
@@ -1241,6 +1243,7 @@ class MiniBee(object):
     return False
 
   def set_config(self, cid, configuration ):
+    #print( "MiniBee:set_config" );
     #print "set_config", self.nodeid, cid, configuration.pins
     self.cid = cid
     self.config = copy.deepcopy( configuration )
@@ -1660,7 +1663,10 @@ class MiniBee(object):
     return 0
 
   def check_config( self, configid, confirmconfig, verbose ):
+    #print( "MiniBee:check_config" )
     configres = True
+    if self.status == 'configured':
+        return configres
     if configid == self.cid:
       self.config.check_config( self.libversion, self.revision )
       #print confirmconfig

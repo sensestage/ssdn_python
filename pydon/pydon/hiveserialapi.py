@@ -259,11 +259,13 @@ class HiveSerialAPI(object):
       else:
 	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), 1 )
     elif packet['rf_data'][0] == 'w' and len( packet[ 'rf_data' ] ) > 3:
-      if self.verbose:
-	print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
-      self.hive.wait_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3]) )
+        if self.verbose:
+          print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
+        #print( "rf - calling wait_config" )
+        self.hive.wait_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3]) )
     elif packet['rf_data'][0] == 'c' and len( packet[ 'rf_data' ] ) > 6: # configuration confirmation
-      self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
+        #print( "rf - calling check_config" )
+        self.hive.check_config( ord(packet[ 'rf_data' ][2]), ord(packet[ 'rf_data' ][3] ), [ ord(x) for x in packet[ 'rf_data' ][4:] ] )
     elif packet['rf_data'][0] == 'i' and len( packet[ 'rf_data' ] ) > 2: # info message
       nid = int( ByteToHex( packet[ 'source_addr'] ), 16 )
       self.hive.loopback( nid , [ ord(x) for x in packet[ 'rf_data' ][2:] ] )
