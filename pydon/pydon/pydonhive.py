@@ -549,9 +549,10 @@ class MiniHive(object):
 	if self.createNewFileForUnknownConfig:
 	  filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
 	  self.write_to_file( filename )
-	  print( "configuration saved to " + filename + ". Please adapt (at least define a config id other than -1 for the node), save to a new name," )
-	  print( "and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
+	  print( "Configuration saved to " + filename + " in folder " + os.getcwd() )
+	  print( "Please adapt (at least define a config id other than -1 for the node), save to a new name, and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
 	  print( "Check documentation for details." )
+	  print( "--------------------------------" )
       #sys.exit()
     else:
       if self.serial.isOpen():
