@@ -218,11 +218,13 @@ class MiniHiveOSC(object):
       msg.append( a )
     try:
       self.host.send( msg )
+      if self.guiosc != None:
+          self.guiosc.send( msg )
       if self.verbose:
-	print( "sending message", msg )
+        print( "sending message", msg )
     except OSC.OSCClientError:
       if self.verbose:
-	print( "error sending message", msg )
+        print( "error sending message", msg )
 
   def loopbackMinibee( self, mid, data ):
     alldata = [ mid ]
@@ -360,17 +362,29 @@ class MiniHiveOSC(object):
 
 # begin class DataNetworkOSC
 #class DataNetworkOSC(object):
-  def __init__(self, hostip, hostport, myip, myport, hive ):
+  def __init__(self, hostip, hostport, myip, myport, hive, guiip, guiport ):
     self.verbose = False
     self.hive = hive
     self.hostport = hostport
     self.hostip = hostip
     self.port = myport    
     self.myip = myip
-
+    
     self.host = OSC.OSCClient()
     send_address = ( self.hostip, self.hostport )
     self.host.connect( send_address )
+    
+    self.guiosc = None
+    self.guiip = guiip
+    self.guiport = guiport
+    
+    print( "gui interface", self.guiip, self.guiport )
+    
+    if self.guiport != None :
+        print( "created gui osc" )
+        self.guiosc = OSC.OSCClient()
+        gui_send_address = ( self.guiip, self.guiport )
+        self.host.connect( gui_send_address )
 
     receive_address = ( self.myip, self.port )
     self.osc = OSC.OSCServer( receive_address )
@@ -381,7 +395,7 @@ class MiniHiveOSC(object):
 
 
 class SWMiniHiveOSC( object ):
-  def __init__(self, hostip, hostport, myip, myport, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False ):
+  def __init__(self, hostip, hostport, myip, myport, swarmSize, serialPort, serialRate, config, idrange, verbose, apiMode, ignoreUnknown = False, checkXbeeError = False, guiip = None, guiport = None ):
     
     self.hive = pydonhive.MiniHive( serialPort, serialRate, apiMode )
     self.hive.set_id_range( idrange[0], idrange[1] )
@@ -390,7 +404,7 @@ class SWMiniHiveOSC( object ):
     self.hive.set_ignore_unknown( ignoreUnknown )
     self.hive.set_check_xbee_error( checkXbeeError )    
 
-    self.osc = MiniHiveOSC( hostip, hostport, myip, myport, self )
+    self.osc = MiniHiveOSC( hostip, hostport, myip, myport, self, guiip, guiport )
     self.osc.setVerbose( verbose )
     
     self.verbose = verbose
@@ -526,6 +540,10 @@ if __name__ == "__main__":
 		  help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
   parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
 		  help='the port on which the minihiveosc will listen [default:%i]'% 57600 )
+  parser.add_long_option('--gui_ip', action='store',type="string", dest="guiip",default="127.0.0.1",
+		  help='the ip address of the gui interface that has to receive the OSC messages [default:%s]'% "127.0.0.1")
+  parser.add_long_option('--gui_port', type=int, action='store',dest="guiport",default=None,
+		  help='the port on which the gui interface will listen to receive the OSC messages [default: None (no gui)]' )
 
   (options,args) = parser.parse_args()
   #print args.accumulate(args.integers)
@@ -534,6 +552,7 @@ if __name__ == "__main__":
   #print( options.host )
   
   print( "MiniHiveOSC - communicating via OSC with the MiniBee network" )
-  swhive = SWMiniHiveOSC( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode )
+  swhive = SWMiniHiveOSC( options.host, options.hport, options.ip, options.port, options.minibees, options.serial, options.baudrate, options.config, [1,options.minibees], options.verbose, options.apimode, options.guiip, options.guiport )
   print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(options.ip, options.port, options.host, options.hport, options.serial ) )
+  print( "Created OSC sender to GUI at (%s,%i)."%(options.guiip, options.guiport ) )
   swhive.start()

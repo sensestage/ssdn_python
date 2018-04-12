@@ -115,7 +115,7 @@ class MetaPydonHive:
     
   def readOptions( self, fromcommandLine = True ):
     defaults = {'program': 'osc', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "examples/configuration/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".",
-                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False', 'createNewFiles': 'True' }
+                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False', 'createNewFiles': 'True', 'gui_ip': "127.0.0.1", 'gui_port': "0" }
     
     configParser = ConfigParser.SafeConfigParser( defaults )
     configParser.read( "pydondefaults.ini" )
@@ -127,6 +127,8 @@ class MetaPydonHive:
       configParser.add_section( 'hive' )
     if not configParser.has_section( 'verbosity' ):
       configParser.add_section( 'verbosity' )
+    if not configParser.has_section( 'gui' ):
+      configParser.add_section( 'gui' )
     
     option_parser_class = optparse.OptionParser
     
@@ -251,6 +253,10 @@ class MetaPydonHive:
     parser.add_option("-L", "--logdir", dest="logdir", default=configParser.get( 'verbosity', 'logdir' ), help="log DIRECTORY (default ./)")
     parser.add_option("-Q", "--quiet", action="store_true", dest="quiet", default=configParser.get( 'verbosity', 'quiet' ), help="do not log to console")
     parser.add_option("-C", "--clean", dest="clean", action="store_true", default=configParser.get( 'verbosity', 'clean' ), help="remove old log file")
+    
+    parser.add_option('--gui_ip', action='store',type="string", dest="gui_ip",default=configParser.get( 'gui', 'gui_ip' ), help='the ip address of the gui interface that has to receive the OSC messages [default:%s]'% "127.0.0.1")
+    parser.add_option('--gui_port', type=int, action='store',dest="gui_port",default=configParser.get( 'gui', 'gui_port' ), help='the port on which the gui interface will listen to receive the OSC messages [default: None (no gui)]' )
+    
 
     #cfgparser.add_optparse_help_option( parser )
     if fromcommandLine:
@@ -271,6 +277,12 @@ class MetaPydonHive:
     self.options.clean = self.options.clean == 'True'
     self.options.createNewFiles = self.options.createNewFiles == 'True'
     
+    print( self.options.gui_port )
+    
+    if self.options.gui_port == 0:
+        print( "set gui port to None" )
+        self.options.gui_port = None
+    
     return self.options
   
   def setOptions( self, options ):
@@ -286,6 +298,7 @@ class MetaPydonHive:
     config.add_section( 'serial' )
     config.add_section( 'hive' )
     config.add_section( 'verbosity' )
+    config.add_section( 'gui' )
 
     for key in [ 'logdata', 'mboffset', 'minibees', 'config', 'ignore', 'xbeeerror', 'autostart', 'createNewFiles' ]:
       #print key, option_dict[ key ]
@@ -302,6 +315,13 @@ class MetaPydonHive:
     for key in [ 'program', 'name', 'ip', 'port', 'host', 'hport' ]:
       #print key, option_dict[ key ]
       config.set( 'osc', key, self.option_dict[ key ] )
+
+    for key in [ 'gui_ip', 'gui_port' ]:
+      #print key, option_dict[ key ]
+      print( key )
+      if self.option_dict[ key ] != None:
+        print( "key is not None" )
+        config.set( 'gui', key, self.option_dict[ key ] )
     
     with open ('pydondefaults.ini', 'wb' ) as configfile:
       config.write( configfile )
@@ -349,9 +369,11 @@ class MetaPydonHive:
       self.swhive.start()
 
     elif self.options.program == 'osc':
-      self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
+      self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.gui_ip, self.options.gui_port )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
+      if self.options.gui_port != None:
+        print( "Created OSC sender to GUI at (%s,%i)."%(self.options.gui_ip, self.options.gui_port ) )      
       print( "--------------------------------" )
       #if haveGui:
 	#frame.setHive( swhive )

@@ -156,7 +156,7 @@ class ConfigureMenu:
 
 
       oscframe = LabelFrame( self.frame, text="OpenSoundControl", padx=5, pady=5 )
-      oscframe.grid( row=4, column=0, columnspan=4, sticky="W" )
+      oscframe.grid( row=3, column=0, columnspan=4, sticky="W" )
 
       self.hostip =      self.addTextEntry( oscframe, "IP to send OSC to", 0, 0, 1, 20 )
       self.hostport =    self.addIntEntry( oscframe, vcmd, "Port to send OSC to", 0, 2, 1, 10 )
@@ -165,15 +165,19 @@ class ConfigureMenu:
       #self.myip =        self.addTextEntry( oscframe, "IP to listen on", 1, 0, 1, 20 ) ## advanced setting #TODO: select from (all = 0.0.0.0; only localhost: 127.0.0.1; only external: check current ip address)
       self.myport =      self.addIntEntry( oscframe, vcmd, "Port to listen on", 1, 2, 1, 10 ) ## advanced setting
 
+      self.guiip =      self.addTextEntry( oscframe, "IP of GUI to send OSC to", 2, 0, 1, 20 )
+      self.guiport =    self.addIntEntry( oscframe, vcmd, "Port of GUI to send OSC to", 2, 2, 1, 10 )
+
+
       dnframe = LabelFrame( self.frame, text="DataNetwork and MiniBees", padx=5, pady=5 )
-      dnframe.grid( row=5, column=0, columnspan=4,  sticky="W" )
+      dnframe.grid( row=6, column=0, columnspan=4,  sticky="W" )
       
       self.name =        self.addTextEntry( dnframe, "name in datanetwork", 0, 0, 3, 40 ) ## advanced setting
       self.minibees =    self.addIntEntry( dnframe, vcmd, "max number of minibees", 1, 0, 1, 10 ) ## advanced setting
       self.mboffset =    self.addIntEntry( dnframe, vcmd, "offset of minibees", 1, 2, 1, 10 ) ## advanced setting
 
       xbframe = LabelFrame( self.frame, text="XBee communication", padx=5, pady=5 )
-      xbframe.grid( row=6, column=0, columnspan=4, sticky="W" )
+      xbframe.grid( row=7, column=0, columnspan=4, sticky="W" )
 
       self.api = self.addCheckbox( xbframe, "api mode", 0, 0 ) ## advanced setting
       self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  0, 1 ) ## advanced setting
@@ -181,7 +185,7 @@ class ConfigureMenu:
       self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 0, 3 ) ## advanced setting
       
       lgframe = LabelFrame( self.frame, text="Output logging", padx=5, pady=5 )
-      lgframe.grid( row=7, column=0, columnspan=5,  sticky="W" )
+      lgframe.grid( row=8, column=0, columnspan=5,  sticky="W" )
       
       self.logfile =  self.addTextEntry( lgframe, "log filename", 0, 0, 3, 60 )
       self.logdir =  self.addTextEntry( lgframe, "log directory", 1, 0, 3, 60 )
@@ -192,7 +196,7 @@ class ConfigureMenu:
       self.loglevel = self.createLogLevelBox( lgframe, 2, 0 )
       
       self.start = Button( self.frame, text="START", command = self.startPydon, background="Red", foreground="Black" )
-      self.start.grid( row=8, column=0, columnspan=4 )
+      self.start.grid( row=9, column=0, columnspan=4 )
       
       self.updateSerialPorts()
       
@@ -229,6 +233,11 @@ class ConfigureMenu:
       self.setTextEntry( self.hostport, options.hport )
       self.myipvar.set( options.ip )
       #self.setOptionMenuItem( self.myip, options.ip )
+      self.setTextEntry( self.guiip, options.gui_ip )
+      if options.gui_port != None:
+        self.setTextEntry( self.guiport, options.gui_port )
+      else:
+        self.setTextEntry( self.guiport, 0 )
       
       self.setTextEntry( self.myport, options.port )
       self.setTextEntry( self.name, options.name )
@@ -264,6 +273,10 @@ class ConfigureMenu:
       options.hport = int(self.hostport.get())
       options.ip = self.myipvar.get()
       options.port = int(self.myport.get())
+      options.gui_ip = self.guiip.get()
+      options.gui_port = int(self.guiport.get())
+      if options.gui_port == 0:
+          options.gui_port = None
       options.name = self.name.get()
       options.minibees = int(self.minibees.get())
       options.mboffset = int(self.mboffset.get())
