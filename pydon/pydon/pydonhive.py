@@ -576,9 +576,9 @@ class MiniHive(object):
   
   def new_paused( self, beeid, msgid, rssi = 0, useLock = False ):    
     if self.verbose:
-      print( "received paused message", beeid, msgid )
+        print( "received paused message", beeid, msgid )
     if beeid in self.bees:
-      self.bees[ beeid ].set_status( 'paused' )
+        self.bees[ beeid ].set_status( 'paused' )
 
   def new_active( self, beeid, msgid, rssi = 0, useLock = False ):    
     if self.verbose:
@@ -1582,9 +1582,9 @@ class MiniBee(object):
       idx += nodigbytes
       #print "index after digitalIn", idx, nodigbytes, digitalData
       for byt in digitalData:
-	for j in range(0, min(digstoparse,8) ):
-	  parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
-	digstoparse -= 8
+        for j in range(0, min(digstoparse,8) ):
+            parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
+        digstoparse -= 8
     #else: 
       # digital data as bytes
     #print "after dig", idx
@@ -1597,37 +1597,36 @@ class MiniBee(object):
     for index, dat in enumerate( parsedData ):
       #print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
       if len( dat ) == 4 :
-	scaledData.append(  float( data[0] * 65536 * 256 + dat[1] * 65536 + dat[2]*256 + dat[3] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+        scaledData.append(  float( data[0] * 65536 * 256 + dat[1] * 65536 + dat[2]*256 + dat[3] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 3 :
-	scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+        scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 2 :
-	scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+        scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
       if len( dat ) == 1 :
-	scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
+        scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
     self.data = scaledData
     
     if len(self.data) == ( len( self.config.dataScales ) + len( self.custom.dataInSizes ) ): ## FIXME: not working correctly yet for custom data in packet
-      if self.config.rssi:
-	self.data.append( data[ idx ]/255. )
-
+      #if self.config.rssi:
+        #self.data.append( data[ idx ]/255. )
       if self.status != 'receiving':
-	if self.infoAction != None:
-	  self.infoAction( self )
-	if self.firstDataAction != None:
-	  self.firstDataAction( self.nodeid, self.data )
-	  #self.serial.send_me( self.bees[beeid].serial, 0 )
-	  print ( "receiving data from minibee %i."%(self.nodeid) )
-      self.set_status( 'receiving' )
+        if self.infoAction != None:
+            self.infoAction( self )
+        if self.firstDataAction != None:
+            self.firstDataAction( self.nodeid, self.data )
+            #self.serial.send_me( self.bees[beeid].serial, 0 )
+            print ( "receiving data from minibee %i."%(self.nodeid) )
+            self.set_status( 'receiving' )
       if self.dataAction != None :
-	if not self.dataAction( self.data, self.nodeid ): # if datanode not in nodes, repeat the first data action
-	  if self.firstDataAction != None:
-	    self.firstDataAction( self.nodeid, self.data )
-	#if verbose:
-	  #print( "did data action", self.dataAction )
-      if self.logAction != None :
-	self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
+        if not self.dataAction( self.data, self.nodeid ): # if datanode not in nodes, repeat the first data action
+            if self.firstDataAction != None:
+                self.firstDataAction( self.nodeid, self.data )
+            #if verbose:
+                #print( "did data action", self.dataAction )
+        if self.logAction != None :
+            self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
       if verbose:
-	print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
+        print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
     else:
       print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
     if verbose:
