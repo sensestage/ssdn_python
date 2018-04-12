@@ -235,6 +235,9 @@ class MiniHiveOSC(object):
   def sendStatusInfo( self, nid, status ):
     self.sendMessage( "/minibee/status", [ nid, status ] )
 
+  def rssiMiniBee( self, nid, rssi ):
+    self.sendMessage( "/minibee/rssi", [ nid, rssi ] )
+
   def dataMiniBee( self, mid, data ):
     alldata = [ mid ]
     alldata.extend( data )
@@ -423,6 +426,7 @@ class SWMiniHiveOSC( object ):
   def hookBeeToOSC( self, minibee ):
     self.osc.infoMiniBee( minibee.serial, minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_action( self.minibeeDataToOSC )
+    minibee.set_rssi_action( self.minibeeRSSIToOSC )
     minibee.set_trigger_action( self.minibeeTriggerDataToOSC )
     minibee.set_private_action( self.minibeePrivateDataToOSC )
     minibee.set_status_action( self.osc.sendStatusInfo )
@@ -432,17 +436,22 @@ class SWMiniHiveOSC( object ):
   def minibeeDataToOSC( self, data, nid ):
     self.osc.dataMiniBee( nid, data )
     if self.verbose:
-      print( nid,  data )
+      print( "data", nid,  data )
+
+  def minibeeRSSIToOSC( self, nid, rssi ):
+    self.osc.rssiMiniBee( nid, rssi )
+    if self.verbose:
+      print( "rssi", nid,  rssi )
 
   def minibeeTriggerDataToOSC( self, data, nid ):
     self.osc.triggerDataMiniBee( nid, data )
     if self.verbose:
-      print( nid,  data )
+      print( "trigger", nid,  data )
 
   def minibeePrivateDataToOSC( self, nid, data ):
     self.osc.privateDataMiniBee( nid, data )
     if self.verbose:
-      print( nid,  data )
+      print( "private", nid,  data )
 
   def oscResetToHive( self ):
     self.hive.reset_hive()

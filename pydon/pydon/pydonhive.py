@@ -727,7 +727,7 @@ class MiniHive(object):
 	#print cid, config
 	self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
 	self.configs[ int( cid ) ].setRedundancy( config['redundancy' ] );
-	self.configs[ int( cid ) ].setRSSI( config['rssi' ] );
+	#self.configs[ int( cid ) ].setRSSI( config['rssi' ] );
 	#print config[ 'pins' ]
 	self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
 	self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
@@ -842,7 +842,7 @@ class MiniBeeConfig(object):
     self.logDataLabels = []
     self.digitalIns = 0
     self.redundancy = 3
-    self.rssi = False
+    #self.rssi = False
     self.hasCustom = False
     self.custom = MiniBeeCustomConfig()
 
@@ -865,9 +865,8 @@ class MiniBeeConfig(object):
     self.redundancy = redun
     #print self.redundancy
 
-  def setRSSI( self, rssi ):
-    self.rssi = rssi
-    #print self.redundancy
+  #def setRSSI( self, rssi ):
+    #self.rssi = rssi
   
   def setPins( self, filepins ):
     #print filepins
@@ -1201,6 +1200,7 @@ class MiniBee(object):
     self.infoAction = None
     self.statusAction = None
     self.dataAction = None
+    self.rssiAction = None
     self.firstDataAction = None
     self.triggerDataAction = None
     self.privateDataAction = None
@@ -1293,6 +1293,9 @@ class MiniBee(object):
 
   def set_action( self, action ):
     self.dataAction = action
+
+  def set_rssi_action( self, action ):
+    self.rssiAction = action
 
   def set_trigger_action( self, action ):
     self.triggerDataAction = action
@@ -1443,126 +1446,68 @@ class MiniBee(object):
       print( "minibee status changed: ", self.nodeid, self.status ) 
 
   def parse_private_data( self, msgid, data, verbose = False, rssi = 0 ):
-    # to do: add msgid check
     if verbose:
       print( "private data - msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
       #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
-	  if self.config.rssi:
-	    data.append( rssi )
-	  #print( "private data action:", self.nodeid, self.privateDataAction );
-	  if self.privateDataAction != None :
-	    self.privateDataAction( self.nodeid, data )
+        #if self.config.rssi:
+            #data.append( rssi )
+        #print( "private data action:", self.nodeid, self.privateDataAction );
+        if self.privateDataAction != None :
+            self.privateDataAction( self.nodeid, data )
+        if self.rssiAction != None :
+            self.rssiAction( self.nodeid, rssi )	    
 
   def parse_trigger_data( self, msgid, data, verbose = False, rssi = 0 ):
-    # to do: add msgid check
+    print( "parsing trigger data not yet implemented" )
     if verbose:
       print( "trigger data - msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
       #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
-	  if self.config.rssi:
-	    data.append( rssi )
+        #if self.config.rssi:
+            #data.append( rssi )
+        if self.rssiAction != None :
+            self.rssiAction( self.nodeid, rssi )
 	  #TODO: make parser for trigger data
-	  #self.parse_single_data( data, verbose )
-	  #idx = 0
-	  #parsedData = []
-	  #scaledData = []
-	  #for sz in self.custom.dataInSizes:
-	    #parsedData.append( data[ idx : idx + sz ] )
-	    #idx += sz
-	  #if self.config.digitalIns > 0:
-	    ## digital data as bits
-	    #nodigbytes = int(math.ceil(self.config.digitalIns / 8.))
-	    #digstoparse = self.config.digitalIns
-	    #digitalData = data[idx : idx + nodigbytes]
-	    #idx += nodigbytes
-	    ##print "index after digitalIn", idx, nodigbytes, digitalData
-	    #for byt in digitalData:
-	      #for j in range(0, min(digstoparse,8) ):
-		#parsedData.append( [ min( (byt & ( 1 << j )), 1 ) ] )
-	      #digstoparse -= 8
-	  ##else: 
-	    ## digital data as bytes
-
-	  #for sz in self.config.dataInSizes:
-	    #parsedData.append( data[ idx : idx + sz ] )
-	    #idx += sz
-	  ##print parsedData, self.dataScales, self.customDataScales
-
-	  #for index, dat in enumerate( parsedData ):
-	    ##print index, dat, self.dataOffsets[ index ], self.dataScales[ index ]
-	    #if len( dat ) == 3 :
-	      #scaledData.append(  float( dat[0] * 65536 + dat[1]*256 + dat[2] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-	    #if len( dat ) == 2 :
-	      #scaledData.append(  float( dat[0]*256 + dat[1] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-	    #if len( dat ) == 1 :
-	      #scaledData.append( float( dat[0] - self.dataOffsets[ index ] ) / float( self.dataScales[ index ] ) )
-	  #self.data = scaledData
-	  
-	  #if len(self.data) == ( len( self.config.dataScales ) + len( self.custom.dataInSizes ) ): ## FIXME: not working correctly yet for custom data in packet
-	    #if self.config.rssi:
-	      #self.data.append( data[ idx ]/255. )
-
-	    #if self.status != 'receiving':
-	      #if self.infoAction != None:
-		#self.infoAction( self )
-	      #if self.firstDataAction != None:
-		#self.firstDataAction( self.nodeid, self.data )
-		##self.serial.send_me( self.bees[beeid].serial, 0 )
-		#print ( "receiving data from minibee %i."%(self.nodeid) )
-	    #self.set_status( 'receiving' )
-	    #if self.dataAction != None :
-	      #if not self.dataAction( self.data, self.nodeid ): # if datanode not in nodes, repeat the first data action
-		#if self.firstDataAction != None:
-		  #self.firstDataAction( self.nodeid, self.data )
-	      ##if verbose:
-		##print( "did data action", self.dataAction )
-	    #if self.logAction != None :
-	      #self.logAction( self.nodeid, self.getLabels(), self.getLogData() )
-	    #if verbose:
-	      #print( "data length ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
-	  #else:
-	    #print( "data length not ok", len(self.data), len( self.config.dataScales ), len( self.custom.dataInSizes ) )
-	  #if verbose:
-	    #print( "data parsed and scaled", self.nodeid, self.data )
       elif verbose:
-	print( "no config defined for this minibee", self.nodeid, data )
+        print( "no config defined for this minibee", self.nodeid, data )
 
 
   def parse_data( self, msgid, data, verbose = False, rssi = 0 ):
-    # to do: add msgid check
     if verbose:
       print( "msg ids", msgid, self.lastRecvMsgID )
     if msgid != self.lastRecvMsgID:
       self.lastRecvMsgID = msgid
       #self.time_since_last_message = 0
       if self.cid > 0: # the minibee has a configuration
-	if self.config.samplesPerMessage == 1:
-	  if self.config.rssi:
-	    data.append( rssi )
-	  self.parse_single_data( data, verbose )
-	else: # multiple samples per message:
-	  # TODO: adjust message interval to actually measured interval
-	  self.previousMessageTime = self.currentMessageTime
-	  self.currentMessageTime = time.time()
-	  self.measuredInterval = self.currentMessageTime - self.previousMessageTime
-	  # clump data into number of samples
-	  blocks = self.config.samplesPerMessage
-	  blocksize = len( data ) / blocks
-	  for i in range( blocks ):
-	    blockdata = data[ i*blocksize: i*blocksize + blocksize ]
-	    if self.config.rssi:
-	      blockdata.append( rssi )
-	    self.dataQueue.push( blockdata )
-	    #if verbose:
-	  self.measuredSampleInterval = self.measuredInterval / max( self.dataQueue.size(), blocks )
-	  #print( self.measuredInterval, self.dataQueue.size(), self.dataQueue )
+        if self.config.samplesPerMessage == 1:
+        #if self.config.rssi:
+            #data.append( rssi )
+            self.parse_single_data( data, verbose )
+        else: # multiple samples per message:
+            # TODO: adjust message interval to actually measured interval
+            self.previousMessageTime = self.currentMessageTime
+            self.currentMessageTime = time.time()
+            self.measuredInterval = self.currentMessageTime - self.previousMessageTime
+            # clump data into number of samples
+            blocks = self.config.samplesPerMessage
+            blocksize = len( data ) / blocks
+            for i in range( blocks ):
+                blockdata = data[ i*blocksize: i*blocksize + blocksize ]
+                #if self.config.rssi:
+                    #blockdata.append( rssi )
+                self.dataQueue.push( blockdata )
+            #if verbose:
+            self.measuredSampleInterval = self.measuredInterval / max( self.dataQueue.size(), blocks )
+            #print( self.measuredInterval, self.dataQueue.size(), self.dataQueue )
+        if self.rssiAction != None :
+            self.rssiAction( self.nodeid, rssi )
       elif verbose:
-	print( "no config defined for this minibee", self.nodeid, data )
+        print( "no config defined for this minibee", self.nodeid, data )
 
   def parse_single_data( self, data, verbose = False ):
     #print "minibee", self.nodeid
@@ -1651,8 +1596,8 @@ class MiniBee(object):
   def getInputSize( self ):
     if self.cid > 0:
       size = len( self.dataScales )
-      if self.config.rssi:
-	size = size + 1
+      #if self.config.rssi:
+        #size = size + 1
       return size
     return 0
 
