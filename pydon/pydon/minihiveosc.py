@@ -347,6 +347,9 @@ class MiniHiveOSC(object):
     else:
       self.sendMessage( "/minihive/configuration/twi/done", allconfig )
 
+  def createdNewConfiguration( self, filename ):
+    self.sendMessage( "/minihive/configuration/new", [ filename ] )
+  
   def loadConfiguration( self, filename ):
     self.hive.hive.load_from_file( filename )
     print( "loaded configuration from:", filename )
@@ -384,7 +387,7 @@ class MiniHiveOSC(object):
         print( "created gui osc" )
         self.guiosc = OSC.OSCClient()
         gui_send_address = ( self.guiip, self.guiport )
-        self.host.connect( gui_send_address )
+        self.guiosc.connect( gui_send_address )
 
     receive_address = ( self.myip, self.port )
     self.osc = OSC.OSCServer( receive_address )
@@ -409,6 +412,7 @@ class SWMiniHiveOSC( object ):
     
     self.verbose = verbose
 
+    self.hive.set_newConfigAction( self.newconfigToOSC )
     self.hive.set_loopbackAction( self.loopBackToOSC )
     self.hive.set_newBeeAction( self.hookBeeToOSC )
     self.hive.start_serial()  
@@ -432,6 +436,9 @@ class SWMiniHiveOSC( object ):
 
   #def setMapAction( self, nodeid, mid ):
     #self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
+
+  def newconfigToOSC( self, filename ):
+    self.osc.createdNewConfiguration( filename )
   
   def loopBackToOSC( self, mid, data ):
     self.osc.loopbackMinibee( mid, data )

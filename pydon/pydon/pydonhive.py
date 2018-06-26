@@ -104,6 +104,7 @@ class MiniHive(object):
     self.loopbackAction = None
     self.running = True
     self.newBeeAction = None
+    self.newConfigAction = None
     self.verbose = False
     self.ignoreUnknown = False
     self.checkXBeeError = False
@@ -519,60 +520,60 @@ class MiniHive(object):
       #check whether valid serial number
       #print( "check valid", serial, serial.find( "0013A2" ) );
       if serial.find( "0013A2" ) == 0:
-	# new minibee, so generate a new id
-	mid = self.get_new_minibee_id()
-	minibee = MiniBee( mid, serial )
-	minibee.set_lib_revision( libv, rev, caps )
-	self.bees[ mid ] = minibee
-	self.mapBeeToSerial[ serial ] = mid
-	firsttimenewbee = True
+        # new minibee, so generate a new id
+        mid = self.get_new_minibee_id()
+        minibee = MiniBee( mid, serial )
+        minibee.set_lib_revision( libv, rev, caps )
+        self.bees[ mid ] = minibee
+        self.mapBeeToSerial[ serial ] = mid
+        firsttimenewbee = True
       else: ##faulty serial numer
-	#if self.verbose:
-	print( "faulty serial number", serial )
-	return
-     
+        #if self.verbose:
+        print( "faulty serial number", serial )
+        return     
     #print minibee
     if bool( remConf ):
-      if minibee.cid > 0:
-	if self.serial.isOpen():
-	  if useLock:
-	    self.seriallock.acquire()
-	  #if self.verbose:
-	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.send_id( serial, minibee.nodeid, minibee.cid )
-	  if useLock:
-	    self.seriallock.release()
-	#minibee.set_status( 'waiting' )
-	minibee.waiting = 0
-      elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
-	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
-	if self.createNewFileForUnknownConfig:
-	  filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
-	  self.write_to_file( filename )
-	  print( "Configuration saved to " + filename + " in folder " + os.getcwd() )
-	  print( "Please adapt (at least define a config id other than -1 for the node), save to a new name, and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
-	  print( "Check documentation for details." )
-	  print( "--------------------------------" )
-      #sys.exit()
-    else:
-      if self.serial.isOpen():
-	if useLock:
-	  self.seriallock.acquire()
-	#if self.verbose:
-	  #print( "lock acquired by thread ", threading.current_thread().name )
-	self.serial.send_id( serial, minibee.nodeid )
-	if useLock:
-	  self.seriallock.release()
-      if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
-	print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
+        if minibee.cid > 0:
+            if self.serial.isOpen():
+                if useLock:
+                    self.seriallock.acquire()                    
+                self.serial.send_id( serial, minibee.nodeid, minibee.cid )
+                if useLock:
+                    self.seriallock.release()
+            #minibee.set_status( 'waiting' )
+            minibee.waiting = 0
+        elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
+            print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
+            if self.createNewFileForUnknownConfig:
+                filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
+                self.write_to_file( filename )
+                print( "Configuration saved to " + filename + " in folder " + os.getcwd() )
+                print( "Please adapt (at least define a config id other than -1 for the node), save to a new name, and restart the program with that configuration file. Alternatively send a message with a new configuration (via osc, or via the datanetwork)." )
+                print( "Check documentation for details." )
+                print( "--------------------------------" )
+                if self.newConfigAction != None:
+                    self.newConfigAction( filename )
+        else:
+            if self.serial.isOpen():
+                if useLock:
+                    self.seriallock.acquire()
+                self.serial.send_id( serial, minibee.nodeid )
+                if useLock:
+                    self.seriallock.release()
+    if firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
+        print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
     if self.newBeeAction: # and firsttimenewbee:
-      self.newBeeAction( minibee )
+        self.newBeeAction( minibee )
   
   def set_loopbackAction( self, action ):
     self.loopbackAction = action
   
   def set_newBeeAction( self, action ):
     self.newBeeAction = action
+    
+  def set_newConfigAction( self, action ):
+    self.newConfigAction = action
+
   
   def new_paused( self, beeid, msgid, rssi = 0, useLock = False ):    
     if self.verbose:
