@@ -724,38 +724,49 @@ class MiniHive(object):
       #print hiveconf[ 'configs' ]
       self.name = hiveconf[ 'name' ]
       for cid, config in hiveconf[ 'configs' ].items():
-	#print cid, config
-	self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
-	self.configs[ int( cid ) ].setRedundancy( config['redundancy' ] );
-	#self.configs[ int( cid ) ].setRSSI( config['rssi' ] );
-	#print config[ 'pins' ]
-	self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
-	self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
-	self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
-	self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
-	self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
-	if 'customdata' in config:
-	  self.configs[ int( cid ) ].set_custom( config[ 'customdata' ] )
-	#print self.configs[ int( cid ) ]
-      for ser, bee in hiveconf[ 'bees' ].items():
-	#print bee
-	mid = self.get_new_minibee_id( bee[ 'mid' ] )
-	if mid == bee[ 'mid' ]:
-	  self.mapBeeToSerial[ ser ] = bee[ 'mid' ]
-	  if self.apiMode:
-	    if len( bee['serial'] ) == 14:
-	      self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], "00" + bee[ 'serial' ] )
-	    else:
-	      self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
-	  else: # not api mode
-	    if len( bee['serial'] ) == 16:
-	      self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ][2:] )
-	    else:
-	      self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
-	  self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
-	else:
-	  print( "warning trying to assign duplicate minibee id %i"%bee[ 'mid' ] )
-	#print bee[ 'configid' ]
+        #print cid, config
+        self.configs[ int( cid ) ] = MiniBeeConfig( config[ 'cid' ], config[ 'name' ], config[ 'samples_per_message' ], config[ 'message_interval' ] )
+        self.configs[ int( cid ) ].setRedundancy( config['redundancy' ] );
+        #self.configs[ int( cid ) ].setRSSI( config['rssi' ] );
+        #print config[ 'pins' ]
+        self.configs[ int( cid ) ].setPins( config[ 'pins' ] )
+        self.configs[ int( cid ) ].setPinLabels( config[ 'pinlabels' ] )
+        self.configs[ int( cid ) ].setTWIs( config[ 'twis' ] )
+        self.configs[ int( cid ) ].setTwiLabels( config[ 'twilabels' ] )
+        self.configs[ int( cid ) ].setTwiSlotLabels( config[ 'twislots' ] )
+        if 'customdata' in config:
+            self.configs[ int( cid ) ].set_custom( config[ 'customdata' ] )
+        #print self.configs[ int( cid ) ]
+    for ser, bee in hiveconf[ 'bees' ].items():
+        #print bee
+        mid = self.get_new_minibee_id( bee[ 'mid' ] ) # this only works when loading first time and no minibees active
+        if mid != bee[ 'mid' ]: # check if minibee was already there and did not yet have a configuration
+            mybee = self.bees[ bee['mid'] ]
+            print mybee
+            if mybee != None:
+                print mybee.cid
+                if mybee.cid == -1:
+                    mid = bee['mid']
+                    # should send new config now
+                else:
+                    print( "WARNING: trying to assign new configuration to running minibee %i, which is already assigned configuration %i"%(bee[ 'mid' ],mybee.cid) )
+        if mid == bee[ 'mid' ]:
+            print "assigning minibee"
+            self.mapBeeToSerial[ ser ] = bee[ 'mid' ]
+            if self.apiMode: # api mode
+                if len( bee['serial'] ) == 14:
+                    self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], "00" + bee[ 'serial' ] )
+                else:
+                    self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
+            else: # not api mode
+                if len( bee['serial'] ) == 16:
+                    self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ][2:] )
+                else:
+                    self.bees[ bee[ 'mid' ] ] = MiniBee( bee[ 'mid' ], bee[ 'serial' ] )
+            self.bees[ bee[ 'mid' ] ].set_lib_revision( bee[ 'libversion' ], bee[ 'revision' ], bee[ 'caps' ] )
+        else:
+            print( "WARNING: trying to assign duplicate minibee id %i"%bee[ 'mid' ] )
+	print bee[ 'configid' ]
 	#thisconf = self.configs[ bee[ 'configid' ] ]
 	if bee[ 'configid' ] > 0:
 	  self.bees[ bee[ 'mid' ] ].set_config( bee[ 'configid' ], self.configs[ bee[ 'configid' ] ] )
