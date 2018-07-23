@@ -197,15 +197,34 @@ class MiniHiveJunxion(object):
     self.alldata = list( 0 for i in range( outsize ) )
     self.sendMessage( "/minibee/info", [ serial, mid, insize, outsize ] )
 
+  def sendStatusInfo( self, nid, status ):
+    osctag = "/minibee/status/%i"%nid
+    self.sendMessage( osctag, [ status ] )
+
   def dataMiniBee( self, mid, data ):
- #   for i in range( len(data) ):
-  #  	osctag = "/minibee/data/%i/%i"%(mid,i)
-  #  	print osctag, data[i]
-  #     	self.sendMessage( osctag, [ data[i] ] )
     osctag = "/minibee/data/%i"%mid
     self.sendMessage( osctag, data )
     if self.verbose:
       print( "sending osc message with data", mid, data )
+      
+  def rssiMiniBee( self, mid, rssi ):
+    osctag = "/minibee/rssi/%i"%mid
+    self.sendMessage( osctag, [ rssi ] )
+    if self.verbose:
+      print( "sending osc message with rssi value", mid, rssi )
+
+  def triggerDataMiniBee( self, mid, data ):
+    osctag = "/minibee/trigger/%i"%mid
+    self.sendMessage( osctag, data )
+    if self.verbose:
+      print( "sending osc message with trigger data", mid, data )
+
+  def privateDataMiniBee( self, mid, data ):
+    osctag = "/minibee/private/%i"%mid
+    self.sendMessage( osctag, data )
+    if self.verbose:
+      print( "sending osc message with private data", mid, data )      
+
 
   def setOutput( self, mid, data ):
     #print( self.hive, mid, data )
@@ -347,6 +366,12 @@ class SWMiniHiveJunxion( object ):
   def hookBeeToOSC( self, minibee ):
     self.osc.infoMiniBee( minibee.serial, minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_action( self.minibeeDataToOSC )
+    minibee.set_rssi_action( self.minibeeRSSIToOSC )
+
+    minibee.set_trigger_action( self.minibeeTriggerDataToOSC )
+    minibee.set_private_action( self.minibeePrivateDataToOSC )
+    minibee.set_status_action( self.osc.sendStatusInfo )
+    
     self.osc.add_junxion_handler( minibee.nodeid )
     if self.verbose:
       print( "hooking bee to OSC out", minibee,  minibee.getInputSize(),  minibee.getOutputSize() )
@@ -355,6 +380,21 @@ class SWMiniHiveJunxion( object ):
     self.osc.dataMiniBee( nid, data )
     if self.verbose:
       print( nid,  data )
+
+  def minibeeRSSIToOSC( self, nid, rssi ):
+    self.osc.rssiMiniBee( nid, rssi )
+    if self.verbose:
+      print( "rssi", nid,  rssi )
+
+  def minibeeTriggerDataToOSC( self, data, nid ):
+    self.osc.triggerDataMiniBee( nid, data )
+    if self.verbose:
+      print( "trigger", nid,  data )
+
+  def minibeePrivateDataToOSC( self, nid, data ):
+    self.osc.privateDataMiniBee( nid, data )
+    if self.verbose:
+      print( "private", nid,  data )      
 
 # data node to minibee
   def oscToMiniBee( self, nid, data ):
