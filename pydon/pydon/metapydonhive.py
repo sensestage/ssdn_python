@@ -40,7 +40,7 @@ import ast
   #haveGui = False
 import ConfigParser
 
-programchoices = ['datanetwork', 'osc', 'junxion' ]
+programchoices = ['/minibee/*', '/minibee/*/<ID>', 'datanetwork', 'osc', 'junxion' ]
 
 #import pydon
 
@@ -114,8 +114,7 @@ class MetaPydonHive:
     self.haveLibmapper = haveLibmapper
     
   def readOptions( self, fromcommandLine = True ):
-    defaults = {'program': 'osc', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "examples/configuration/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".",
-                'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False', 'createNewFiles': 'True', 'gui_ip': "127.0.0.1", 'gui_port': "0" }
+    defaults = {'program': '/minibee/*', 'serial': '/dev/ttyUSB0', 'apimode': 'True', 'verbose': 'False', 'logdata': 'False', 'config': "examples/configuration/example_hiveconfig.xml", 'name': "pydonhive", "port": "57600", "host": "127.0.0.1", 'ip': "0.0.0.0", 'hport': "57120", 'minibees': "20", 'mboffset': "1", 'baudrate': "57600", 'ignore': 'False', 'xbeeerror': 'False', 'logname': 'pydon.log', 'logdir': ".", 'loglevel': "info", 'quiet': 'False', 'clean': 'False', 'autostart': 'False', 'createNewFiles': 'True', 'gui_ip': "127.0.0.1", 'gui_port': "0" }
     
     configParser = ConfigParser.SafeConfigParser( defaults )
     configParser.read( "pydondefaults.ini" )
@@ -135,7 +134,7 @@ class MetaPydonHive:
     parser = option_parser_class(description='MetaPydonHive - Create a client to communicate with the minibee network.')
 
     parser.add_option( "-P", "--program", 
-			help='Which program/infrastructure do you want to use? options: datanetwork, osc, libmapper, junxion',
+			help='Which program/infrastructure do you want to use? options: /minibee/*, /minibee/*/<ID>, datanetwork, libmapper',
 			dest="program",
 			default = configParser.get( 'osc', 'program' ),
 			#group="program", option = "program",
@@ -267,6 +266,11 @@ class MetaPydonHive:
       (self.options,args) = parser.parse_args( [] )
     #print "mpd readOptions", self.options
     
+    if self.options.program == 'osc':
+        self.options.program = '/minibee/*'
+    if self.options.program == 'junxion':
+        self.options.program = '/minibee/*/<ID>'
+    
     self.options.verbose = self.options.verbose == 'True'
     self.options.apimode = self.options.apimode == 'True'
     self.options.xbeeerror = self.options.xbeeerror == 'True'
@@ -343,7 +347,7 @@ class MetaPydonHive:
 
     print( "---------------------------------------------------------------------------" )
     print( "MetaPydonHive - a universal client to communicate with the minibee network." )
-    print( "version v0.43" )
+    print( "version v0.44-dev" )
     print( " --- to find out more about the startup options start with \'metapydonhive.py -h\'" )
     print( " --- The client has been started with these options:" )
     print( self.options )
@@ -368,7 +372,7 @@ class MetaPydonHive:
       #else:
       self.swhive.start()
 
-    elif self.options.program == 'osc':
+    elif self.options.program == '/minibee/*':
       self.swhive = minihiveosc.SWMiniHiveOSC( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror, self.options.gui_ip, self.options.gui_port )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
@@ -385,7 +389,7 @@ class MetaPydonHive:
       #else:
       self.swhive.start()
 
-    elif self.options.program == 'junxion':
+    elif self.options.program == '/minibee/*/<ID>':
       self.swhive = minihivejunxion.SWMiniHiveJunxion( self.options.host, self.options.hport, self.options.ip, self.options.port, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [1,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )

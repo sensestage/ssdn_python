@@ -110,35 +110,41 @@ class ConfigureMenu:
 
       
       modeframe = LabelFrame( self.frame, text="Communication Mode", padx=5, pady=5, background="LightYellow" )
-      modeframe.grid( row=0, column=0, columnspan=2, rowspan=1, sticky="W" )
+      modeframe.grid( row=0, column=0, columnspan=2, rowspan=2, sticky="W" )
       #Label( modeframe, text="mode" ).grid( row=0, columnspan=4)
       
       if self.hiveapp.mpd.haveLibmapper:
-	MODES = [ "osc", "junxion", "datanetwork", "libmapper" ]
+        MODES = [ "/minibee/*", "/minibee/*/<ID>", "datanetwork", "libmapper" ]
       else:
-	MODES = [ "osc", "junxion", "datanetwork" ]
+        MODES = [ "/minibee/*", "/minibee/*/<ID>", "datanetwork" ]
     
     
       self.mode = StringVar()
-      self.mode.set("osc") # initialize
+      self.mode.set("/minibee/*") # initialize
       #print "initialisation", self.mode.get()
       
       cl = 0
+      self.modebuttons = []
     
       for text in MODES:
             b = Radiobutton( modeframe, text=text, variable=self.mode, value=text, command = self.setMode )
             b.grid( row=0, column = cl )
+            self.modebuttons.append( b )
             cl = cl + 1
+      
+      self.oscdataformatpreview = self.addTextEntry( modeframe, "osc data format preview", 1, 0, 4, 40 )
+
 
       cfframe = LabelFrame( self.frame, text="MiniBee Configuration File", padx=5, pady=5, background="LightYellow" )
-      cfframe.grid( row=1, column=0, columnspan=4, sticky="W" )
+      cfframe.grid( row=2, column=0, columnspan=4, sticky="W" )
 
-      self.config =      self.addTextEntry( cfframe, "path", 0, 0, 2, 60 )
+      self.config = self.addTextEntry( cfframe, "path", 0, 0, 2, 60 )
       openConfig = Button( cfframe, text="...", command = self.openXMLConfig )
       openConfig.grid( row=0, column=3, columnspan=4 )
       
+      
       serialframe = LabelFrame( self.frame, text="Serial Port", padx=5, pady=5 )
-      serialframe.grid( row=2, column=0, columnspan=3, sticky="W" )
+      serialframe.grid( row=3, column=0, columnspan=3, sticky="W" )
       
       self.serialentry = self.createSerialBox( serialframe, 0, 0 )
       #self.serialentry = self.addTextEntry( serialframe, "port", 0, 0, 1, 40 ) #TODO: should select from list of available ports
@@ -149,14 +155,14 @@ class ConfigureMenu:
 
 
       vbframe = LabelFrame( self.frame, text="Verbosity and logging", padx=5, pady=5 )
-      vbframe.grid( row=2, column=3, columnspan=2, sticky="W" )
+      vbframe.grid( row=3, column=3, columnspan=2, sticky="W" )
       
       self.verbose = self.addCheckbox( vbframe, "verbose", 0, 0 )
       self.log = self.addCheckbox( vbframe, "log data", 0, 1 )
 
 
       oscframe = LabelFrame( self.frame, text="OpenSoundControl", padx=5, pady=5 )
-      oscframe.grid( row=3, column=0, columnspan=4, sticky="W" )
+      oscframe.grid( row=4, column=0, columnspan=4, sticky="W" )
 
       self.hostip =      self.addTextEntry( oscframe, "IP to send OSC to", 0, 0, 1, 20 )
       self.hostport =    self.addIntEntry( oscframe, vcmd, "Port to send OSC to", 0, 2, 1, 10 )
@@ -170,14 +176,14 @@ class ConfigureMenu:
 
 
       dnframe = LabelFrame( self.frame, text="DataNetwork and MiniBees", padx=5, pady=5 )
-      dnframe.grid( row=6, column=0, columnspan=4,  sticky="W" )
+      dnframe.grid( row=7, column=0, columnspan=4,  sticky="W" )
       
       self.name =        self.addTextEntry( dnframe, "name in datanetwork", 0, 0, 3, 40 ) ## advanced setting
       self.minibees =    self.addIntEntry( dnframe, vcmd, "max number of minibees", 1, 0, 1, 10 ) ## advanced setting
       self.mboffset =    self.addIntEntry( dnframe, vcmd, "offset of minibees", 1, 2, 1, 10 ) ## advanced setting
 
       xbframe = LabelFrame( self.frame, text="XBee communication", padx=5, pady=5 )
-      xbframe.grid( row=7, column=0, columnspan=4, sticky="W" )
+      xbframe.grid( row=8, column=0, columnspan=4, sticky="W" )
 
       self.api = self.addCheckbox( xbframe, "api mode", 0, 0 ) ## advanced setting
       self.ignore = self.addCheckbox( xbframe, "ignore new minibees",  0, 1 ) ## advanced setting
@@ -185,7 +191,7 @@ class ConfigureMenu:
       self.xbeeerror = self.addCheckbox( xbframe, "reset serial on error", 0, 3 ) ## advanced setting
       
       lgframe = LabelFrame( self.frame, text="Output logging", padx=5, pady=5 )
-      lgframe.grid( row=8, column=0, columnspan=5,  sticky="W" )
+      lgframe.grid( row=9, column=0, columnspan=5,  sticky="W" )
       
       self.logfile =  self.addTextEntry( lgframe, "log filename", 0, 0, 3, 60 )
       self.logdir =  self.addTextEntry( lgframe, "log directory", 1, 0, 3, 60 )
@@ -196,7 +202,7 @@ class ConfigureMenu:
       self.loglevel = self.createLogLevelBox( lgframe, 2, 0 )
       
       self.start = Button( self.frame, text="START", command = self.startPydon, background="Red", foreground="Black" )
-      self.start.grid( row=9, column=0, columnspan=4 )
+      self.start.grid( row=10, column=0, columnspan=4 )
       
       self.updateSerialPorts()
       
@@ -409,17 +415,32 @@ class ConfigureMenu:
             if self.advanced == "advanced":
                 for widget in [ self.myip, self.myport ]:
                     widget.configure( state="normal" )
+                    
+        self.oscdataformatpreview.configure( state="normal" )
+        if self.mode.get() == '/minibee/*':
+            self.setTextEntry( self.oscdataformatpreview, "/minibee/data        id val1 val2" )
+            #self.oscdataformatpreview.setTextEntry(  )
+        elif  self.mode.get() == '/minibee/*/<ID>':
+            self.setTextEntry( self.oscdataformatpreview, "/minibee/data/id     val1 val2" )
+            #self.oscdataformatpreview.setTextEntry( "/minibee/data/id val1 val2" )
+        else:
+            self.setTextEntry( self.oscdataformatpreview, "" )
+            self.oscdataformatpreview.configure( state="disabled" )
     
     def setAdvanced( self, onoff ):
         self.advanced = onoff
         #print self.advanced
         if self.advanced == "basic":
             #print "basic mode"
-            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'] ]:
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'], self.guiip, self.guiport ]:
+                widget.configure(state="disabled")
+            for widget in self.modebuttons[2:]:
                 widget.configure(state="disabled")
         else:
             #print "advanced mode"
-            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box']  ]:
+            for widget in [ self.baudrate, self.name, self.minibees, self.mboffset, self.myip, self.myport, self.api['box'], self.ignore['box'], self.createNewFiles['box'], self.xbeeerror['box'], self.loglevel, self.logfile, self.logdir, self.logclean['box'], self.logquiet['box'], self.guiip, self.guiport  ]:
+                widget.configure(state="normal")
+            for widget in self.modebuttons[2:]:
                 widget.configure(state="normal")
         self.setMode()
 
@@ -466,7 +487,7 @@ class HiveApp( Tk ):
     def __init__(self):
       
       Tk.__init__(self)
-      self.title( "Sense/Stage MiniHive - v0.43" )
+      self.title( "Sense/Stage MiniHive - v0.44-dev" )
       
       menubar = Menu(self)
 
