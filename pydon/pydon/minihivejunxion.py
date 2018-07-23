@@ -55,25 +55,7 @@ class MiniHiveJunxion(object):
     
   def add_handlers( self ):
     #self.osc.addMsgHandler( "/minibee", self.handler_output )
-    self.osc.addMsgHandler( "/minibee/output", self.handler_output )
-
-    self.osc.addMsgHandler( "/jXcontrol/0", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/1", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/2", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/3", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/4", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/5", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/6", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/7", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/8", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/9", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/10", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/11", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/12", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/13", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/14", self.handler_junxion )
-    self.osc.addMsgHandler( "/jXcontrol/15", self.handler_junxion )
-    
+    self.osc.addMsgHandler( "/minibee/output", self.handler_output )    
     self.osc.addMsgHandler( "/minibee/custom", self.handler_custom )
     
     self.osc.addMsgHandler( "/minibee/configuration", self.handler_mbconfig )
@@ -95,6 +77,12 @@ class MiniHiveJunxion(object):
     
     self.osc.addMsgHandler('default', self.osc.noCallback_handler)
 
+  def add_junxion_handler( self, ind ):
+    string = "/jXcontrol/"
+    string += str(ind)
+    print( "adding osc output with osc address:", string )
+    self.osc.addMsgHandler( string, self.handler_junxion )
+    
   def call_callback( self, ctype, cid ):
     if ctype in self.callbacks:
       if cid in self.callbacks[ ctype ]:
@@ -328,6 +316,7 @@ class SWMiniHiveJunxion( object ):
 
     self.osc = MiniHiveJunxion( hostip, hostport, myip, myport, self )
     self.osc.setVerbose( verbose )
+    #self.osc.add_junxion_handlers( self.hive.idrange )
     
     self.verbose = verbose
 
@@ -358,6 +347,7 @@ class SWMiniHiveJunxion( object ):
   def hookBeeToOSC( self, minibee ):
     self.osc.infoMiniBee( minibee.serial, minibee.nodeid, minibee.getInputSize(), minibee.getOutputSize() )
     minibee.set_action( self.minibeeDataToOSC )
+    self.osc.add_junxion_handler( minibee.nodeid )
     if self.verbose:
       print( "hooking bee to OSC out", minibee,  minibee.getInputSize(),  minibee.getOutputSize() )
 
