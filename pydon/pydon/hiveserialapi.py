@@ -140,6 +140,10 @@ class HiveSerialAPI(object):
     self.register_callbacks()
     self.xbee = XBee( self.tapped_ser, callback=self.dispatch.dispatch, escaped=True)
     self.xbee.name = "xbee-thread"
+    self.read_settings()
+    self.coordinator_settings()
+    self.read_settings()
+    print( "--------------------------------" )
 
   #def start( self ):
     #self.xbee.start()
@@ -200,7 +204,7 @@ class HiveSerialAPI(object):
 
     self.dispatch.register(
       "at_response", 
-      self.generic_handler, 
+      self.at_handler, 
       lambda packet: packet['id']=='at_response'
     )
 
@@ -225,6 +229,29 @@ class HiveSerialAPI(object):
   def generic_handler( self, name, packet ):
     if self.verbose:
       print( name, packet )
+
+  def at_handler( self, name, packet ):    
+    #print( name, packet )
+    if 'parameter' in packet:
+        if packet['command'] == 'CH':
+            print( "XBEE setting: channel", packet[ 'parameter'] )
+        elif packet['command'] == 'ID':
+            print( "XBEE setting: panid", packet[ 'parameter'] )
+        elif packet['command'] == 'CE':
+            print( "XBEE setting: coordinator enable", packet[ 'parameter'] )
+        elif packet['command'] == 'AP':
+            print( "XBEE setting: api mode", packet[ 'parameter'] )
+        elif packet['command'] == 'MY':
+            print( "XBEE setting: my address", packet[ 'parameter'] )
+        elif packet['command'] == 'DH':
+            print( "XBEE setting: destination high address", packet[ 'parameter'] )
+        elif packet['command'] == 'DL':
+            print( "XBEE setting: destination low address", packet[ 'parameter'] )
+    else:
+        if packet['status'] == '\x00':
+            print( "XBEE setting changed", packet['command'] )
+        else:
+            print( "XBEE setting not changed!", packet['command'] )
 
   def txstatus_handler( self, name, packet ):
     if self.verbose:
@@ -303,6 +330,26 @@ class HiveSerialAPI(object):
     self.hiveMsgId = self.hiveMsgId + 1
     if self.hiveMsgId > 255:
       self.hiveMsgId = 1
+
+  def read_settings( self ):
+    print( "querying settings" )
+    if self.serial.isOpen():
+        self.xbee.send('at', frame_id='0', command='CH')        
+        self.xbee.send('at', frame_id='1', command='ID')        
+        self.xbee.send('at', frame_id='2', command='CE')        
+        self.xbee.send('at', frame_id='3', command='AP')        
+        self.xbee.send('at', frame_id='4', command='MY')        
+        self.xbee.send('at', frame_id='5', command='DH')        
+        self.xbee.send('at', frame_id='6', command='DL')        
+
+  def coordinator_settings( self ):
+    print( "setting coordinator settings" )
+    if self.serial.isOpen():
+        self.xbee.send('at', frame_id='2', command='CE', parameter='\x01')
+        self.xbee.send('at', frame_id='3', command='AP', parameter='\x02')        
+        self.xbee.send('at', frame_id='4', command='MY', parameter='\x00')        
+        self.xbee.send('at', frame_id='5', command='DH', parameter='\x00\x00\x00\x00')        
+        self.xbee.send('at', frame_id='6', command='DL', parameter='\x00\x00\xff\xfa')        
 
   def send_me( self, ser, onoff ):
     if self.verbose:
