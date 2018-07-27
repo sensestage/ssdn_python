@@ -423,7 +423,7 @@ class MiniHive(object):
   def create_broadcast_bee( self ):
     mid = 0xFFFF;
     minibee = MiniBee( mid, serial )
-    minibee.set_lib_revision( 7, 'D', 0 )
+    minibee.set_lib_revision( 9, 'F', 0 )
     self.bees[ mid ] = minibee
     if self.newBeeAction: # and firsttimenewbee:  
       self.newBeeAction( minibee )    
@@ -439,7 +439,7 @@ class MiniHive(object):
       # new minibee, so generate a new id
       mid = self.get_new_minibee_id()
       minibee = MiniBee( mid, serial )
-      minibee.set_lib_revision( 7, 'D', 0 ) # FIXME
+      minibee.set_lib_revision( 9, 'F', 0 ) # FIXME
       self.bees[ mid ] = minibee
       self.mapBeeToSerial[ serial ] = mid
       firsttimenewbee = True
