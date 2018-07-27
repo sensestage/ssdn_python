@@ -544,6 +544,7 @@ class MiniHive(object):
             #minibee.set_status( 'waiting' )
             minibee.waiting = 0
         elif firsttimenewbee and not self.ignoreUnknown: # this could be different behaviour! e.g. wait for a new configuration to come in
+            print( "--------------------------------" )
             print( "no configuration defined for minibee", serial, minibee.nodeid, minibee.name )
             if self.createNewFileForUnknownConfig:
                 filename ="newconfig_" + time.strftime("%Y_%b_%d_%H-%M-%S", time.localtime()) + ".xml"
@@ -1209,6 +1210,8 @@ class MiniBee(object):
     self.serial = serial
     self.cid = -1
     self.status = 'init'
+    self.config = None
+    
     self.logAction = None
     self.infoAction = None
     self.statusAction = None
@@ -1332,7 +1335,7 @@ class MiniBee(object):
     
   def send_data( self, verbose = False ):
     if self.cid > 0:
-      if self.config:
+      if self.config != None:
         if self.config.samplesPerMessage > 1:
             nowtime = time.time()
             #self.time_since_last_update = self.time_since_last_update + 1
@@ -1363,7 +1366,7 @@ class MiniBee(object):
 
   def send_output( self, serPort, data ):
     if self.cid > 0:
-        if self.config:
+        if self.config != None:
             if len( data ) == sum( self.config.dataOutSizes ) :
                 self.outdata = data
                 self.outrepeated = 0
