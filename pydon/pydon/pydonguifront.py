@@ -487,7 +487,7 @@ class HiveApp( Tk ):
     def __init__(self):
       
       Tk.__init__(self)
-      self.title( "Sense/Stage MiniHive - v0.44-dev" )
+      self.title( "Sense/Stage MiniHive - v0.44" )
       
       menubar = Menu(self)
 

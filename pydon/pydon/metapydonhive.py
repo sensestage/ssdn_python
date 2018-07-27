@@ -347,7 +347,7 @@ class MetaPydonHive:
 
     print( "---------------------------------------------------------------------------" )
     print( "MetaPydonHive - a universal client to communicate with the minibee network." )
-    print( "version v0.44-dev" )
+    print( "version v0.44" )
     print( " --- to find out more about the startup options start with \'metapydonhive.py -h\'" )
     print( " --- The client has been started with these options:" )
     print( self.options )
