@@ -182,88 +182,89 @@ class MiniHive(object):
 
   def run( self ):
     self.hadXBeeError = False 
-    #print( "running", self.running )
+    #print( "running", self.running )  
     while self.running:
-      #if self.verbose:
-	#print( "pydonhive run loop: serial open", self.serial.isOpen(), self.countSinceLastData, self.serial.hasXBeeError() )
-      if self.serial.isOpen():
-	self.countSinceLastData = self.countSinceLastData + 1
-	if not self.apiMode:
-	  self.serial.read_data()
-	elif self.checkXBeeError:
-	  # check whether thread alive, if not start it again
-	  if not self.serial.isRunning():
-	    #if not self.serial.hasXBeeError():
-	      #self.serial.start()   # serial.start is automatic because of dispatch method
-	    #else:
-	    if self.serial.hasXBeeError():
-	      print "xbee serial error, closing serial port"
-	      self.serial.halt()
-	      self.serial.closePort()
-	      self.hadXBeeError = True
-	  elif self.countSinceLastData > 60000: # we did not receive any data for about 60 seconds, something's up, let's close and reopen the serial port
-	    print "no data for 60 seconds, opening serial port again"
-	    self.serial.halt()
-	    self.serial.closePort()
-	    self.countSinceLastData = 0
-	    self.hadXBeeError = True
-	for beeid, bee in self.bees.items():
-	  #print beeid, bee
-	  bee.countsincestatus = bee.countsincestatus + 1
-	  if bee.countsincestatus > 12000:
-	    bee.set_status( 'off' )
-	  if bee.status == 'waiting':
-	    bee.waiting = bee.waiting + 1
-	    if bee.waiting > 1000:
-	      #self.seriallock.acquire()
-	      self.wait_config( beeid, bee.cid, True )
-	      #self.seriallock.release()
-	      #self.seriallock.acquire()
-	      #if self.verbose:
-		#print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
-	      #self.serial.send_me( bee.serial, 1 )
-	      #self.seriallock.release()
-	      #time.sleep( 0.005 )
-	  else:
-	    bee.send_data( self.verbose )
-	    #self.seriallock.acquire()
-	    #print( "lock acquired by thread ", threading.current_thread().name, "sending output data" )
-	    bee.repeat_output( self.serial, self.seriallock, self.verbose )
-	    bee.repeat_custom( self.serial, self.seriallock, self.verbose )
-	    bee.repeat_run( self.serial, self.seriallock, self.verbose )
-	    bee.repeat_loop( self.serial, self.seriallock, self.verbose )
-	    #self.seriallock.release()
-	    #if bee.status == 'receiving':
-	      #bee.count = bee.count + 1
-	      #if bee.count > 5000:
-		#bee.count = 0
-		#self.serial.send_me( bee.serial, 0 )
-      else:
-	time.sleep( 0.1 )
-	print "serial port is closed, trying to open serial port again"
-	#self.seriallock.acquire()
-	#if self.verbose:
-	  #print( "lock acquired by thread ", threading.current_thread().name )
-	self.serial.open_serial_port()
-	#self.seriallock.release()
-	time.sleep( 0.1 )
-	if self.serial.isOpen():
-	  print "serial port is open again"
-	  #if self.verbose:
-	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.init_comm() # initComm start the thread
-	  if not self.hadXBeeError:
-	    self.seriallock.acquire()
-	    self.serial.announce()
-	    self.seriallock.release()
-	  else:
-	    self.hadXBeeError = False
-	else:
-	  print "serial port was not opened"
-      if self.poll:
-	self.poll()
-      else:
-	time.sleep(0.001)
+        #if self.verbose:
+            #print( "pydonhive run loop: serial open", self.serial.isOpen(), self.countSinceLastData, self.serial.hasXBeeError() )
+        if self.serial.isOpen():
+            self.countSinceLastData = self.countSinceLastData + 1
+            if not self.apiMode:
+                self.serial.read_data()
+            elif self.checkXBeeError:
+                # check whether thread alive, if not start it again
+                #if not self.serial.isRunning():
+                    #if not self.serial.hasXBeeError():
+                        #self.serial.start()   # serial.start is automatic because of dispatch method
+                    #else:
+                if self.serial.hasXBeeError():
+                    print "xbee serial error, closing serial port"
+                    self.serial.halt()
+                    self.serial.closePort()
+                    self.hadXBeeError = True
+            elif self.countSinceLastData > 60000: # we did not receive any data for about 60 seconds, something's up, let's close and reopen the serial port
+                print "no data for 60 seconds, opening serial port again"
+                self.serial.halt()
+                self.serial.closePort()
+                self.countSinceLastData = 0
+                self.hadXBeeError = True
+            for beeid, bee in self.bees.items():
+                #print beeid, bee
+                bee.countsincestatus = bee.countsincestatus + 1
+                if bee.countsincestatus > 12000:
+                    bee.set_status( 'off' )
+                if bee.status == 'waiting':
+                    bee.waiting = bee.waiting + 1
+                    if bee.waiting > 1000:
+                        #self.seriallock.acquire()
+                        self.wait_config( beeid, bee.cid, True )
+                        #self.seriallock.release()
+                        #self.seriallock.acquire()
+                        #if self.verbose:
+                            #print( "lock acquired by thread ", threading.current_thread().name, "sending me" )
+                        #self.serial.send_me( bee.serial, 1 )
+                        #self.seriallock.release()
+                        #time.sleep( 0.005 )
+                else:
+                    bee.send_data( self.verbose )
+                    #self.seriallock.acquire()
+                    #print( "lock acquired by thread ", threading.current_thread().name, "sending output data" )
+                    bee.repeat_output( self.serial, self.seriallock, self.verbose )
+                    bee.repeat_custom( self.serial, self.seriallock, self.verbose )
+                    bee.repeat_run( self.serial, self.seriallock, self.verbose )
+                    bee.repeat_loop( self.serial, self.seriallock, self.verbose )
+                    #self.seriallock.release()
+                    #if bee.status == 'receiving':
+                        #bee.count = bee.count + 1
+                        #if bee.count > 5000:
+                            #bee.count = 0
+                    #self.serial.send_me( bee.serial, 0 )
+        
+        else:
+            time.sleep( 0.1 )
+            print "serial port is closed, trying to open serial port again"
+            #self.seriallock.acquire()
+            #if self.verbose:
+            #print( "lock acquired by thread ", threading.current_thread().name )
+            self.serial.open_serial_port()
+            #self.seriallock.release()
+            time.sleep( 0.1 )
+            if self.serial.isOpen():
+                print "serial port is open again"
+            #if self.verbose:
+                #print( "lock acquired by thread ", threading.current_thread().name )
+                self.serial.init_comm() # initComm start the thread
+                if not self.hadXBeeError:
+                    self.seriallock.acquire()
+                    self.serial.announce()
+                    self.seriallock.release()
+                else:
+                    self.hadXBeeError = False
+            else:
+                print "serial port was not opened"
+        if self.poll:
+            self.poll()
+        else:
+            time.sleep(0.001)
     print( "hive loop not running anymore", self.running )
 
   def exit( self ):
@@ -668,29 +669,29 @@ class MiniHive(object):
   def wait_config( self, beeid, configid, useLock = False ):
     #print "sending configuration"
     if beeid in self.bees:
-      #print beeid, configid
-      if configid == self.bees[ beeid ].cid:
-	#self.serial.send_me( self.bees[ beeid ].serial, 1 )
-	print( "Sending config message for MiniBee {}, revision {}, firmware {}".format( beeid, self.bees[ beeid ].revision, self.bees[ beeid ].libversion ) )
-	configuration = self.configs[ configid ]
-	configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
-	self.bees[ beeid ].set_status( 'waiting' )
-	self.bees[ beeid ].waiting = 0
-	if self.verbose:
-	  print( "sent configmessage to minibee", configMsg )
-	if self.serial.isOpen():
-	  if useLock:
-	    self.seriallock.acquire()
-	  #if self.verbose:
-	    #print( "lock acquired by thread ", threading.current_thread().name )
-	  self.serial.send_config( beeid, configMsg )
-	  if useLock:
-	    self.seriallock.release()
-	  #time.sleep( 0.005 ) #TODO: why are we waiting here?
-      else:
-	print( "received wait for config from known minibee, but with wrong config", beeid, configid )
+        #print beeid, configid
+        if configid == self.bees[ beeid ].cid:
+          #self.serial.send_me( self.bees[ beeid ].serial, 1 )
+          print( "Sending config message for MiniBee {}, revision {}, firmware {}".format( beeid, self.bees[ beeid ].revision, self.bees[ beeid ].libversion ) )
+          configuration = self.configs[ configid ]
+          configMsg = configuration.getConfigMessage( self.bees[ beeid ].revision )
+          self.bees[ beeid ].set_status( 'waiting' )
+          self.bees[ beeid ].waiting = 0
+          if self.verbose:
+              print( "sent configmessage to minibee", configMsg )
+          if self.serial.isOpen():
+              if useLock:
+                self.seriallock.acquire()
+              #if self.verbose:
+                #print( "lock acquired by thread ", threading.current_thread().name )
+              self.serial.send_config( beeid, configMsg )
+              if useLock:
+                self.seriallock.release()
+            #time.sleep( 0.005 ) #TODO: why are we waiting here?
+        else:
+            print( "received wait for config from known minibee, but with wrong config", beeid, configid )
     else:
-      print( "received wait for config from unknown minibee", beeid, configid )
+        print( "received wait for config from unknown minibee", beeid, configid )
     #print "end sending configuration"
 
   def check_config( self, beeid, configid, confirmconfig ):
