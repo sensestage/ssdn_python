@@ -134,118 +134,124 @@ class MetaPydonHive:
     parser = option_parser_class(description='MetaPydonHive - Create a client to communicate with the minibee network.')
 
     parser.add_option( "-P", "--program", 
-			help='Which program/infrastructure do you want to use? options: /minibee/*, /minibee/*/<ID>, datanetwork, libmapper',
-			dest="program",
-			default = configParser.get( 'osc', 'program' ),
-			#group="program", option = "program",
-			#choices = ['datanetwork', 'osc', 'libmapper', 'junxion' ],
-			choices = programchoices
-			)
+                      help='Which program/infrastructure do you want to use? options: /minibee/*, /minibee/*/<ID>, datanetwork, libmapper',
+                      dest="program",
+                      default = configParser.get( 'osc', 'program' ),
+                      #group="program", option = "program",
+                      #choices = ['datanetwork', 'osc', 'libmapper', 'junxion' ],
+                      choices = programchoices
+                      )
     
     parser.add_option('-s','--serial', action='store',type="string",dest="serial",
-		    default = configParser.get( 'serial', 'serial' ),
-		    #group="serial", option = "serial",
-		    help='the serial port [default:%s]'% '/dev/ttyUSB0')
-		    
+                      default = configParser.get( 'serial', 'serial' ),
+                      #group="serial", option = "serial",
+                      help='the serial port [default:%s]'% '/dev/ttyUSB0')
+
     parser.add_option('-a','--apimode', action='store', dest="apimode", 
-		    #group="serial", option = "apimode",
-		    #default=True,
-		    default = configParser.get( 'serial', 'apimode' ),
-		    help='use API mode for communication with the minibees [default:%s]'% False)
-		    
+                      #group="serial", option = "apimode",
+                      #default=True,
+                      default = configParser.get( 'serial', 'apimode' ),
+                      help='use API mode for communication with the minibees [default:%s]'% False)
+
     parser.add_option('-v','--verbose', action='store', dest="verbose",
-		    #default=False, 
-		    default = configParser.get( 'verbosity', 'verbose' ),
-		    #group="program", option="verbose",
-		    help='verbose printing [default:%s]'% False)
+                      #default=False, 
+                      default = configParser.get( 'verbosity', 'verbose' ),
+                      #group="program", option="verbose",
+                      help='verbose printing [default:%s]'% False)
+
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('-u','--ignore-unknown', action='store', dest="ignore",
-		    #default=False, 
-		    default = configParser.get( 'hive', 'ignore' ),
-		    #group="program", option="verbose",
-		    help='ignore unknown minibees [default:%s]'% False)
+                      #default=False, 
+                      default = configParser.get( 'hive', 'ignore' ),
+                      #group="program", option="verbose",
+                      help='ignore unknown minibees [default:%s]'% False)
+    
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('-f','--create-new-files', action='store', dest="createNewFiles",
-		    #default=False, 
-		    default = configParser.get( 'hive', 'createNewFiles' ),
-		    #group="program", option="verbose",
-		    help='create new files for unknown minibees [default:%s]'% True)
+                      #default=False, 
+                      default = configParser.get( 'hive', 'createNewFiles' ),
+                      #group="program", option="verbose",
+                      help='create new files for unknown minibees [default:%s]'% True)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
     
     parser.add_option('-x','--check-for-xbee-error', action='store', dest="xbeeerror",
-		    #default=False, 
-		    default = configParser.get( 'hive', 'xbeeerror' ),
-		    #group="program", option="verbose",
-		    help='check whether xbee-error occurred [default:%s]'% False)
+                      #default=False, 
+                      default = configParser.get( 'hive', 'xbeeerror' ),
+                      #group="program", option="verbose",
+                      help='check whether xbee-error occurred [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('--auto', action='store', dest="autostart",
-		    #default=False, 
-		    default = configParser.get( 'hive', 'autostart' ),
-		    #group="program", option="verbose",
-		    help='autostart [default:%s]'% False)
+                      #default=False, 
+                      default = configParser.get( 'hive', 'autostart' ),
+                      #group="program", option="verbose",
+                      help='autostart [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('-l','--logdata', action='store', dest="logdata",
-		    #default=False, 
-		    default = configParser.get( 'hive', 'logdata' ),
-		    #group="program", option="verbose",
-		    help='log data to file [default:%s]'% False)
+                      #default=False, 
+                      default = configParser.get( 'hive', 'logdata' ),
+                      #group="program", option="verbose",
+                      help='log data to file [default:%s]'% False)
     #parser.add_option('-q','--quiet', action='store_false', dest="verbose")
 
     parser.add_option('-c','--config', action='store', type="string", dest="config",
-		    #default="pydon/configs/hiveconfig.xml",
-		    default = configParser.get( 'hive', 'config' ),
-		    #group="program", option="hiveconfig", 
-		    help='the name of the configuration file for the minibees [default:%s]'% '../configs/example_hiveconfig.xml')
+                      #default="pydon/configs/hiveconfig.xml",
+                      default = configParser.get( 'hive', 'config' ),
+                      #group="program", option="hiveconfig", 
+                      help='the name of the configuration file for the minibees [default:%s]'% '../configs/example_hiveconfig.xml')
 
     #specific for datanetwork, libmapper:
     parser.add_option('-n','--name', action='store', type="string", dest="name",
-		    #default="pydonhive", 
-		    default = configParser.get( 'osc', 'name' ),
-		    #group="osc", option="name",
-		    help='the name of the client in the datanetwork [default:%s] (needed for datanetwork or libmapper)'% "pydonhive" )
+                      #default="pydonhive", 
+                      default = configParser.get( 'osc', 'name' ),
+                      #group="osc", option="name",
+                      help='the name of the client in the datanetwork [default:%s] (needed for datanetwork or libmapper)'% "pydonhive" )
 
 
     parser.add_option('-b','--baudrate', action='store',type=int,dest="baudrate",
-		    #default=57600,
-		    default = configParser.get( 'serial', 'baudrate' ),
-		    #group="serial", option="baudrate",
-		    help='the serial port [default:%i]'% 57600)
+                      #default=57600,
+                      default = configParser.get( 'serial', 'baudrate' ),
+                      #group="serial", option="baudrate",
+                      help='the serial port [default:%i]'% 57600)
+
     parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",
-		    #default=20, 
-		    default = configParser.get( 'hive', 'minibees' ),
-		    #group="program", option="minibees",
-		    help='the number of minibees in the network [default:%i]'% 20)
+                      #default=20, 
+                      default = configParser.get( 'hive', 'minibees' ),
+                      #group="program", option="minibees",
+                      help='the number of minibees in the network [default:%i]'% 20)
+
     parser.add_option('-o','--minibee_offset', type=int, action='store',dest="mboffset",
-		    default = configParser.get( 'hive', 'mboffset' ),
-		    #group="program", option="mboffset",
-		    help='the offset of the number range for the minibees in the network [default:%i]'% 1)
+                      default = configParser.get( 'hive', 'mboffset' ),
+                      #group="program", option="mboffset",
+                      help='the offset of the number range for the minibees in the network [default:%i]'% 1)
+
     parser.add_option('-d','--host_ip', action='store',type="string", dest="host",
-		    #default="127.0.0.1",
-		    default = configParser.get( 'osc', 'host' ),
-		    #group="osc", option="hostip",
-		    help='the ip address of the datanetwork host or osc/junxion receiver [default:%s]'% "127.0.0.1")
+                      #default="127.0.0.1",
+                      default = configParser.get( 'osc', 'host' ),
+                      #group="osc", option="hostip",
+                      help='the ip address of the datanetwork host or osc/junxion receiver [default:%s]'% "127.0.0.1")
 
     #specific for osc or junxion
     parser.add_option('-t','--host_port', type=int, action='store',dest="hport",
-		    #default=57120,
-		    default = configParser.get( 'osc', 'hport' ),
-		    #group="osc", option="hostport",
-		    help='the port on which the application that has to receive the OSC messages will listen [default:%i] (needed for osc or junxion or default for datanetwork)'% 57120 )
+                      #default=57120,
+                      default = configParser.get( 'osc', 'hport' ),
+                      #group="osc", option="hostport",
+                      help='the port on which the application that has to receive the OSC messages will listen [default:%i] (needed for osc or junxion or default for datanetwork)'% 57120 )
 
     parser.add_option('-i','--ip', type="string", action='store',dest="ip",
-		    #default="0.0.0.0",
-		    default = configParser.get( 'osc', 'ip' ),
-		    #group="osc", option="myip",
-		    help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
+                      #default="0.0.0.0",
+                      default = configParser.get( 'osc', 'ip' ),
+                      #group="osc", option="myip",
+                      help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
+
     parser.add_option('-p','--port', type=int, action='store',dest="port",
-		    #default=57600,
-		    default = configParser.get( 'osc', 'port' ),
-		    #group="osc", option="myport",
-		    help='the port on which the client will listen [default:%i]'% 57600 )
+                      #default=57600,
+                      default = configParser.get( 'osc', 'port' ),
+                      #group="osc", option="myport",
+                      help='the port on which the client will listen [default:%i]'% 57600 )
 
     parser.add_option("-N", "--logname", dest="logname", default=configParser.get( 'verbosity', 'logname' ), help="log name (default pydon.log)")
     parser.add_option("-V", "--loglevel", dest="loglevel", default=configParser.get( 'verbosity', 'loglevel' ), help="logging level (debug, info, error)")
@@ -358,17 +364,17 @@ class MetaPydonHive:
       self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
       #print self.options.logdata
       try:
-	if ast.literal_eval(self.options.logdata):
-	  self.swhive.initializeLogger()
+          if ast.literal_eval(self.options.logdata):
+              self.swhive.initializeLogger()
       except ValueError:
-	if self.options.logdata:
-	  self.swhive.initializeLogger()
+          if self.options.logdata:
+              self.swhive.initializeLogger()
       #if haveGui:
-	#print "start main loop"
-	#frame.setHive( swhive )
-	#app.MainLoop()
-	#print "starting swhive"
-	#swhive.start()
+      #print "start main loop"
+      #frame.setHive( swhive )
+      #app.MainLoop()
+      #print "starting swhive"
+      #swhive.start()
       #else:
       self.swhive.start()
 
@@ -380,12 +386,12 @@ class MetaPydonHive:
         print( "Created OSC sender to GUI at (%s,%i)."%(self.options.gui_ip, self.options.gui_port ) )      
       print( "--------------------------------" )
       #if haveGui:
-	#frame.setHive( swhive )
-	#print( "starting thread" )
-	#thread.start_new_thread( hive_in_thread_function, (swhive) )
-	#app.MainLoop()
-	#print "starting swhive"      
-	#swhive.start()
+      #frame.setHive( swhive )
+      #print( "starting thread" )
+      #thread.start_new_thread( hive_in_thread_function, (swhive) )
+      #app.MainLoop()
+      #print "starting swhive"
+      #swhive.start()
       #else:
       self.swhive.start()
 
@@ -395,25 +401,25 @@ class MetaPydonHive:
       print( "Created OSC listener at (%s,%i) and OSC sender to (%s,%i) and opened serial port at %s. Now waiting for messages."%(self.options.ip, self.options.port, self.options.host, self.options.hport, self.options.serial ) )
       print( "--------------------------------" )
       #if haveGui:
-	#frame.setHive( swhive )
-	#app.MainLoop()
-	#swhive.start()
+      #frame.setHive( swhive )
+      #app.MainLoop()
+      #swhive.start()
       #else:
       self.swhive.start()
 
     elif self.options.program == 'libmapper':
-      if haveLibmapper:
-	self.swhive = lmpydonhive.LMPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
-	#self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
-	#if haveGui:
-	  #frame.setHive( swhive )
-	  #app.MainLoop()
-	  #swhive.start()
-	#else:
-	self.swhive.start()
-      else:
-	print( "libmapper is not available, please check your installation or choose another mode" )
-	print( "--------------------------------" )
+        if haveLibmapper:
+            self.swhive = lmpydonhive.LMPydonHive( self.options.host, self.options.port, self.options.ip, self.options.name, self.options.minibees, self.options.serial, self.options.baudrate, self.options.config, [self.options.mboffset,self.options.minibees], self.options.verbose, self.options.apimode, self.options.ignore, self.options.xbeeerror )
+    #self.swhive.hive.set_create_newfile_for_unknown( self.options.createNewFiles )
+    #if haveGui:
+    #frame.setHive( swhive )
+    #app.MainLoop()
+    #swhive.start()
+    #else:
+            self.swhive.start()
+        else:
+            print( "libmapper is not available, please check your installation or choose another mode" )
+            print( "--------------------------------" )
 
 
 # main program:
