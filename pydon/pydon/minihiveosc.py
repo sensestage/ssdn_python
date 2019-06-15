@@ -90,8 +90,8 @@ class MiniHiveOSC(object):
   def call_callback( self, ctype, cid ):
     if ctype in self.callbacks:
       if cid in self.callbacks[ ctype ]:
-	self.callbacks[ ctype ][ cid ]( cid )
-	return
+          self.callbacks[ ctype ][ cid ]( cid )
+          return
     #print ctype, cid
 
   #@make_method('/datanetwork/announce', 'si')
@@ -295,9 +295,9 @@ class MiniHiveOSC(object):
     if len( config ) == 3:
       # set minibee with serial number to given id
       if not self.hive.hive.map_serial_to_bee( config[2], config[0] ):
-	# send error message
-	self.sendMessage( "/minibee/configuration/error", config )
-	return
+          # send error message
+          self.sendMessage( "/minibee/configuration/error", config )
+          return
     # continue with setting the configuration
     self.hive.hive.set_minibee_config( config[0], config[1] )
     self.sendMessage( "/minibee/configuration/done", config )
@@ -528,29 +528,29 @@ if __name__ == "__main__":
 
   parser = option_parser_class(description='Create a program that speaks OSC to communicate with the minibee network.')
   parser.add_option('-s','--serial', action='store',type="string",dest="serial",default="/dev/ttyUSB0",
-		  help='the serial port [default:%s]'% '/dev/ttyUSB0')
+                    help='the serial port [default:%s]'% '/dev/ttyUSB0')
   parser.add_option('-a','--apimode', action='store_true', dest="apimode",default=False,
-		  help='use API mode for communication with the minibees [default:%s]'% False)
+                    help='use API mode for communication with the minibees [default:%s]'% False)
   parser.add_option('-v','--verbose', action='store_true',dest="verbose",default=False,
-		  help='verbose printing [default:%i]'% False)
+                    help='verbose printing [default:%i]'% False)
   parser.add_option('-c','--config', action='store', type="string", dest="config",default="pydon/configs/hiveconfig.xml",
-		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
+                    help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
   parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=10,
-		  help='the number of minibees in the network [default:%i]'% 10)
+                    help='the number of minibees in the network [default:%i]'% 10)
   parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
-		  help='the ip address of the application that has to receive the OSC messages [default:%s]'% "127.0.0.1")
+                    help='the ip address of the application that has to receive the OSC messages [default:%s]'% "127.0.0.1")
   parser.add_option('-t','--host_port', type=int, action='store',dest="hport",default=57120,
-		  help='the port on which the application that has to receive the OSC messages will listen [default:%i]'% 57120 )
+                    help='the port on which the application that has to receive the OSC messages will listen [default:%i]'% 57120 )
   parser.add_option('-b','--baudrate', action='store',type=int,dest="baudrate",default=57600,
-		  help='the serial port [default:%i]'% 57600)
+                    help='the serial port [default:%i]'% 57600)
   parser.add_option('-i','--ip', type="string", action='store',dest="ip",default="0.0.0.0",
-		  help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
+                    help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
   parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
-		  help='the port on which the minihiveosc will listen [default:%i]'% 57600 )
+                    help='the port on which the minihiveosc will listen [default:%i]'% 57600 )
   parser.add_long_option('--gui_ip', action='store',type="string", dest="guiip",default="127.0.0.1",
-		  help='the ip address of the gui interface that has to receive the OSC messages [default:%s]'% "127.0.0.1")
+                         help='the ip address of the gui interface that has to receive the OSC messages [default:%s]'% "127.0.0.1")
   parser.add_long_option('--gui_port', type=int, action='store',dest="guiport",default=None,
-		  help='the port on which the gui interface will listen to receive the OSC messages [default: None (no gui)]' )
+                         help='the port on which the gui interface will listen to receive the OSC messages [default: None (no gui)]' )
 
   (options,args) = parser.parse_args()
   #print args.accumulate(args.integers)
