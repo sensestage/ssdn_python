@@ -92,25 +92,25 @@ class LogFile(object):
 
     def __init__(self, options, name=None):
         self.logger = logging.getLogger(name)
-	#formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
-	formatter = logging.Formatter('%(asctime)s\t%(message)s')
-	level = logging.__dict__.get(options.loglevel.upper(),logging.DEBUG)
-	self.logger.setLevel(level)
-	 # Output logging information to screen
-	if not options.quiet:
-	  hdlr = logging.StreamHandler(sys.stderr)
-	  hdlr.setFormatter(formatter)
-	  self.logger.addHandler(hdlr)
+        #formatter = logging.Formatter('%(asctime)s %(levelname)s\t%(message)s')
+        formatter = logging.Formatter('%(asctime)s\t%(message)s')
+        level = logging.__dict__.get(options.loglevel.upper(),logging.DEBUG)
+        self.logger.setLevel(level)
+        # Output logging information to screen
+        if not options.quiet:
+            hdlr = logging.StreamHandler(sys.stderr)
+            hdlr.setFormatter(formatter)
+            self.logger.addHandler(hdlr)
 
-	# Output logging information to file
-	logfile = os.path.join(options.logdir, options.logname )
-	if options.clean and os.path.isfile(logfile):
-	    os.remove(logfile)
-	hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=20)  #max 5 megabytes per file
-	#hdlr2 = logging.FileHandler(logfile)
-	#hdlr2.setFormatter(formatter)
-	self.logger.addHandler(hdlr2)
-	
+        # Output logging information to file
+        logfile = os.path.join(options.logdir, options.logname )
+        if options.clean and os.path.isfile(logfile):
+                os.remove(logfile)
+        hdlr2 = handlers.RotatingFileHandler(logfile, maxBytes=5242880, backupCount=20)  #max 5 megabytes per file
+        #hdlr2 = logging.FileHandler(logfile)
+        #hdlr2.setFormatter(formatter)
+        self.logger.addHandler(hdlr2)
+
     def addWidgetHandler( self, whdlr):
       #formatter = logging.Formatter('%(message)s')
       #whdlr.setFormatter(formatter)
