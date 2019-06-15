@@ -260,11 +260,11 @@ class HiveSerialAPI(object):
       self.ack_cnt = self.ack_cnt - 1
     elif self.verbose:
       if packet['status'] == 1:
-	print( "TX, No ACK (Acknowledgement) received" )
+          print( "TX, No ACK (Acknowledgement) received" )
       elif packet['status'] == 2:
-	print( "TX, CCA failure" )
+          print( "TX, CCA failure" )
       elif packet['status'] == 3:
-	print( "TX, Purged" )
+          print( "TX, Purged" )
       #0 = Success
       #1 = No ACK (Acknowledgement) received
       #2 = CCA failure
@@ -282,9 +282,9 @@ class HiveSerialAPI(object):
       self.recv_privatedata( packet[ 'rf_data' ][1:], packet[ 'source_addr'], packet['rssi'] )      
     elif packet['rf_data'][0] == 's' and len( packet[ 'rf_data' ] ) > 12:
       if len( packet[ 'rf_data' ] ) > 13 :
-	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), ord( packet[ 'rf_data' ][13] ) )
+          self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), ord( packet[ 'rf_data' ][13] ) )
       else:
-	self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), 1 )
+          self.parse_serial( packet[ 'rf_data' ][2:10], ord( packet[ 'rf_data' ][10] ), packet[ 'rf_data' ][11], ord( packet[ 'rf_data' ][12] ), 1 )
     elif packet['rf_data'][0] == 'w' and len( packet[ 'rf_data' ] ) > 3:
         if self.verbose:
           print( "wait config", packet[ 'rf_data' ][2], packet[ 'rf_data' ][3] )
@@ -383,13 +383,7 @@ class HiveSerialAPI(object):
       #rfser = serial
       destaddr = ''.join( rfser )
       hrm = struct.pack('>H', rmmy)
-      self.xbee.send('remote_at', 
-	    frame_id='B',
-	    dest_addr_long=destaddr,
-	    options='\x02',
-	    command='D3',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='B', dest_addr_long=destaddr, options='\x02', command='D3', parameter=hrm )
     #FIXME: this should be a setting or a separate osc message or something
     #self.store_remote_at64( serial )
 
@@ -397,13 +391,7 @@ class HiveSerialAPI(object):
     if self.serial.isOpen():
       hrm = struct.pack('>H', rmmy)
       destaddr = struct.pack('>H', beeid)
-      self.xbee.send('remote_at', 
-	    frame_id='B',
-	    dest_addr=destaddr,
-	    options='\x02',
-	    command='D3',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='B', dest_addr=destaddr, options='\x02', command='D3', parameter=hrm )
 
   def reset_minibee( self, serial ):
     if self.serial.isOpen():
@@ -411,25 +399,13 @@ class HiveSerialAPI(object):
       #rfser = serial
       destaddr = ''.join( rfser )
       hrm = struct.pack('>H', 8 )
-      self.xbee.send('remote_at', 
-	    frame_id='C',
-	    dest_addr_long=destaddr,
-	    options='\x02',
-	    command='IO',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='C', dest_addr_long=destaddr, options='\x02', command='IO', parameter=hrm )
 
   def reset_minibee_short( self, beeid ):
     if self.serial.isOpen():
       destaddr = struct.pack('>H', beeid)
       hrm = struct.pack('>H', 8 )
-      self.xbee.send('remote_at', 
-	    frame_id='C',
-	    dest_addr=destaddr,
-	    options='\x02',
-	    command='IO',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='C', dest_addr=destaddr, options='\x02', command='IO', parameter=hrm )
 
   def restart_minibee( self, serial ):
     if self.serial.isOpen():
@@ -437,25 +413,13 @@ class HiveSerialAPI(object):
       #rfser = serial
       destaddr = ''.join( rfser )
       hrm = struct.pack('>H', 0 )
-      self.xbee.send('remote_at', 
-	    frame_id='D',
-	    dest_addr_long=destaddr,
-	    options='\x02',
-	    command='IO',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='D', dest_addr_long=destaddr, options='\x02', command='IO', parameter=hrm )
 
   def restart_minibee_short( self, beeid ):
     if self.serial.isOpen():
       destaddr = struct.pack('>H', beeid)
       hrm = struct.pack('>H', 0 )
-      self.xbee.send('remote_at', 
-	    frame_id='D',
-	    dest_addr=destaddr,
-	    options='\x02',
-	    command='IO',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='D', dest_addr=destaddr, options='\x02', command='IO', parameter=hrm )
 
   def assign_remote_my( self, serial, rmmy ):
     if self.serial.isOpen():
@@ -463,13 +427,7 @@ class HiveSerialAPI(object):
       #rfser = serial
       destaddr = ''.join( rfser )
       hrm = struct.pack('>H', rmmy)
-      self.xbee.send('remote_at', 
-	    frame_id='A',
-	    dest_addr_long=destaddr,
-	    options='\x02',
-	    command='MY',
-	    parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='A', dest_addr_long=destaddr, options='\x02', command='MY', parameter=hrm )
     #FIXME: this should be a setting or a separate osc message or something
     #self.store_remote_at64( serial )
 
@@ -479,13 +437,7 @@ class HiveSerialAPI(object):
       #rfser = serial
       destaddr = ''.join( rfser )
       #hrm = struct.pack('>H', rmmy)
-      self.xbee.send('remote_at', 
-	    frame_id='8',
-	    dest_addr_long=destaddr,
-	    options='\x02',
-	    command='WR'
-	    #parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='8', dest_addr_long=destaddr, options='\x02', command='WR' )  #parameter=hrm
 
   def store_remote_at16( self, nodeid ):
     if self.serial.isOpen():
@@ -493,13 +445,7 @@ class HiveSerialAPI(object):
       #rfser = serial
       #destaddr = ''.join( rfser )
       hrm = struct.pack('>H', nodeid)
-      self.xbee.send('remote_at', 
-	    frame_id='9',
-	    dest_addr=hrm,
-	    options='\x02',
-	    command='WR'
-	    #parameter=hrm
-	    )
+      self.xbee.send('remote_at', frame_id='9', dest_addr=hrm, options='\x02', command='WR' )  #parameter=hrm
 
   def create_beemsg( self, msgtype, msgid, msgdata, mid ):
     datalist = [ msgtype ]
@@ -511,7 +457,7 @@ class HiveSerialAPI(object):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
       if self.framecnt == 16:
-	self.framecnt = 1
+          self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
       datalist = []
@@ -525,13 +471,13 @@ class HiveSerialAPI(object):
           options='\x02'
           )
       if self.verbose:
-	print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
+          print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
     
   def send_msg_inc( self, rmmy, msgtype, datalistin ):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
       if self.framecnt == 16:
-	self.framecnt = 1
+          self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
       self.incMsgID()
@@ -547,13 +493,13 @@ class HiveSerialAPI(object):
           data=data
           )
       if self.verbose:
-	print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
+          print( "sending message to minibee", rmmy, hrm, data, self.ack_cnt )
 
   def send_msg64( self, ser, msgtype, datalistin ):
     if self.serial.isOpen():
       self.framecnt = self.framecnt + 1
       if self.framecnt == 16:
-	self.framecnt = 1
+          self.framecnt = 1
       msgid = chr( self.framecnt )
       self.ack_cnt = self.ack_cnt + 1
       self.incMsgID()
@@ -563,14 +509,9 @@ class HiveSerialAPI(object):
       datalist.append( chr( self.hiveMsgId) )
       datalist.extend( datalistin )
       data = ''.join( datalist )
-      self.xbee.send('tx_long_addr',
-	    dest_addr=destaddr,
-	    data=data,
-	    frame_id=msgid,
-	    options='\x02'
-	    )
+      self.xbee.send('tx_long_addr', dest_addr=destaddr, data=data, frame_id=msgid, options='\x02' )
       if self.verbose:
-	print( "sending message to minibee with long addr", ser, rfser, data, self.ack_cnt )
+          print( "sending message to minibee with long addr", ser, rfser, data, self.ack_cnt )
 
   def send_run( self, mid, run ):
     if self.verbose:
