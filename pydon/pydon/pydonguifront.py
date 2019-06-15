@@ -317,10 +317,10 @@ class ConfigureMenu:
         return returnval
 
     #def OnValidateIP(self, d, i, P, s, S, v, V, W):
-	#try: socket.inet_aton(S)
-	#except socket.error: return False
-	#else: return True
-	##else: return S.count('.') == 3
+    #try: socket.inet_aton(S)
+    #except socket.error: return False
+    #else: return True
+    ##else: return S.count('.') == 3
 
     def createLogLevelBox( self, frame, row, col ):
       logleveloptions = [ 'error', 'info', 'debug' ]
@@ -335,10 +335,10 @@ class ConfigureMenu:
     def createMyIPBox( self, frame, row, col ):
       ips = [ '0.0.0.0', '127.0.0.1' ]
       try:
-	  exips = socket.gethostbyname_ex( socket.gethostname() )[2]
-	  ips.extend( exips )
+          exips = socket.gethostbyname_ex( socket.gethostname() )[2]
+          ips.extend( exips )
       except socket.gaierror as e:
-	  print e
+          print e
       #print ips
       self.myipvar = StringVar()
       self.myipvar.set( ips[0] ) # default value
@@ -360,7 +360,7 @@ class ConfigureMenu:
       serialoptions = self.updateSerialPorts()      
       self.serialportvar = StringVar()
       if len( serialoptions ) == 0:
-	serialoptions.append( '' )
+          serialoptions.append( '' )
       self.serialportvar.set( serialoptions[0] ) # default value
       w = OptionMenu( frame, self.serialportvar, *serialoptions )
       w.grid( row=row, column=col )
@@ -370,12 +370,12 @@ class ConfigureMenu:
       serialoptions = self.updateSerialPorts()      
       self.serialportvar = StringVar()
       if len( serialoptions ) == 0:
-	serialoptions.append( '' )
+          serialoptions.append( '' )
       self.serialportvar.set( serialoptions[0] ) # default value
       menu = self.serialentry["menu"]
       menu.delete(0, "end")
       for string in serialoptions:
-	menu.add_command(label=string, command=lambda value=string: self.serialportvar.set(value))
+          menu.add_command(label=string, command=lambda value=string: self.serialportvar.set(value))
 
     def updateSerialPorts( self ):
         #if os.name == 'nt': #sys.platform == 'win32':
