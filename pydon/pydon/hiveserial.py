@@ -244,7 +244,7 @@ class HiveSerial(object):
       rev = self.incMsg[length-2]
       caps = self.incMsg[length-1]
       if self.verbose:
-	print( ser )
+          print( ser )
       self.hive.new_bee( ser, libv, rev, caps )
     else:
       ser = "".join( map(chr, self.incMsg[1:length-3] ) )
@@ -350,25 +350,25 @@ class HiveSerial(object):
     b = self.serial.read( nrbytes )
     if len( b ) > 0 :
       for byt in b:
-	newbyte = ord( byt )
-	#print len(b), byt, newbyte
-	if self.escape:
-	  if newbyte in [ 10, 13, 92 ] :
-	    self.incMsg.append( newbyte )
-	  else :
-	    self.incMsg.append( newbyte )
-	    self.incType = newbyte
-	  self.escape = False
-	else :
-	  if newbyte == 92:
-	    self.escape = True
-	  elif newbyte == 10:
-	    #end of line
-	    self.parse_message()
-	    self.incMsg = []
-	    self.incType = 'n'
-	  else :
-	    self.incMsg.append( newbyte )
+        newbyte = ord( byt )
+        #print len(b), byt, newbyte
+        if self.escape:
+        if newbyte in [ 10, 13, 92 ] :
+            self.incMsg.append( newbyte )
+        else :
+            self.incMsg.append( newbyte )
+            self.incType = newbyte
+        self.escape = False
+        else :
+        if newbyte == 92:
+            self.escape = True
+        elif newbyte == 10:
+            #end of line
+            self.parse_message()
+            self.incMsg = []
+            self.incType = 'n'
+        else :
+            self.incMsg.append( newbyte )
 
   def read_data( self ):
     bytes_toread = self.serial.inWaiting()  
