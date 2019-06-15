@@ -353,22 +353,22 @@ class HiveSerial(object):
         newbyte = ord( byt )
         #print len(b), byt, newbyte
         if self.escape:
-        if newbyte in [ 10, 13, 92 ] :
-            self.incMsg.append( newbyte )
+            if newbyte in [ 10, 13, 92 ] :
+                self.incMsg.append( newbyte )
+            else :
+                self.incMsg.append( newbyte )
+                self.incType = newbyte
+            self.escape = False
         else :
-            self.incMsg.append( newbyte )
-            self.incType = newbyte
-        self.escape = False
-        else :
-        if newbyte == 92:
-            self.escape = True
-        elif newbyte == 10:
-            #end of line
-            self.parse_message()
-            self.incMsg = []
-            self.incType = 'n'
-        else :
-            self.incMsg.append( newbyte )
+            if newbyte == 92:
+                self.escape = True
+            elif newbyte == 10:
+                #end of line
+                self.parse_message()
+                self.incMsg = []
+                self.incType = 'n'
+            else :
+                self.incMsg.append( newbyte )
 
   def read_data( self ):
     bytes_toread = self.serial.inWaiting()  
