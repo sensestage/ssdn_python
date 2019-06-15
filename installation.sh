@@ -5,8 +5,9 @@ cd pyosc
 python setup.py install
 cd ..
 
-mkdir pyserial
-tar xzvf pyserial-sensestage.tar.gz -C pyserial
+# mkdir pyserial
+#tar xzvf pyserial-sensestage.tar.gz -C pyserial
+tar xzvf pyserial-sensestage.tar.gz
 cd pyserial
 python setup.py install
 cd ..
