@@ -130,13 +130,13 @@ class SWPydonHive( object ):
     if self.datanetwork.subscribedToNode( nodeid ):
       # check whether mapped to minibee
       if nodeid in self.datanetwork.nodes:
-	if self.datanetwork.nodes[ nodeid ].mapOutput != mid:
-	  # change mapping, otherwise do nothing
-	  self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
-	  self.datanetwork.nodes[ nodeid ].setMapCustom( None )
-	  self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
+        if self.datanetwork.nodes[ nodeid ].mapOutput != mid:
+            # change mapping, otherwise do nothing
+            self.datanetwork.nodes[ nodeid ].setMapOutput( mid )
+            self.datanetwork.nodes[ nodeid ].setMapCustom( None )
+            self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBee( data, mid ) )
       else:
-	self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
+        self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapAction( nid, mid ) )
     else:
       self.hive.osclock.acquire()
       self.datanetwork.osc.subscribeNode( nodeid, lambda nid: self.setMapAction( nid, mid ) )
@@ -184,14 +184,14 @@ class SWPydonHive( object ):
     if self.datanetwork.subscribedToNode( nodeid ):
       # check whether mapped to minibee
       if nodeid in self.datanetwork.nodes:
-	if self.datanetwork.nodes[ nodeid ].mapCustom != mid:
-	  # change mapping, otherwise do nothing
-	  print( "mapping custom", nodeid, "to", mid )
-	  self.datanetwork.nodes[ nodeid ].setMapOutput( None )
-	  self.datanetwork.nodes[ nodeid ].setMapCustom( mid )
-	  self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )
-	else:
-	  self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapCustomAction( nid, mid ) )
+        if self.datanetwork.nodes[ nodeid ].mapCustom != mid:
+            # change mapping, otherwise do nothing
+            print( "mapping custom", nodeid, "to", mid )
+            self.datanetwork.nodes[ nodeid ].setMapOutput( None )
+            self.datanetwork.nodes[ nodeid ].setMapCustom( mid )
+            self.datanetwork.nodes[ nodeid ].setAction( lambda data: self.dataNodeDataToMiniBeeCustom( data, mid ) )
+        else:
+            self.datanetwork.osc.add_callback( 'info', nodeid, lambda nid: self.setMapCustomAction( nid, mid ) )
     else:
       self.hive.osclock.acquire()
       print( "subscribing to node", nodeid )
@@ -257,15 +257,15 @@ class SWPydonHive( object ):
   def reregisterBees( self, state ):
     if state:
       for beeid, bee in self.hive.bees.items():
-	#print bee
-	if beeid < 65535:
-	  self.hookBeeToDatanetwork( bee )
-	  self.hive.osclock.acquire()
-	  self.datanetwork.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
-	  self.sendStatusInfo( beeid, bee.status )
-	  if bee.status == 'receiving':
-	    self.datanetwork.osc.addExpected( beeid, [] )
-	  self.hive.osclock.release()
+        #print bee
+        if beeid < 65535:
+            self.hookBeeToDatanetwork( bee )
+            self.hive.osclock.acquire()
+            self.datanetwork.osc.infoMinibee( bee.nodeid, bee.getInputSize(), bee.getOutputSize() )
+            self.sendStatusInfo( beeid, bee.status )
+            if bee.status == 'receiving':
+                self.datanetwork.osc.addExpected( beeid, [] )
+            self.hive.osclock.release()
 
   def addAndSubscribe( self, nid, data ):
     mybee = self.hive.bees[ nid ]
@@ -368,27 +368,27 @@ if __name__ == "__main__":
 
   parser = option_parser_class(description='Create a datanetwork client to communicate with the minibee network.')
   parser.add_option('-s','--serial', action='store',type="string",dest="serial",default="/dev/ttyUSB0",
-		  help='the serial port [default:%s]'% '/dev/ttyUSB0')
+            help='the serial port [default:%s]'% '/dev/ttyUSB0')
   parser.add_option('-a','--apimode', action='store_true', dest="apimode",default=False,
-		  help='use API mode for communication with the minibees [default:%s]'% False)
+            help='use API mode for communication with the minibees [default:%s]'% False)
   parser.add_option('-v','--verbose', action='store_true', dest="verbose",default=False,
-		  help='verbose printing [default:%i]'% False)
+            help='verbose printing [default:%i]'% False)
   parser.add_option('-n','--name', action='store', type="string", dest="name",default="pydonhive",
-		  help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
+            help='the name of the client in the datanetwork [default:%s]'% "pydonhive" )
   parser.add_option('-c','--config', action='store', type="string", dest="config",default="pydon/configs/hiveconfig.xml",
-		  help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
+            help='the name of the configuration file for the minibees [default:%s]'% 'pydon/configs/hiveconfig.xml')
   parser.add_option('-m','--nr_of_minibees', type=int, action='store',dest="minibees",default=20,
-		  help='the number of minibees in the network [default:%i]'% 20)
+            help='the number of minibees in the network [default:%i]'% 20)
   parser.add_option('-o','--minibee_offset', type=int, action='store',dest="mboffset",default=1,
-		  help='the offset of the number range for the minibees in the network [default:%i]'% 1)
+            help='the offset of the number range for the minibees in the network [default:%i]'% 1)
   parser.add_option('-d','--host_ip', action='store',type="string", dest="host",default="127.0.0.1",
-		  help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
+            help='the ip address of the datanetwork host [default:%s]'% "127.0.0.1")
   parser.add_option('-b','--baudrate', action='store',type=int,dest="baudrate",default=57600,
-		  help='the serial port [default:%i]'% 57600)
+            help='the serial port [default:%i]'% 57600)
   parser.add_option('-p','--port', type=int, action='store',dest="port",default=57600,
-		  help='the port on which the client will listen [default:%i]'% 57600 )
+            help='the port on which the client will listen [default:%i]'% 57600 )
   parser.add_option('-i','--ip', type="string", action='store',dest="ip",default="0.0.0.0",
-		  help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
+            help='the ip on which the client will listen [default:%s]'% "0.0.0.0" )
 
   (options,args) = parser.parse_args()
   #print args.accumulate(args.integers)
